@@ -53,7 +53,7 @@ class TopNavBar extends StatelessWidget {
                   child: ListView(
                     padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
                     children: [
-                      _mobileNavItem(context, "Sentinel", "/sentinel", currentPath),
+                      //_mobileNavItem(context, "Sentinel", "/sentinel", currentPath),
                       //_mobileNavItem(context, "Products", "/products", currentPath), // ✅ ADDED FOR STOREFRONT NODE
                       _mobileNavItem(context, "Growth Engine", "/growth-engine", currentPath),
                       _mobileNavItem(context, "Contact", "/contact", currentPath),
@@ -162,7 +162,7 @@ class TopNavBar extends StatelessWidget {
 
           // 🛠️ RIGHT SIDE: Navigation Matrix Layout
           if (!isMobile) ...[
-            _desktopNavItem(context, "Sentinel", "/sentinel"),
+            //_desktopNavItem(context, "Sentinel", "/sentinel"),
             //_desktopNavItem(context, "Products", "/products"), // ✅ ADDED FOR STOREFRONT NODE
             _desktopNavItem(context, "Growth Engine", "/growth-engine"),
             _desktopNavItem(context, "Contact", "/contact"),
