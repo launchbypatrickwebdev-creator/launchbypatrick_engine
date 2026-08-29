@@ -1,0 +1,66 @@
+name: launchbypatrick_engine
+description: "A high-performance operational hub sandbox for Launch by Patrick."
+publish_to: 'none' # Prevents accidental publishing to pub.dev
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.11.1
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # 🛰️ Explicitly register the web routing plugins dependency
+  flutter_web_plugins:
+    sdk: flutter
+
+  # 🛰️ DESIGN SYSTEMS & TYPOGRAPHY
+  cupertino_icons: ^1.0.8
+  google_fonts: ^6.2.1
+
+  # 🛰️ HARDWARE & RE-RASTERING UTILITIES
+  video_player: ^2.9.0
+
+  # 🛰️ INTERACTION ENGINES
+  web_smooth_scroll: ^0.0.3
+  go_router: ^17.2.3
+
+  # AI Chat & Voice Services
+  url_launcher: ^6.2.0
+  speech_to_text: ^6.3.0
+  permission_handler: ^12.0.3
+
+  # Local Storage & Database
+  shared_preferences: ^2.2.2
+  hive: ^2.2.3
+  hive_flutter: ^1.1.0
+  intl: ^0.19.0
+
+  # HTTP for Mistral API calls
+  http: ^1.1.0
+
+  # State Management (optional but good practice)
+  provider: ^6.0.0
+
+  # UUID for unique message IDs
+  uuid: ^4.0.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+  hive_generator: ^2.0.0
+  build_runner: ^2.4.0
+
+flutter:
+  uses-material-design: true
+
+  # 🛰️ ASSET PIPELINE HOOKS
+  # Explicitly declares folders so the asset compiler packs your multimedia seamlessly
+  assets:
+    - assets/videos/
+    - assets/images/ecosystem_graph.webp
+    - assets/images/engineering_layers.webp
+    - assets/images/earth_night.webp
+    - assets/images/background.webp
+    - assets/backgrounds/system_matrix_bg.webp

@@ -1,0 +1,1144 @@
+// lib/pages/sentinel/rd_page.dart
+
+import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import '../../shared/ops_background_engine.dart';
+import '../../shared/launch_tactile_engine.dart';
+import '../../shared/launch_section_container.dart';
+import '../../widgets/sentinel_nav_bar.dart';
+import '../../widgets/shared_site_footer.dart';
+import '../../widgets/connection_form.dart';
+
+class RDPage extends StatefulWidget {
+  const RDPage({super.key});
+
+  @override
+  State<RDPage> createState() => _RDPageState();
+}
+
+class _RDPageState extends State<RDPage> {
+
+  static const Color _amber  = Color(0xFFFFEA00);
+  static const Color _green  = Color(0xFF00C853);
+  static const Color _cardBg = Color(0xFF0A1A0F);
+  static const Color _pageBg = Color(0xFF07080C);
+
+  // Page-level focus node — passed to LaunchTactileEngine and ConnectionForm
+  final FocusNode _pageFocusNode = FocusNode();
+
+  // Clearance state
+  int  _clearanceLevel  = 0;
+  bool _clearanceLoaded = false;
+
+  // Gateway expansion
+  bool _showConnectionForm = false;
+
+  // Research nodes
+  static const List<Map<String, String>> _researchNodes = [
+    {
+      'title': 'Ultrasonic Fuel Sensing Accuracy at High Temperatures',
+      'date': 'Q4 2025',
+      'status': 'CLASSIFIED',
+      'summary': '',
+    },
+    {
+      'title': 'ESP32 Edge Compute Optimization for Offline Black-Box Mode',
+      'date': 'Q1 2026',
+      'status': 'CLASSIFIED',
+      'summary': '',
+    },
+    {
+      'title': 'Temperature Compensation Algorithm v1.0',
+      'date': 'Q2 2026',
+      'status': 'UNDER REVIEW',
+      'summary': '',
+    },
+    {
+      'title': 'Non-Invasive Tank Mounting Protocol — OEM Warranty Analysis',
+      'date': 'Q3 2026',
+      'status': 'CLASSIFIED',
+      'summary': '',
+    },
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    _loadClearanceLevel();
+  }
+
+  Future<void> _loadClearanceLevel() async {
+    final prefs = await SharedPreferences.getInstance();
+    if (!mounted) return;
+    setState(() {
+      _clearanceLevel  = prefs.getInt('sentinel_clearance') ?? 0;
+      _clearanceLoaded = true;
+    });
+  }
+
+  Future<void> _elevateToLevel1() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setInt('sentinel_clearance', 1);
+    if (!mounted) return;
+    setState(() => _clearanceLevel = 1);
+  }
+
+  // Admin-triggered — not called internally; exposed for programmatic use
+  // ignore: unused_element
+  Future<void> _elevateToLevel2() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setInt('sentinel_clearance', 2);
+    if (!mounted) return;
+    setState(() => _clearanceLevel = 2);
+  }
+
+  Future<void> _pageRefresh(BuildContext context) async {
+    await Future.delayed(const Duration(milliseconds: 1200));
+    if (!mounted) return;
+    await _loadClearanceLevel();
+    if (!context.mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      backgroundColor: _amber,
+      duration: const Duration(seconds: 1),
+      content: Text("R&D FEED REFRESHED",
+          style: GoogleFonts.robotoMono(
+              color: Colors.black, fontWeight: FontWeight.bold, fontSize: 12)),
+    ));
+  }
+
+  @override
+  void dispose() {
+    _pageFocusNode.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final bool isMobile = MediaQuery.of(context).size.width < 600;
+
+    if (!_clearanceLoaded) {
+      return Scaffold(
+        backgroundColor: _pageBg,
+        body: Center(
+          child: SizedBox(
+            width: 24, height: 24,
+            child: CircularProgressIndicator(
+                color: _amber, strokeWidth: 1.5),
+          ),
+        ),
+      );
+    }
+
+    return Scaffold(
+      backgroundColor: _pageBg,
+      body: Stack(
+        children: [
+          const Positioned.fill(
+            child: OpsBackgroundEngine(
+              assetPath: 'assets/videos/sentinel_matrix_loop.mp4',
+            ),
+          ),
+          LaunchTactileEngine(
+            focusNode: _pageFocusNode,
+            onRefresh: () => _pageRefresh(context),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const SentinelNavBar(),
+
+                // PUBLIC ZONE
+                _buildHero(isMobile),
+                _buildMVV(isMobile),
+                _buildCortexCore(isMobile),
+                _buildResearchNodes(isMobile),
+
+                // GATEWAY
+                _buildGatewayZone(isMobile),
+
+                // PRIVATE ZONE — clearance 2 only
+                if (_clearanceLevel == 2) _buildPrivateZone(isMobile),
+
+                const SizedBox(height: 120),
+                const StickyFooterSpacer(),
+                const SharedSiteFooter(),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // =========================================================================
+  // HERO
+  // =========================================================================
+  Widget _buildHero(bool isMobile) {
+    return LaunchSectionContainer(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const SizedBox(height: 60),
+          Semantics(
+            label: 'EchoLevel Sentinel R&D — deep-dive hardware research and development.',
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+              color: _amber.withValues(alpha: 0.15),
+              child: Text("LAB ARCHITECTURE // CORE HARDWARE SPECIFICATIONS",
+                  style: GoogleFonts.robotoMono(color: _amber,
+                      fontSize: isMobile ? 8 : 10,
+                      fontWeight: FontWeight.bold, letterSpacing: 2.0)),
+            ),
+          ),
+          const SizedBox(height: 20),
+          Semantics(
+            header: true,
+            label: 'Deep-dive hardware research and development at EchoLevel Sentinel.',
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('DEEP-DIVE HARDWARE',
+                    style: TextStyle(fontSize: isMobile ? 32 : 54,
+                        fontWeight: FontWeight.bold, color: Colors.white,
+                        letterSpacing: 1.5, height: 1.1)),
+                Text('RESEARCH & DEVELOPMENT.',
+                    style: TextStyle(fontSize: isMobile ? 32 : 54,
+                        fontWeight: FontWeight.bold, color: _amber,
+                        letterSpacing: 1.5, height: 1.1)),
+              ],
+            ),
+          ),
+          const SizedBox(height: 24),
+          Semantics(
+            label: 'Technical breakdowns, engineering schematics, firmware registers, and physical asset logistics breakthrough nodes. Published research is open. Active research is gated.',
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 700),
+              child: Text(
+                'Technical breakdowns, engineering schematics, firmware registers, and physical asset logistics breakthrough nodes. Published research is open. Active research is gated.',
+                style: GoogleFonts.poppins(color: Colors.white70,
+                    fontSize: isMobile ? 12 : 16, height: 1.6),
+              ),
+            ),
+          ),
+          const SizedBox(height: 80),
+        ],
+      ),
+    );
+  }
+
+  // =========================================================================
+  // MISSION, VISION, VALUES
+  // UPDATED: mission reflects full sovereign vision, not just industrial
+  // UPDATED: vision has two clear horizons — 2035 and 2040
+  // =========================================================================
+  Widget _buildMVV(bool isMobile) {
+    return Container(
+      width: double.infinity,
+      color: Colors.black.withValues(alpha: 0.4),
+      child: LaunchSectionContainer(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Semantics(
+              header: true,
+              label: 'Who we are — EchoLevel Sentinel mission, vision, and values.',
+              child: Text("WHO WE ARE // COMPANY DNA",
+                  style: GoogleFonts.robotoMono(color: _amber, fontSize: 11,
+                      fontWeight: FontWeight.bold, letterSpacing: 2.0)),
+            ),
+            const SizedBox(height: 48),
+
+            // Mission + Vision side by side on desktop
+            isMobile
+                ? Column(crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _buildMissionBlock(isMobile),
+                  const SizedBox(height: 48),
+                  _buildVisionBlock(isMobile),
+                ])
+                : Row(crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(flex: 5, child: _buildMissionBlock(isMobile)),
+                  const SizedBox(width: 60),
+                  Expanded(flex: 7, child: _buildVisionBlock(isMobile)),
+                ]),
+
+            const SizedBox(height: 72),
+            Container(height: 1, color: Colors.white.withValues(alpha: 0.06)),
+            const SizedBox(height: 64),
+
+            Semantics(
+              header: true,
+              label: 'Our values.',
+              child: Text("VALUES",
+                  style: GoogleFonts.robotoMono(color: Colors.white38,
+                      fontSize: 11, fontWeight: FontWeight.bold,
+                      letterSpacing: 2.0)),
+            ),
+            const SizedBox(height: 32),
+
+            isMobile
+                ? Column(children: [
+              _buildValueCard( number: '01', title:  'VERIFIABLE TRUTH OVER COMFORTABLE GUESSES', body:
+                  'We do not estimate. We do not approximate. Every reading Sentinel produces is defensible in a court, a bank, or a boardroom.'),
+              const SizedBox(height: 16),
+              _buildValueCard( number: '02', title:  'INDIGENOUS ENGINEERING', body:
+                  'We build what Africa needs using African hands, African context, and African ingenuity. We do not bolt foreign solutions onto local problems.'),
+              const SizedBox(height: 16),
+              _buildValueCard( number: '03', title:  'OFFLINE FIRST, ALWAYS', body:
+                  'We design for the reality we operate in — not the ideal environment we wish we had. If the network goes down, Sentinel keeps recording.'),
+              const SizedBox(height: 16),
+              _buildValueCard( number: '04', title:  'SOVEREIGNTY OVER CONVENIENCE', body:
+                  'We will take the harder engineering path if it means our clients own their data, their systems, and their future. Dependency on foreign rails is a liability we refuse to build into our products.'),
+            ])
+                : Row(crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(child: Column(children: [
+                    _buildValueCard( number: '01', title:  'VERIFIABLE TRUTH OVER COMFORTABLE GUESSES', body:
+                        'We do not estimate. We do not approximate. Every reading Sentinel produces is defensible in a court, a bank, or a boardroom.'),
+                    const SizedBox(height: 16),
+                    _buildValueCard( number: '03', title:  'OFFLINE FIRST, ALWAYS', body:
+                        'We design for the reality we operate in — not the ideal environment we wish we had. If the network goes down, Sentinel keeps recording.'),
+                  ])),
+                  const SizedBox(width: 16),
+                  Expanded(child: Column(children: [
+                    _buildValueCard( number: '02', title:  'INDIGENOUS ENGINEERING', body:
+                        'We build what Africa needs using African hands, African context, and African ingenuity. We do not bolt foreign solutions onto local problems.'),
+                    const SizedBox(height: 16),
+                    _buildValueCard( number: '04', title:  'SOVEREIGNTY OVER CONVENIENCE', body:
+                        'We will take the harder engineering path if it means our clients own their data, their systems, and their future. Dependency on foreign rails is a liability we refuse to build into our products.'),
+                  ])),
+                ]),
+            const SizedBox(height: 72),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // UPDATED: mission reflects full scope — not just industrial
+  Widget _buildMissionBlock(bool isMobile) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text('MISSION', style: GoogleFonts.robotoMono(
+            color: Colors.white38, fontSize: 10,
+            fontWeight: FontWeight.bold, letterSpacing: 2.0)),
+        const SizedBox(height: 20),
+        Semantics(
+          label: 'Mission: EchoLevel Sentinel exists to make every Nigerian asset, business, and person verifiable — starting with the fuel in their generators. We are building the trust infrastructure Africa should have engineered for itself decades ago.',
+          child: Container(
+            padding: const EdgeInsets.only(left: 20),
+            decoration: const BoxDecoration(
+                border: Border(left: BorderSide(color: Color(0xFFFFEA00), width: 2))),
+            child: Text(
+              'EchoLevel Sentinel exists to make every Nigerian asset, business, and person verifiable — starting with the fuel in their generators.\n\nWe are building the trust infrastructure Africa should have engineered for itself decades ago.',
+              style: TextStyle(color: Colors.white,
+                  fontSize: isMobile ? 16 : 20,
+                  fontWeight: FontWeight.w500, height: 1.55, letterSpacing: -0.2),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  // UPDATED: two-horizon vision — 2035 industrial + 2040 citizen
+  Widget _buildVisionBlock(bool isMobile) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text('VISION', style: GoogleFonts.robotoMono(
+            color: Colors.white38, fontSize: 10,
+            fontWeight: FontWeight.bold, letterSpacing: 2.0)),
+        const SizedBox(height: 20),
+        Semantics(
+          label: 'Vision: By 2035, every Nigerian industrial asset is bankable. By 2040, every Nigerian citizen has a verifiable trust score.',
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Horizon 1 — 2035
+              Container(
+                margin: const EdgeInsets.only(bottom: 20),
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: _amber.withValues(alpha: 0.06),
+                  border: Border.all(color: _amber.withValues(alpha: 0.2)),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text("BY 2035 — INDUSTRIAL ASSET SOVEREIGNTY",
+                        style: GoogleFonts.robotoMono(
+                            color: _amber, fontSize: 10,
+                            fontWeight: FontWeight.bold, letterSpacing: 1.2)),
+                    const SizedBox(height: 10),
+                    Text(
+                      'Every generator, fuel tank, and logistics fleet operating in Nigeria will have a verifiable, tamper-proof operational record — accessible to owners, auditable by institutions, and owned by no foreign platform. Every Nigerian industrial asset becomes bankable.',
+                      style: TextStyle(color: Colors.white.withValues(alpha: 0.75),
+                          fontSize: isMobile ? 13 : 15, height: 1.65,
+                          fontWeight: FontWeight.w300),
+                    ),
+                  ],
+                ),
+              ),
+
+              // Horizon 2 — 2040
+              Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: _green.withValues(alpha: 0.04),
+                  border: Border.all(color: _green.withValues(alpha: 0.2)),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text("BY 2040 — CITIZEN TRUST INFRASTRUCTURE",
+                        style: GoogleFonts.robotoMono(
+                            color: _green, fontSize: 10,
+                            fontWeight: FontWeight.bold, letterSpacing: 1.2)),
+                    const SizedBox(height: 10),
+                    Text(
+                      'Every Nigerian — regardless of formal employment, credit history, or bank account status — will have a verifiable trust score built from real behavioral data: data usage, school fees, land ownership, recharge cards, utility payments, DSTV subscriptions.',
+                      style: TextStyle(color: Colors.white.withValues(alpha: 0.75),
+                          fontSize: isMobile ? 13 : 15, height: 1.65,
+                          fontWeight: FontWeight.w300),
+                    ),
+                    const SizedBox(height: 12),
+                    Text(
+                      'We are building what the three credit bureaus cannot reach. The last mile of financial inclusion in Nigeria runs through Sentinel.',
+                      style: TextStyle(color: _amber.withValues(alpha: 0.85),
+                          fontSize: isMobile ? 13 : 14, height: 1.6,
+                          fontWeight: FontWeight.w400,
+                          fontStyle: FontStyle.italic),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildValueCard({
+    required String number, required String title, required String body,
+  }) {
+    return Semantics(
+      label: 'Value $number: $title. $body',
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.all(28),
+        decoration: BoxDecoration(
+          color: Colors.white.withValues(alpha: 0.02),
+          border: Border.all(color: Colors.white.withValues(alpha: 0.07)),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(number, style: TextStyle(color: _amber.withValues(alpha: 0.5),
+                fontSize: 11, fontFamily: 'monospace',
+                fontWeight: FontWeight.bold, letterSpacing: 1.5)),
+            const SizedBox(height: 12),
+            Text(title, style: const TextStyle(color: Colors.white,
+                fontSize: 13, fontWeight: FontWeight.bold, letterSpacing: 0.8)),
+            const SizedBox(height: 12),
+            Container(height: 1, width: 32, color: _amber.withValues(alpha: 0.3)),
+            const SizedBox(height: 16),
+            Text(body, style: TextStyle(color: Colors.white.withValues(alpha: 0.60),
+                fontSize: 13, height: 1.65, fontWeight: FontWeight.w300)),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // =========================================================================
+  // CORTEX CORE — updated diagram labels and body subtexts
+  // =========================================================================
+  Widget _buildCortexCore(bool isMobile) {
+    return Container(
+      width: double.infinity,
+      padding: EdgeInsets.symmetric(
+          vertical: isMobile ? 60 : 80,
+          horizontal: isMobile ? 24 : 0),
+      decoration: BoxDecoration(
+        color: Colors.black.withValues(alpha: 0.5),
+        border: Border.symmetric(
+          horizontal: BorderSide(color: Colors.white.withValues(alpha: 0.06)),
+        ),
+      ),
+      child: LaunchSectionContainer(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Semantics(
+              header: true,
+              label: 'The architecture — Cortex Core, the 1 Head, 3 Bodies philosophy.',
+              child: Text("THE ARCHITECTURE // CORTEX CORE™",
+                  style: GoogleFonts.robotoMono(color: _amber, fontSize: 11,
+                      fontWeight: FontWeight.bold, letterSpacing: 2.0)),
+            ),
+            const SizedBox(height: 16),
+            Text("The 1 Head, 3 Bodies Philosophy",
+                style: TextStyle(color: Colors.white,
+                    fontSize: isMobile ? 24 : 32,
+                    fontWeight: FontWeight.bold)),
+            const SizedBox(height: 24),
+            isMobile
+                ? _buildCortexBody(isMobile)
+                : Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(flex: 5, child: _buildCortexBody(isMobile)),
+                const SizedBox(width: 60),
+                Expanded(flex: 7, child: _buildCortexDiagram()),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildCortexBody(bool isMobile) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Semantics(
+          label: 'At the heart of every Sentinel industrial solution is the Cortex Core — a proprietary offline-first IoT engine. It acts as the universal Head — a high-performance cognitive center that adapts to diverse operational bodies.',
+          child: Text(
+            "At the heart of every Sentinel industrial solution is the Cortex Core™ — a proprietary, offline-first IoT engine designed specifically for Africa's volatile power and data environments.\n\nThe Cortex Core™ acts as the universal 'Head' — a high-performance cognitive center that adapts to diverse Operational Bodies. We don't build products; we build a Proprietary Platform that converts physical entropy into Verifiable Truth, ensuring 99.9% uptime in the most hostile industrial corridors.",
+            style: GoogleFonts.poppins(color: Colors.white70,
+                fontSize: isMobile ? 13 : 15, height: 1.7),
+          ),
+        ),
+        const SizedBox(height: 40),
+
+        // BODY 01 — FIRMWARE (updated subtext)
+        _buildBodyType("BODY 01", "FIRMWARE",
+            "The intelligence layer. Embedded decision-making that runs on-device, offline-first, and survives every power interruption Nigeria can throw at it."),
+        const SizedBox(height: 16),
+
+        // BODY 02 — HARDWARE (updated subtext)
+        _buildBodyType("BODY 02", "HARDWARE",
+            "The physical layer. Non-invasive sensor modules engineered for Nigerian conditions — harmattan dust, voltage spikes, fuel vapor, and equatorial heat."),
+        const SizedBox(height: 16),
+
+        // BODY 03 — INFRASTRUCTURE (updated subtext — broader scope)
+        _buildBodyType("BODY 03", "INFRASTRUCTURE",
+            "The coverage layer. Starting with standby generators and logistics fleets across 8 fuel sectors. Expanding to every critical asset class where trust, visibility, and accountability are missing."),
+      ],
+    );
+  }
+
+  Widget _buildBodyType(String tag, String title, String body) {
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: _cardBg.withValues(alpha: 0.4),
+        border: Border(left: BorderSide(color: _amber, width: 2)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(tag, style: GoogleFonts.robotoMono(
+              color: _amber.withValues(alpha: 0.6), fontSize: 10,
+              fontWeight: FontWeight.bold, letterSpacing: 1.5)),
+          const SizedBox(height: 6),
+          Text(title, style: const TextStyle(
+              color: Colors.white, fontSize: 14, fontWeight: FontWeight.bold)),
+          const SizedBox(height: 6),
+          Text(body, style: TextStyle(
+              color: Colors.white54, fontSize: 12, height: 1.5)),
+        ],
+      ),
+    );
+  }
+
+  // UPDATED: diagram now shows FIRMWARE, HARDWARE, INFRASTRUCTURE
+  Widget _buildCortexDiagram() {
+    return SizedBox(
+      height: 320,
+      child: ExcludeSemantics(
+        child: CustomPaint(painter: _CortexDiagramPainter()),
+      ),
+    );
+  }
+
+  // =========================================================================
+  // RESEARCH NODES
+  // =========================================================================
+  Widget _buildResearchNodes(bool isMobile) {
+    return LaunchSectionContainer(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Semantics(
+            header: true,
+            label: 'Published research nodes — EchoLevel Sentinel active and classified research tracks.',
+            child: Text("RESEARCH NODES // PUBLICATION FEED",
+                style: GoogleFonts.robotoMono(color: _amber, fontSize: 11,
+                    fontWeight: FontWeight.bold, letterSpacing: 2.0)),
+          ),
+          const SizedBox(height: 12),
+          Text("Active Research Tracks",
+              style: TextStyle(color: Colors.white,
+                  fontSize: isMobile ? 26 : 36, fontWeight: FontWeight.bold)),
+          const SizedBox(height: 8),
+          Text("Research outcomes are published here when ready for external review. Classified and under-review nodes require full R&D access.",
+              style: GoogleFonts.poppins(color: Colors.white54,
+                  fontSize: isMobile ? 12 : 14, height: 1.5)),
+          const SizedBox(height: 40),
+          ListView.separated(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: _researchNodes.length,
+            separatorBuilder: (_, __) => const SizedBox(height: 16),
+            itemBuilder: (_, i) =>
+                _buildResearchNodeCard(_researchNodes[i], isMobile),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildResearchNodeCard(Map<String, String> node, bool isMobile) {
+    final String status   = node['status']!;
+    final bool isPublished    = status == 'PUBLISHED';
+    final bool isUnderReview  = status == 'UNDER REVIEW';
+    Color statusColor = Colors.white24;
+    if (isPublished)   statusColor = _green;
+    if (isUnderReview) statusColor = _amber;
+
+    return Semantics(
+      label: 'Research node: ${node['title']}. Status: $status. Date: ${node['date']}.',
+      child: Container(
+        padding: EdgeInsets.all(isMobile ? 20 : 28),
+        decoration: BoxDecoration(
+          color: _cardBg.withValues(alpha: 0.2),
+          border: Border.all(
+            color: isPublished
+                ? _green.withValues(alpha: 0.3)
+                : isUnderReview
+                ? _amber.withValues(alpha: 0.2)
+                : Colors.white10,
+          ),
+        ),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(top: 4),
+              child: Container(
+                  width: 8, height: 8,
+                  decoration: BoxDecoration(
+                      color: statusColor, shape: BoxShape.circle)),
+            ),
+            const SizedBox(width: 20),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(node['title']!,
+                      style: TextStyle(
+                          color: isPublished ? Colors.white : Colors.white54,
+                          fontSize: isMobile ? 14 : 16,
+                          fontWeight: FontWeight.bold)),
+                  const SizedBox(height: 8),
+                  Row(children: [
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 8, vertical: 3),
+                      color: statusColor.withValues(alpha: 0.12),
+                      child: Text(status, style: GoogleFonts.robotoMono(
+                          color: statusColor, fontSize: 9,
+                          fontWeight: FontWeight.bold, letterSpacing: 1.5)),
+                    ),
+                    const SizedBox(width: 12),
+                    Text(node['date']!, style: GoogleFonts.robotoMono(
+                        color: Colors.white24, fontSize: 10)),
+                  ]),
+                  if (isPublished && node['summary']!.isNotEmpty) ...[
+                    const SizedBox(height: 12),
+                    Text(node['summary']!, style: GoogleFonts.poppins(
+                        color: Colors.white70, fontSize: 13, height: 1.5)),
+                  ] else if (!isPublished) ...[
+                    const SizedBox(height: 12),
+                    Row(children: [
+                      const Icon(Icons.lock_outline,
+                          color: Colors.white24, size: 12),
+                      const SizedBox(width: 8),
+                      Text("Full access required to view this node.",
+                          style: GoogleFonts.robotoMono(
+                              color: Colors.white24, fontSize: 10)),
+                    ]),
+                  ],
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // =========================================================================
+  // GATEWAY ZONE — clearance state machine + ConnectionForm wired
+  // =========================================================================
+  Widget _buildGatewayZone(bool isMobile) {
+    if (_clearanceLevel == 2) return const SizedBox.shrink();
+
+    return Container(
+      color: Colors.black.withValues(alpha: 0.3),
+      child: LaunchSectionContainer(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text("ACCESS PROTOCOL // INITIALIZE CONNECTION",
+                style: GoogleFonts.robotoMono(color: _amber, fontSize: 11,
+                    fontWeight: FontWeight.bold, letterSpacing: 2.0)),
+            const SizedBox(height: 48),
+            if (_clearanceLevel == 0) _buildGuestGate(isMobile),
+            if (_clearanceLevel == 1) _buildPendingGate(isMobile),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildGuestGate(bool isMobile) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(children: [
+          const Icon(Icons.lock_outline, color: Colors.white24, size: 20),
+          const SizedBox(width: 12),
+          Text("GUEST ACCESS // R&D LAYER RESTRICTED",
+              style: GoogleFonts.robotoMono(color: Colors.white38, fontSize: 11,
+                  fontWeight: FontWeight.bold, letterSpacing: 1.5)),
+        ]),
+        const SizedBox(height: 32),
+        isMobile
+            ? Column(crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildAccessDescription(isMobile),
+              const SizedBox(height: 40),
+              _buildFormPanel(isMobile),
+            ])
+            : Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Expanded(flex: 4, child: _buildAccessDescription(isMobile)),
+          const SizedBox(width: 60),
+          Expanded(flex: 6, child: _buildFormPanel(isMobile)),
+        ]),
+      ],
+    );
+  }
+
+  Widget _buildAccessDescription(bool isMobile) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text("Who This Is For",
+            style: TextStyle(color: Colors.white,
+                fontSize: isMobile ? 20 : 24, fontWeight: FontWeight.bold)),
+        const SizedBox(height: 20),
+        _buildAccessAudience("MISSION PARTNERS",
+            "Institutional stakeholders, facility managers, fleet operators, investors, and regulators seeking full system access and deployment briefings."),
+        const SizedBox(height: 16),
+        _buildAccessAudience("SPECIALIZED OPERATIVES",
+            "Engineers, PCB designers, firmware developers, and technical collaborators who want to contribute to active Sentinel research tracks."),
+        const SizedBox(height: 32),
+        Container(
+          padding: const EdgeInsets.all(20),
+          decoration: BoxDecoration(
+            color: _amber.withValues(alpha: 0.05),
+            border: Border(left: BorderSide(color: _amber, width: 2)),
+          ),
+          child: Text(
+            "Access to our active R&D pipeline is reserved for verified partners and collaborators. The 2–4 week free pilot program is also initialized through this gateway.",
+            style: GoogleFonts.poppins(color: Colors.white70,
+                fontSize: 13, height: 1.6),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildAccessAudience(String title, String body) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(width: 6, height: 6,
+            margin: const EdgeInsets.only(top: 6),
+            decoration: BoxDecoration(color: _amber, shape: BoxShape.circle)),
+        const SizedBox(width: 14),
+        Expanded(child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(title, style: GoogleFonts.robotoMono(color: _amber,
+                fontSize: 11, fontWeight: FontWeight.bold, letterSpacing: 1.0)),
+            const SizedBox(height: 4),
+            Text(body, style: GoogleFonts.poppins(
+                color: Colors.white54, fontSize: 13, height: 1.5)),
+          ],
+        )),
+      ],
+    );
+  }
+
+  Widget _buildFormPanel(bool isMobile) {
+    return Container(
+      padding: const EdgeInsets.all(32),
+      decoration: BoxDecoration(
+        color: _cardBg.withValues(alpha: 0.3),
+        border: Border.all(color: _amber.withValues(alpha: 0.2)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text("INITIALIZE CONNECTION",
+              style: GoogleFonts.robotoMono(color: _amber, fontSize: 11,
+                  fontWeight: FontWeight.bold, letterSpacing: 1.5)),
+          const SizedBox(height: 8),
+          Text("Select your protocol and submit your connection request.",
+              style: GoogleFonts.poppins(
+                  color: Colors.white38, fontSize: 12)),
+          const SizedBox(height: 24),
+          Container(height: 1, color: Colors.white10),
+          const SizedBox(height: 24),
+
+          // Gateway toggle — show/hide ConnectionForm
+          GestureDetector(
+            onTap: () => setState(
+                    () => _showConnectionForm = !_showConnectionForm),
+            child: Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: _showConnectionForm
+                    ? _amber.withValues(alpha: 0.08)
+                    : Colors.transparent,
+                border: Border.all(
+                  color: _showConnectionForm
+                      ? _amber.withValues(alpha: 0.4)
+                      : Colors.white10,
+                ),
+              ),
+              child: Row(children: [
+                Expanded(
+                  child: Text(
+                    _showConnectionForm
+                        ? "CLOSE CONNECTION FORM"
+                        : "OPEN CONNECTION FORM",
+                    style: GoogleFonts.robotoMono(
+                        color: _showConnectionForm ? _amber : Colors.white54,
+                        fontSize: 11, fontWeight: FontWeight.bold),
+                  ),
+                ),
+                Icon(
+                  _showConnectionForm ? Icons.expand_less : Icons.expand_more,
+                  color: _showConnectionForm ? _amber : Colors.white38,
+                ),
+              ]),
+            ),
+          ),
+
+          // ConnectionForm — wired with pageFocusNode
+          if (_showConnectionForm) ...[
+            const SizedBox(height: 24),
+            ConnectionForm(
+              pageFocusNode: _pageFocusNode,
+              initialProtocol: "Specialized Operative",
+              onInitialize: (data) {
+                _elevateToLevel1();
+                setState(() => _showConnectionForm = false);
+                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                  backgroundColor: _amber,
+                  duration: const Duration(seconds: 3),
+                  content: Text(
+                      "CONNECTION REQUEST SUBMITTED — AWAITING VERIFICATION.",
+                      style: GoogleFonts.robotoMono(
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold, fontSize: 11)),
+                ));
+              },
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+
+  Widget _buildPendingGate(bool isMobile) {
+    return Center(
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 600),
+        child: Container(
+          padding: EdgeInsets.all(isMobile ? 28 : 48),
+          decoration: BoxDecoration(
+            color: Colors.amber.withValues(alpha: 0.05),
+            border: Border.all(color: Colors.amber.withValues(alpha: 0.25)),
+          ),
+          child: Column(
+            children: [
+              _PulsingShield(color: Colors.amber),
+              const SizedBox(height: 32),
+              Text("CLEARANCE LEVEL 1: PENDING",
+                  style: GoogleFonts.robotoMono(color: Colors.amber,
+                      fontWeight: FontWeight.bold, fontSize: 14,
+                      letterSpacing: 2)),
+              const SizedBox(height: 20),
+              Text("Your connection request has been received. Our team is reviewing your classification and deployment parameters. Verification typically completes within 24 hours.\n\nYou will receive a direct communication at the email address you provided.",
+                  textAlign: TextAlign.center,
+                  style: GoogleFonts.poppins(color: Colors.white70,
+                      fontSize: isMobile ? 13 : 14, height: 1.6)),
+              const SizedBox(height: 40),
+              LinearProgressIndicator(
+                  backgroundColor: Colors.white10,
+                  valueColor:
+                  const AlwaysStoppedAnimation<Color>(Colors.amber),
+                  minHeight: 2),
+              const SizedBox(height: 10),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text("STATUS: AUDIT_IN_PROGRESS",
+                      style: GoogleFonts.robotoMono(
+                          color: Colors.amber.withValues(alpha: 0.5),
+                          fontSize: 9)),
+                  Text("UPLINK ESTABLISHED",
+                      style: GoogleFonts.robotoMono(
+                          color: Colors.amber.withValues(alpha: 0.5),
+                          fontSize: 9)),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  // =========================================================================
+  // PRIVATE ZONE — clearance Level 2 only
+  // =========================================================================
+  Widget _buildPrivateZone(bool isMobile) {
+    return Container(
+      color: Colors.black.withValues(alpha: 0.5),
+      child: LaunchSectionContainer(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+              color: _green.withValues(alpha: 0.1),
+              child: Row(children: [
+                Icon(Icons.verified_rounded, color: _green, size: 16),
+                const SizedBox(width: 12),
+                Text("CLEARANCE LEVEL 2 // FULL R&D ACCESS GRANTED",
+                    style: GoogleFonts.robotoMono(color: _green, fontSize: 10,
+                        fontWeight: FontWeight.bold, letterSpacing: 1.5)),
+              ]),
+            ),
+            const SizedBox(height: 48),
+            Text("ACTIVE RESEARCH TRACKS",
+                style: GoogleFonts.robotoMono(color: _amber, fontSize: 11,
+                    fontWeight: FontWeight.bold, letterSpacing: 2.0)),
+            const SizedBox(height: 12),
+            Text("Live R&D Pipeline",
+                style: TextStyle(color: Colors.white,
+                    fontSize: isMobile ? 26 : 36, fontWeight: FontWeight.bold)),
+            const SizedBox(height: 8),
+            Text("What you see here is the active workshop. Schematic previews, firmware notes, thesis documents, and collaboration threads. Handle with integrity.",
+                style: GoogleFonts.poppins(color: Colors.white54,
+                    fontSize: isMobile ? 12 : 14, height: 1.5)),
+            const SizedBox(height: 40),
+            _buildPrivateNode("ULTRASONIC SENSING // ACTIVE BUILD",
+                "ESP32 + HC-SR04 calibration matrices for Nigerian temperature range (28°C–45°C ambient).",
+                isMobile),
+            const SizedBox(height: 16),
+            _buildPrivateNode("OFFLINE BLACK-BOX // FIRMWARE v0.3",
+                "Flash write cycles, memory partitioning, and recovery protocol under power interruption.",
+                isMobile),
+            const SizedBox(height: 16),
+            _buildPrivateNode("VALVE LOCK PROTOCOL // DESIGN PHASE",
+                "Motorized valve actuation logic and fail-safe mechanical override specification.",
+                isMobile),
+            const SizedBox(height: 60),
+            Semantics(
+              label: 'Fortress statement: Sentinel Labs is more than a laboratory — it is a fortress of indigenous innovation. Stand with us in the gap.',
+              child: Center(
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 700),
+                  child: Column(children: [
+                    Text("ENGINEERING THE STANDARD FOR 2035",
+                        style: GoogleFonts.robotoMono(color: _green,
+                            fontSize: 12, fontWeight: FontWeight.bold,
+                            letterSpacing: 2.0)),
+                    const SizedBox(height: 20),
+                    Text("Sentinel Labs is more than a laboratory; it is a fortress of Indigenous Innovation. We are domesticating the technology required to stabilize the continent's most critical infrastructure. Stand with us in the gap.",
+                        textAlign: TextAlign.center,
+                        style: GoogleFonts.poppins(color: Colors.white54,
+                            fontSize: isMobile ? 13 : 15,
+                            fontStyle: FontStyle.italic, height: 1.6)),
+                  ]),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildPrivateNode(String title, String body, bool isMobile) {
+    return Container(
+      padding: EdgeInsets.all(isMobile ? 20 : 28),
+      decoration: BoxDecoration(
+        color: _cardBg.withValues(alpha: 0.4),
+        border: Border.all(color: _amber.withValues(alpha: 0.15)),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(width: 8, height: 8,
+              margin: const EdgeInsets.only(top: 4),
+              decoration: BoxDecoration(color: _amber, shape: BoxShape.circle)),
+          const SizedBox(width: 20),
+          Expanded(child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(title, style: GoogleFonts.robotoMono(color: Colors.white,
+                  fontSize: isMobile ? 12 : 13,
+                  fontWeight: FontWeight.bold, letterSpacing: 0.5)),
+              const SizedBox(height: 8),
+              Text(body, style: GoogleFonts.poppins(
+                  color: Colors.white54, fontSize: 13, height: 1.5)),
+            ],
+          )),
+          const SizedBox(width: 16),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+            color: _amber.withValues(alpha: 0.12),
+            child: Text("ACTIVE", style: GoogleFonts.robotoMono(
+                color: _amber, fontSize: 9,
+                fontWeight: FontWeight.bold, letterSpacing: 1.5)),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// =============================================================================
+// PULSING SHIELD — looping animation for Level 1 pending state
+// =============================================================================
+class _PulsingShield extends StatefulWidget {
+  final Color color;
+  const _PulsingShield({required this.color});
+
+  @override
+  State<_PulsingShield> createState() => _PulsingShieldState();
+}
+
+class _PulsingShieldState extends State<_PulsingShield>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _opacity;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+        vsync: this, duration: const Duration(seconds: 2))
+      ..repeat(reverse: true);
+    _opacity = Tween<double>(begin: 0.3, end: 1.0).animate(
+        CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FadeTransition(
+      opacity: _opacity,
+      child: Icon(Icons.security, color: widget.color, size: 52),
+    );
+  }
+}
+
+// =============================================================================
+// CORTEX CORE DIAGRAM — updated labels: FIRMWARE, HARDWARE, INFRASTRUCTURE
+// =============================================================================
+class _CortexDiagramPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    const Color amber = Color(0xFFFFEA00);
+    const Color green = Color(0xFF00C853);
+    const Color white = Colors.white;
+
+    final Paint linePaint = Paint()
+      ..color = amber.withValues(alpha: 0.25)
+      ..strokeWidth = 1.0
+      ..style = PaintingStyle.stroke;
+
+    final double cx  = size.width / 2;
+    final double headY = size.height * 0.18;
+    final double bodyY = size.height * 0.72;
+
+    // HEAD node — amber (Cortex Core)
+    canvas.drawCircle(Offset(cx, headY), 22,
+        Paint()..color = amber);
+
+    // Three body x positions
+    final List<double> bodyXPositions = [
+      size.width * 0.12,
+      cx,
+      size.width * 0.88,
+    ];
+
+    // Connector lines from head to each body
+    for (final bx in bodyXPositions) {
+      canvas.drawLine(Offset(cx, headY + 22), Offset(bx, bodyY - 14), linePaint);
+      canvas.drawCircle(Offset(bx, bodyY), 14,
+          Paint()..color = green);
+    }
+
+    // Horizontal connector between bodies
+    canvas.drawLine(
+      Offset(bodyXPositions.first, bodyY),
+      Offset(bodyXPositions.last, bodyY),
+      Paint()..color = green.withValues(alpha: 0.2)..strokeWidth = 1.0,
+    );
+
+    // Labels
+    _drawLabel(canvas, "CORTEX CORE™", Offset(cx, headY + 46), amber);
+    _drawLabel(canvas, "FIRMWARE",     Offset(bodyXPositions[0], bodyY + 28), white);
+    _drawLabel(canvas, "HARDWARE",     Offset(bodyXPositions[1], bodyY + 28), white);
+    _drawLabel(canvas, "INFRA\nSTRUCTURE", Offset(bodyXPositions[2], bodyY + 28), white);
+  }
+
+  void _drawLabel(Canvas canvas, String text, Offset position, Color color) {
+    final lines = text.split('\n');
+    double yOffset = 0;
+    for (final line in lines) {
+      final tp = TextPainter(
+        text: TextSpan(text: line,
+            style: TextStyle(color: color, fontSize: 9,
+                fontWeight: FontWeight.bold, letterSpacing: 0.5)),
+        textDirection: TextDirection.ltr,
+      )..layout();
+      tp.paint(canvas, Offset(position.dx - tp.width / 2, position.dy + yOffset));
+      yOffset += tp.height + 2;
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+}

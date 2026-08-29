@@ -1,0 +1,64 @@
+# Allow all standard SEO search engines
+User-agent: Googlebot
+Allow: /
+
+User-agent: bingbot
+Allow: /
+
+User-agent: DuckDuckBot
+Allow: /
+
+# Allow OpenAI
+User-agent: GPTBot
+Allow: /
+User-agent: ChatGPT-User
+Allow: /
+User-agent: OAI-SearchBot
+Allow: /
+
+# Allow Anthropic
+User-agent: ClaudeBot
+Allow: /
+User-agent: Claude-User
+Allow: /
+
+# Allow Perplexity
+User-agent: PerplexityBot
+Allow: /
+
+# Allow Apple
+User-agent: Applebot
+Allow: /
+User-agent: Applebot-Extended
+Allow: /
+
+# Allow Common Crawl
+User-agent: CCBot
+Allow: /
+
+# Allow Google AI
+User-agent: Google-Extended
+Allow: /
+User-agent: GoogleOther
+Allow: /
+User-agent: Google-NotebookLM
+Allow: /
+
+# Allow Meta AI
+User-agent: Meta-ExternalAgent
+Allow: /
+
+# Allow ByteDance
+User-agent: Bytespider
+Allow: /
+
+# Allow Amazon
+User-agent: Amazonbot
+Allow: /
+
+# Allow developer search
+User-agent: PhindBot
+Allow: /
+
+Sitemap: https://launchbypatrick.com/sitemap.xml
+Link: <https://launchbypatrick.com/llms.txt>; rel="llms-txt"

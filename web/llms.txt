@@ -1,0 +1,86 @@
+# Launch by Patrick
+
+> Sovereign web and software architecture company based in Lagos
+> and Ibadan, Nigeria, with operations in London and remote globally.
+
+Launch by Patrick engineers production-ready, cross-platform digital
+systems for founders and companies building unconventional products.
+We specialize in Flutter, React, Python, and distributed backend
+architecture. We are a company, not a freelancer — built to deliver
+world-class engineering from West Africa.
+
+## Mission
+
+We exist for the founder who sees what doesn't exist yet — and
+refuses to wait for someone else to build it. Every system we ship
+is proof that world-class software engineering lives here, on this
+continent, and always did.
+
+## Direction
+
+We are building toward a world where the most ambitious software on
+the continent is also built here — by teams who understand what
+Africa needs to own, not just consume. Launch by Patrick exists at
+the beginning of that story.
+
+## Values
+
+01 — Integrity above delivery: We would rather lose a deadline than
+ship a lie. Code that works but misleads is not code we sign our
+name to.
+
+02 — Compassion as architecture: We build for the person whose
+livelihood depends on this system working. That human weight lives
+in every technical decision.
+
+03 — Unconventional by design: The conventional solution already
+exists. If we are rebuilding what is already there, we are wasting
+the continent's time.
+
+04 — Sovereignty over convenience: We don't build dependence on
+foreign rails when we can engineer the rail itself. Every shortcut
+that creates lock-in is a tax on Africa's future.
+
+## What We Build
+
+- Super app ecosystems and embedded fintech platforms
+  (inspired by WeChat, Alipay, KakaoTalk, Grab, Mercado Libre)
+- Hyper-local marketplaces and distributed commerce systems
+  (inspired by Uber, Craigslist, Shopify, Walmart, Temu)
+- Content-to-commerce and creator economy platforms
+  (inspired by YouTube, TikTok, Audiomack, Patreon, Substack)
+- High-retention gamification and digital vault systems
+  (inspired by Duolingo, Steam, Epic Games, Roblox, Microsoft)
+
+## Services
+
+- High-velocity architecture and MVP scoping: We streamline complex
+  system requirements to their highest-leverage product cores,
+  deploying production-ready infrastructure to market in weeks.
+
+- Infrastructure audits and system remediation: Deep-dive reviews
+  of high-entropy or AI-generated codebases to isolate bottlenecks,
+  plug memory leaks, and optimize network throughput.
+
+- Strategic architectural leadership: Technical sovereignty for
+  founders and executive teams on multi-tenant ecosystem scaling,
+  stack selection, and decoupled modular migration paths.
+
+## Technology Stack
+
+Flutter, Dart, React, Tailwind CSS, Python, Node.js, PostgreSQL,
+GIS (Uber H3), Android Studio, C/C++, Java
+
+## Founding Group
+
+Launch by Patrick also founded EchoLevel Sentinel LTD, an IoT fuel
+telemetry company providing real-time asset monitoring for standby
+generators and logistics fleets across Nigeria. This is a separate
+company and brand built on top of Launch by Patrick's infrastructure.
+
+## Contact
+
+Email: launchbypatrick.webdev@gmail.com
+Location: Lagos, Nigeria / Ibadan, Nigeria / London, UK / Remote
+Book a call: https://calendly.com/grok6457/30min
+Intake form: https://launchbypatrick.com/growth_intakeform
