@@ -1,5 +1,3 @@
-// lib/router/app_router.dart
-
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -23,6 +21,29 @@ import '../data/products_data.dart';
 final GoRouter appRouter = GoRouter(
   initialLocation: '/',
   debugLogDiagnostics: true,
+
+  // ---------------------------------------------------------------------------
+  // 🛡️ DOMAIN ISOLATION REDIRECT LOGIC
+  // ---------------------------------------------------------------------------
+  redirect: (BuildContext context, GoRouterState state) {
+    final String host = Uri.base.host;
+    final String path = state.uri.path;
+
+    // Identifies if traffic is visiting via echolevel.vercel.app
+    final bool isSentinelDomain = host.contains('echolevel');
+
+    // Rule 1: Visiting echolevel.vercel.app/ directly routes straight into Sentinel
+    if (isSentinelDomain && path == '/') {
+      return '/sentinel';
+    }
+
+    // Rule 2: Visiting launchbypatrick.vercel.app/sentinel blocks access & bounces back home
+    if (!isSentinelDomain && path.startsWith('/sentinel')) {
+      return '/';
+    }
+
+    return null; // Continue standard routing
+  },
 
   errorBuilder: (context, state) => Scaffold(
     backgroundColor: const Color(0xFF0A0B10),
