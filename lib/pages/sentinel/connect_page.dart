@@ -1,4 +1,5 @@
 // lib/pages/sentinel/connect_page.dart
+// Updated with opaque card backgrounds preserving green and amber identities
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -34,6 +35,7 @@ class _ConnectPageState extends State<ConnectPage> {
   static const Color _green  = Color(0xFF00C853);
   static const Color _amber  = Color(0xFFFFEA00);
   static const Color _pageBg = Color(0xFF07080C);
+  static const Color _cardBg = Color(0xFF0A1A0F);
   static const String _formspreeEndpoint = 'https://formspree.io/f/xpqjyydl';
 
   // Page-level focus node — passed to LaunchTactileEngine and ConnectionForm
@@ -63,7 +65,7 @@ class _ConnectPageState extends State<ConnectPage> {
   final TextEditingController _interestWhyController   = TextEditingController();
   late final FocusNode _interestNameFocus  = _makeIsolatedFocus();
   late final FocusNode _interestEmailFocus = _makeIsolatedFocus();
-  final FocusNode _interestWhyFocus = FocusNode(); // multiline — plain node
+  final FocusNode _interestWhyFocus = FocusNode();
 
   String _selectedSkillArea = 'Hardware / Embedded Systems';
   static const List<String> _skillAreas = [
@@ -295,8 +297,7 @@ class _ConnectPageState extends State<ConnectPage> {
           Semantics(
             label: 'EchoLevel Sentinel connection protocol.',
             child: Container(
-              padding: const EdgeInsets.symmetric(
-                  horizontal: 12, vertical: 6),
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
               color: _green.withValues(alpha: 0.15),
               child: Text(
                 "",
@@ -353,56 +354,59 @@ class _ConnectPageState extends State<ConnectPage> {
   // ZONE 2: PATH SELECTOR
   // =========================================================================
   Widget _buildPathSelector(bool isMobile) {
-    return LaunchSectionContainer(
-      child: Column(
-        children: [
-          isMobile
-              ? Column(children: [
-            _buildPathCard(
-                icon: Icons.sensors,
-                title: 'DEPLOY SENTINEL',
-                subtitle:
-                'I need fuel telemetry for my operation, fleet, or facility.',
-                cta: 'Go to Pilot & Inquiry →',
-                color: _green,
-                isMobile: isMobile,
-                onTap: () => _scrollTo(_deployKey)),
-            const SizedBox(height: 16),
-            _buildPathCard(
-                icon: Icons.build_circle_outlined,
-                title: 'BUILD SENTINEL',
-                subtitle:
-                'I want to contribute to what Sentinel is building.',
-                cta: 'Go to Opportunities →',
-                color: _amber,
-                isMobile: isMobile,
-                onTap: () => _scrollTo(_buildKey)),
-          ])
-              : Row(children: [
-            Expanded(
-                child: _buildPathCard(
-                    icon: Icons.sensors,
-                    title: 'DEPLOY SENTINEL',
-                    subtitle:
-                    'I need fuel telemetry for my operation, fleet, or facility.',
-                    cta: 'Go to Pilot & Inquiry →',
-                    color: _green,
-                    isMobile: isMobile,
-                    onTap: () => _scrollTo(_deployKey))),
-            const SizedBox(width: 24),
-            Expanded(
-                child: _buildPathCard(
-                    icon: Icons.build_circle_outlined,
-                    title: 'BUILD SENTINEL',
-                    subtitle:
-                    'I want to contribute to what Sentinel is building.',
-                    cta: 'Go to Opportunities →',
-                    color: _amber,
-                    isMobile: isMobile,
-                    onTap: () => _scrollTo(_buildKey))),
-          ]),
-          const SizedBox(height: 20),
-        ],
+    return Container(
+      color: Colors.black.withValues(alpha: 0.3),
+      child: LaunchSectionContainer(
+        child: Column(
+          children: [
+            isMobile
+                ? Column(children: [
+              _buildPathCard(
+                  icon: Icons.sensors,
+                  title: 'DEPLOY SENTINEL',
+                  subtitle:
+                  'I need fuel telemetry for my operation, fleet, or facility.',
+                  cta: 'Go to Pilot & Inquiry →',
+                  color: _green,
+                  isMobile: isMobile,
+                  onTap: () => _scrollTo(_deployKey)),
+              const SizedBox(height: 16),
+              _buildPathCard(
+                  icon: Icons.build_circle_outlined,
+                  title: 'BUILD SENTINEL',
+                  subtitle:
+                  'I want to contribute to what Sentinel is building.',
+                  cta: 'Go to Opportunities →',
+                  color: _amber,
+                  isMobile: isMobile,
+                  onTap: () => _scrollTo(_buildKey)),
+            ])
+                : Row(children: [
+              Expanded(
+                  child: _buildPathCard(
+                      icon: Icons.sensors,
+                      title: 'DEPLOY SENTINEL',
+                      subtitle:
+                      'I need fuel telemetry for my operation, fleet, or facility.',
+                      cta: 'Go to Pilot & Inquiry →',
+                      color: _green,
+                      isMobile: isMobile,
+                      onTap: () => _scrollTo(_deployKey))),
+              const SizedBox(width: 24),
+              Expanded(
+                  child: _buildPathCard(
+                      icon: Icons.build_circle_outlined,
+                      title: 'BUILD SENTINEL',
+                      subtitle:
+                      'I want to contribute to what Sentinel is building.',
+                      cta: 'Go to Opportunities →',
+                      color: _amber,
+                      isMobile: isMobile,
+                      onTap: () => _scrollTo(_buildKey))),
+            ]),
+            const SizedBox(height: 20),
+          ],
+        ),
       ),
     );
   }
@@ -421,7 +425,10 @@ class _ConnectPageState extends State<ConnectPage> {
       child: Container(
         padding: EdgeInsets.all(isMobile ? 24 : 32),
         decoration: BoxDecoration(
-          color: const Color(0xFF0B0F17),
+          color: Color.alphaBlend(
+            color.withValues(alpha: 0.15),
+            const Color(0xFF0B0F17),
+          ),
           border: Border.all(
             color: color.withValues(alpha: 0.4),
             width: 1.5,
@@ -478,6 +485,7 @@ class _ConnectPageState extends State<ConnectPage> {
   Widget _buildDeployZone(bool isMobile) {
     return Container(
       key: _deployKey,
+      color: Colors.black.withValues(alpha: 0.2),
       child: LaunchSectionContainer(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -504,7 +512,7 @@ class _ConnectPageState extends State<ConnectPage> {
             ),
             const SizedBox(height: 40),
 
-            // 1. Mission Partner Form (Green)
+            // 1. Mission Partner Form (Green Card Identity)
             _buildFormDropdown(
               isExpanded: _deployFormExpanded,
               isLocked: false,
@@ -548,7 +556,7 @@ class _ConnectPageState extends State<ConnectPage> {
 
             const SizedBox(height: 16),
 
-            // 2. Specialized Operative Dropdown (Amber / Yellow)
+            // 2. Specialized Operative Dropdown (Amber / Yellow Card Identity)
             _buildFormDropdown(
               isExpanded: false,
               isLocked: true,
@@ -576,6 +584,7 @@ class _ConnectPageState extends State<ConnectPage> {
   Widget _buildBuildZone(bool isMobile) {
     return Container(
       key: _buildKey,
+      color: _amber.withValues(alpha: 0.02),
       child: LaunchSectionContainer(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -624,7 +633,7 @@ class _ConnectPageState extends State<ConnectPage> {
             _buildLightweightForm(isMobile),
             const SizedBox(height: 32),
 
-            // DROPDOWN: Specialized Operative ConnectionForm (Image 4 Top Box)
+            // DROPDOWN: Specialized Operative ConnectionForm (Amber Card Identity)
             _buildFormDropdown(
               isExpanded: _buildFormExpanded,
               isLocked: false,
@@ -663,9 +672,8 @@ class _ConnectPageState extends State<ConnectPage> {
                   : null,
             ),
 
+            // Locked Mission Partner — redirects to Deploy zone (Amber Tinted in Build Zone)
             const SizedBox(height: 16),
-
-            // DROPDOWN: Locked Mission Partner (Image 4 Bottom Box)
             _buildFormDropdown(
               isExpanded: false,
               isLocked: true,
@@ -685,7 +693,8 @@ class _ConnectPageState extends State<ConnectPage> {
   }
 
   // =========================================================================
-  // REUSABLE DROPDOWN FORM WRAPPER (Image 4)
+  // REUSABLE DROPDOWN FORM WRAPPER
+  // Dynamically uses passed color tint over solid opaque dark background
   // =========================================================================
   Widget _buildFormDropdown({
     required bool isExpanded,
@@ -699,9 +708,12 @@ class _ConnectPageState extends State<ConnectPage> {
   }) {
     return Container(
       decoration: BoxDecoration(
-        color: const Color(0xFF0B0F17),
+        color: Color.alphaBlend(
+          color.withValues(alpha: isExpanded ? 0.12 : 0.06),
+          const Color(0xFF0B0F17),
+        ),
         border: Border.all(
-          color: isExpanded ? color : color.withValues(alpha: 0.4),
+          color: isExpanded ? color : color.withValues(alpha: 0.35),
           width: isExpanded ? 1.5 : 1.0,
         ),
         boxShadow: [
@@ -732,14 +744,18 @@ class _ConnectPageState extends State<ConnectPage> {
                               Padding(
                                 padding: const EdgeInsets.only(right: 8),
                                 child: Icon(Icons.lock_outline,
-                                    color: color,
+                                    color: color.withValues(alpha: 0.8),
                                     size: 14),
                               ),
                             Expanded(
                               child: Text(
                                 title,
                                 style: GoogleFonts.robotoMono(
-                                  color: color,
+                                  color: isLocked
+                                      ? color.withValues(alpha: 0.9)
+                                      : isExpanded
+                                      ? color
+                                      : Colors.white,
                                   fontSize: 11,
                                   fontWeight: FontWeight.bold,
                                   letterSpacing: 1.0,
@@ -779,6 +795,7 @@ class _ConnectPageState extends State<ConnectPage> {
             ),
           ),
 
+          // Expanded form container (Thick solid dark background)
           if (!isLocked && isExpanded && child != null)
             Container(
               padding: const EdgeInsets.fromLTRB(20, 0, 20, 24),
@@ -823,11 +840,14 @@ class _ConnectPageState extends State<ConnectPage> {
           Expanded(child: Container(
             padding: const EdgeInsets.all(28),
             decoration: BoxDecoration(
-              color: const Color(0xFF0B0F17),
+              color: Color.alphaBlend(
+                _cardBg.withValues(alpha: 0.4),
+                const Color(0xFF0B0F17),
+              ),
               border: Border.all(color: Colors.white10),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.5),
+                  color: Colors.black.withValues(alpha: 0.4),
                   blurRadius: 16,
                   offset: const Offset(0, 6),
                 ),
@@ -848,11 +868,14 @@ class _ConnectPageState extends State<ConnectPage> {
           Expanded(child: Container(
             padding: const EdgeInsets.all(28),
             decoration: BoxDecoration(
-              color: const Color(0xFF0B0F17),
+              color: Color.alphaBlend(
+                _cardBg.withValues(alpha: 0.4),
+                const Color(0xFF0B0F17),
+              ),
               border: Border.all(color: Colors.white10),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.5),
+                  color: Colors.black.withValues(alpha: 0.4),
                   blurRadius: 16,
                   offset: const Offset(0, 6),
                 ),
@@ -912,8 +935,18 @@ class _ConnectPageState extends State<ConnectPage> {
       width: double.infinity,
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: const Color(0xFF0B0F17),
+        color: Color.alphaBlend(
+          _cardBg.withValues(alpha: 0.4),
+          const Color(0xFF0B0F17),
+        ),
         border: Border.all(color: Colors.white10),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.4),
+            blurRadius: 12,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
       child: _buildContactRow(
           icon: icon, label: label, value: value, onTap: onTap),
@@ -921,17 +954,20 @@ class _ConnectPageState extends State<ConnectPage> {
   }
 
   // =========================================================================
-  // HONEST STATEMENT (Image 1)
+  // HONEST STATEMENT (IMAGE 1: Amber Tinted Opaque Box)
   // =========================================================================
   Widget _buildHonestStatement(bool isMobile) {
     return Container(
       padding: EdgeInsets.all(isMobile ? 24 : 32),
       decoration: BoxDecoration(
-        color: const Color(0xFF0B0F17),
+        color: Color.alphaBlend(
+          _amber.withValues(alpha: 0.08),
+          const Color(0xFF0B0F17),
+        ),
         border: Border(left: BorderSide(color: _amber, width: 3)),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.5),
+            color: Colors.black.withValues(alpha: 0.4),
             blurRadius: 16,
             offset: const Offset(0, 6),
           ),
@@ -960,19 +996,22 @@ class _ConnectPageState extends State<ConnectPage> {
   }
 
   // =========================================================================
-  // COLLAB CARDS (Image 2)
+  // COLLABORATION CARDS (IMAGE 2: Amber Tinted Opaque Cards)
   // =========================================================================
   Widget _buildCollabCard(String number, String title, String body) {
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: const Color(0xFF0B0F17),
+        color: Color.alphaBlend(
+          _amber.withValues(alpha: 0.06),
+          const Color(0xFF0B0F17),
+        ),
         border: Border.all(color: _amber.withValues(alpha: 0.3)),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.5),
-            blurRadius: 16,
-            offset: const Offset(0, 6),
+            color: Colors.black.withValues(alpha: 0.4),
+            blurRadius: 14,
+            offset: const Offset(0, 5),
           ),
         ],
       ),
@@ -980,30 +1019,33 @@ class _ConnectPageState extends State<ConnectPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(number, style: TextStyle(
-              color: _amber.withValues(alpha: 0.5), fontSize: 11,
+              color: _amber.withValues(alpha: 0.7), fontSize: 11,
               fontFamily: 'monospace', fontWeight: FontWeight.bold,
               letterSpacing: 1.5)),
           const SizedBox(height: 10),
           Text(title, style: GoogleFonts.robotoMono(color: Colors.white,
               fontSize: 12, fontWeight: FontWeight.bold, letterSpacing: 0.5)),
           const SizedBox(height: 10),
-          Container(height: 1, width: 28, color: _amber.withValues(alpha: 0.3)),
+          Container(height: 1, width: 28, color: _amber.withValues(alpha: 0.4)),
           const SizedBox(height: 14),
           Text(body, style: GoogleFonts.poppins(
-              color: Colors.white54, fontSize: 13, height: 1.6)),
+              color: Colors.white70, fontSize: 13, height: 1.6)),
         ],
       ),
     );
   }
 
   // =========================================================================
-  // LIGHTWEIGHT FORM (Image 3)
+  // LIGHTWEIGHT FORM (IMAGE 3: Amber Tinted Opaque Box + Dark Inputs)
   // =========================================================================
   Widget _buildLightweightForm(bool isMobile) {
     return Container(
       padding: const EdgeInsets.all(28),
       decoration: BoxDecoration(
-        color: const Color(0xFF0B0F17),
+        color: Color.alphaBlend(
+          _amber.withValues(alpha: 0.06),
+          const Color(0xFF0B0F17),
+        ),
         border: Border.all(color: _amber.withValues(alpha: 0.3)),
         boxShadow: [
           BoxShadow(
@@ -1037,7 +1079,7 @@ class _ConnectPageState extends State<ConnectPage> {
           const SizedBox(height: 6),
           Text("Quick — takes 60 seconds.",
               style: GoogleFonts.poppins(
-                  color: Colors.white38, fontSize: 12)),
+                  color: Colors.white54, fontSize: 12)),
           const SizedBox(height: 24),
           _buildLightField("YOUR NAME",
               _interestNameController, _interestNameFocus, null),
@@ -1051,7 +1093,7 @@ class _ConnectPageState extends State<ConnectPage> {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 12),
             decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: 0.03),
+              color: const Color(0xFF07080C),
               border: Border.all(color: Colors.white10),
             ),
             child: DropdownButtonHideUnderline(
@@ -1119,7 +1161,7 @@ class _ConnectPageState extends State<ConnectPage> {
           onSubmitted: (_) => _pageFocusNode.requestFocus(),
           decoration: InputDecoration(
             filled: true,
-            fillColor: Colors.white.withValues(alpha: 0.03),
+            fillColor: const Color(0xFF07080C),
             enabledBorder: const OutlineInputBorder(
                 borderSide: BorderSide(color: Colors.white10),
                 borderRadius: BorderRadius.zero),
@@ -1135,12 +1177,13 @@ class _ConnectPageState extends State<ConnectPage> {
   }
 
   // =========================================================================
-  // ZONE 5: FAQ (Image 5)
+  // ZONE 5: FAQ (IMAGE 5: Opaque Search Bar & Filter Status Card)
   // =========================================================================
   Widget _buildFaqZone(bool isMobile) {
     final Map<String, List<SentinelFAQ>> grouped = _filteredGroupedFaqs;
     return Container(
       key: _faqKey,
+      color: Colors.black.withValues(alpha: 0.3),
       child: LaunchSectionContainer(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -1181,8 +1224,8 @@ class _ConnectPageState extends State<ConnectPage> {
                 Container(
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
-                    color: const Color(0xFF0B0F17),
                     border: Border.all(color: Colors.white10),
+                    color: const Color(0xFF0B0F17),
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -1300,17 +1343,14 @@ class _ConnectPageState extends State<ConnectPage> {
                 dividerColor: Colors.transparent,
                 expansionTileTheme: ExpansionTileThemeData(
                   iconColor: _green, collapsedIconColor: Colors.white38,
-                  tilePadding: const EdgeInsets.symmetric(horizontal: 16),
-                  childrenPadding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
+                  tilePadding: EdgeInsets.zero,
+                  childrenPadding: const EdgeInsets.only(bottom: 24, top: 4),
                 ),
               ),
               child: Column(
                 children: faqs.map((faq) => Container(
-                  margin: const EdgeInsets.only(bottom: 8),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFF0B0F17),
-                    border: Border.all(color: Colors.white10),
-                  ),
+                  decoration: const BoxDecoration(border: Border(
+                      bottom: BorderSide(color: Colors.white10, width: 1))),
                   child: ExpansionTile(
                     title: Text(faq.question,
                         style: const TextStyle(color: Colors.white,
