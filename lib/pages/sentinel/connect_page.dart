@@ -1,5 +1,4 @@
 // lib/pages/sentinel/connect_page.dart
-// Changes: dropdown/collapsible forms, centered Mission Partner width
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -35,7 +34,6 @@ class _ConnectPageState extends State<ConnectPage> {
   static const Color _green  = Color(0xFF00C853);
   static const Color _amber  = Color(0xFFFFEA00);
   static const Color _pageBg = Color(0xFF07080C);
-  static const Color _cardBg = Color(0xFF0A1A0F);
   static const String _formspreeEndpoint = 'https://formspree.io/f/xpqjyydl';
 
   // Page-level focus node — passed to LaunchTactileEngine and ConnectionForm
@@ -83,9 +81,6 @@ class _ConnectPageState extends State<ConnectPage> {
     'Other',
   ];
 
-  // =========================================================================
-  // ISOLATED FOCUS — horizontal arrows + space only (matches LBP intake form)
-  // =========================================================================
   FocusNode _makeIsolatedFocus() {
     return FocusNode(
       onKeyEvent: (node, event) {
@@ -102,9 +97,6 @@ class _ConnectPageState extends State<ConnectPage> {
     );
   }
 
-  // =========================================================================
-  // FAQ DATA
-  // =========================================================================
   static const List<SentinelFAQ> _faqs = [
     SentinelFAQ(category: 'HOW IT WORKS',
       question: 'How does the EchoLevel Sentinel system work?',
@@ -184,9 +176,6 @@ class _ConnectPageState extends State<ConnectPage> {
     ),
   ];
 
-  // =========================================================================
-  // HELPERS
-  // =========================================================================
   Map<String, List<SentinelFAQ>> get _filteredGroupedFaqs {
     final Map<String, List<SentinelFAQ>> grouped = {};
     for (final faq in _faqs) {
@@ -258,9 +247,6 @@ class _ConnectPageState extends State<ConnectPage> {
     super.dispose();
   }
 
-  // =========================================================================
-  // BUILD
-  // =========================================================================
   @override
   Widget build(BuildContext context) {
     final bool isMobile = MediaQuery.of(context).size.width < 900;
@@ -364,62 +350,59 @@ class _ConnectPageState extends State<ConnectPage> {
   }
 
   // =========================================================================
-// ZONE 2: PATH SELECTOR
-// =========================================================================
+  // ZONE 2: PATH SELECTOR
+  // =========================================================================
   Widget _buildPathSelector(bool isMobile) {
-    return Container(
-      color: Colors.black.withValues(alpha: 0.3), // Overall background untouched
-      child: LaunchSectionContainer(
-        child: Column(
-          children: [
-            isMobile
-                ? Column(children: [
-              _buildPathCard(
-                  icon: Icons.sensors,
-                  title: 'DEPLOY SENTINEL',
-                  subtitle:
-                  'I need fuel telemetry for my operation, fleet, or facility.',
-                  cta: 'Go to Pilot & Inquiry →',
-                  color: _green,
-                  isMobile: isMobile,
-                  onTap: () => _scrollTo(_deployKey)),
-              const SizedBox(height: 16),
-              _buildPathCard(
-                  icon: Icons.build_circle_outlined,
-                  title: 'BUILD SENTINEL',
-                  subtitle:
-                  'I want to contribute to what Sentinel is building.',
-                  cta: 'Go to Opportunities →',
-                  color: _amber,
-                  isMobile: isMobile,
-                  onTap: () => _scrollTo(_buildKey)),
-            ])
-                : Row(children: [
-              Expanded(
-                  child: _buildPathCard(
-                      icon: Icons.sensors,
-                      title: 'DEPLOY SENTINEL',
-                      subtitle:
-                      'I need fuel telemetry for my operation, fleet, or facility.',
-                      cta: 'Go to Pilot & Inquiry →',
-                      color: _green,
-                      isMobile: isMobile,
-                      onTap: () => _scrollTo(_deployKey))),
-              const SizedBox(width: 24),
-              Expanded(
-                  child: _buildPathCard(
-                      icon: Icons.build_circle_outlined,
-                      title: 'BUILD SENTINEL',
-                      subtitle:
-                      'I want to contribute to what Sentinel is building.',
-                      cta: 'Go to Opportunities →',
-                      color: _amber,
-                      isMobile: isMobile,
-                      onTap: () => _scrollTo(_buildKey))),
-            ]),
-            const SizedBox(height: 20),
-          ],
-        ),
+    return LaunchSectionContainer(
+      child: Column(
+        children: [
+          isMobile
+              ? Column(children: [
+            _buildPathCard(
+                icon: Icons.sensors,
+                title: 'DEPLOY SENTINEL',
+                subtitle:
+                'I need fuel telemetry for my operation, fleet, or facility.',
+                cta: 'Go to Pilot & Inquiry →',
+                color: _green,
+                isMobile: isMobile,
+                onTap: () => _scrollTo(_deployKey)),
+            const SizedBox(height: 16),
+            _buildPathCard(
+                icon: Icons.build_circle_outlined,
+                title: 'BUILD SENTINEL',
+                subtitle:
+                'I want to contribute to what Sentinel is building.',
+                cta: 'Go to Opportunities →',
+                color: _amber,
+                isMobile: isMobile,
+                onTap: () => _scrollTo(_buildKey)),
+          ])
+              : Row(children: [
+            Expanded(
+                child: _buildPathCard(
+                    icon: Icons.sensors,
+                    title: 'DEPLOY SENTINEL',
+                    subtitle:
+                    'I need fuel telemetry for my operation, fleet, or facility.',
+                    cta: 'Go to Pilot & Inquiry →',
+                    color: _green,
+                    isMobile: isMobile,
+                    onTap: () => _scrollTo(_deployKey))),
+            const SizedBox(width: 24),
+            Expanded(
+                child: _buildPathCard(
+                    icon: Icons.build_circle_outlined,
+                    title: 'BUILD SENTINEL',
+                    subtitle:
+                    'I want to contribute to what Sentinel is building.',
+                    cta: 'Go to Opportunities →',
+                    color: _amber,
+                    isMobile: isMobile,
+                    onTap: () => _scrollTo(_buildKey))),
+          ]),
+          const SizedBox(height: 20),
+        ],
       ),
     );
   }
@@ -438,11 +421,7 @@ class _ConnectPageState extends State<ConnectPage> {
       child: Container(
         padding: EdgeInsets.all(isMobile ? 24 : 32),
         decoration: BoxDecoration(
-          // Solid dark base blended with accent tint makes the card background thick and opaque
-          color: Color.alphaBlend(
-            color.withValues(alpha: 0.15),
-            const Color(0xFF0B0F17),
-          ),
+          color: const Color(0xFF0B0F17),
           border: Border.all(
             color: color.withValues(alpha: 0.4),
             width: 1.5,
@@ -495,12 +474,10 @@ class _ConnectPageState extends State<ConnectPage> {
 
   // =========================================================================
   // ZONE 3: DEPLOY PATH
-  // Form is now a collapsible dropdown — section aware
   // =========================================================================
   Widget _buildDeployZone(bool isMobile) {
     return Container(
       key: _deployKey,
-      color: Colors.black.withValues(alpha: 0.2),
       child: LaunchSectionContainer(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -575,7 +552,7 @@ class _ConnectPageState extends State<ConnectPage> {
             _buildFormDropdown(
               isExpanded: false,
               isLocked: true,
-              color: _amber, // Dynamic yellow identity
+              color: _amber,
               title: "SPECIALIZED OPERATIVE",
               subtitle:
               "Looking to contribute technically? This path is in the Build section.",
@@ -595,12 +572,10 @@ class _ConnectPageState extends State<ConnectPage> {
 
   // =========================================================================
   // ZONE 4: BUILD PATH
-  // Lightweight form + collapsible Specialized Operative ConnectionForm
   // =========================================================================
   Widget _buildBuildZone(bool isMobile) {
     return Container(
       key: _buildKey,
-      color: _amber.withValues(alpha: 0.02),
       child: LaunchSectionContainer(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -649,7 +624,7 @@ class _ConnectPageState extends State<ConnectPage> {
             _buildLightweightForm(isMobile),
             const SizedBox(height: 32),
 
-            // DROPDOWN: Specialized Operative ConnectionForm
+            // DROPDOWN: Specialized Operative ConnectionForm (Image 4 Top Box)
             _buildFormDropdown(
               isExpanded: _buildFormExpanded,
               isLocked: false,
@@ -688,8 +663,9 @@ class _ConnectPageState extends State<ConnectPage> {
                   : null,
             ),
 
-            // Locked Mission Partner — redirects to Deploy zone
             const SizedBox(height: 16),
+
+            // DROPDOWN: Locked Mission Partner (Image 4 Bottom Box)
             _buildFormDropdown(
               isExpanded: false,
               isLocked: true,
@@ -709,9 +685,8 @@ class _ConnectPageState extends State<ConnectPage> {
   }
 
   // =========================================================================
-// REUSABLE DROPDOWN FORM WRAPPER
-// isLocked = true means it shows a redirect hint instead of expanding
-// =========================================================================
+  // REUSABLE DROPDOWN FORM WRAPPER (Image 4)
+  // =========================================================================
   Widget _buildFormDropdown({
     required bool isExpanded,
     required bool isLocked,
@@ -724,12 +699,9 @@ class _ConnectPageState extends State<ConnectPage> {
   }) {
     return Container(
       decoration: BoxDecoration(
-        color: Color.alphaBlend(
-          color.withValues(alpha: isExpanded ? 0.12 : 0.06),
-          const Color(0xFF0B0F17),
-        ),
+        color: const Color(0xFF0B0F17),
         border: Border.all(
-          color: isExpanded ? color : color.withValues(alpha: 0.35),
+          color: isExpanded ? color : color.withValues(alpha: 0.4),
           width: isExpanded ? 1.5 : 1.0,
         ),
         boxShadow: [
@@ -760,18 +732,14 @@ class _ConnectPageState extends State<ConnectPage> {
                               Padding(
                                 padding: const EdgeInsets.only(right: 8),
                                 child: Icon(Icons.lock_outline,
-                                    color: color.withValues(alpha: 0.6),
+                                    color: color,
                                     size: 14),
                               ),
                             Expanded(
                               child: Text(
                                 title,
                                 style: GoogleFonts.robotoMono(
-                                  color: isLocked
-                                      ? color.withValues(alpha: 0.8)
-                                      : isExpanded
-                                      ? color
-                                      : Colors.white,
+                                  color: color,
                                   fontSize: 11,
                                   fontWeight: FontWeight.bold,
                                   letterSpacing: 1.0,
@@ -811,7 +779,6 @@ class _ConnectPageState extends State<ConnectPage> {
             ),
           ),
 
-          // Expanded form container
           if (!isLocked && isExpanded && child != null)
             Container(
               padding: const EdgeInsets.fromLTRB(20, 0, 20, 24),
@@ -856,8 +823,15 @@ class _ConnectPageState extends State<ConnectPage> {
           Expanded(child: Container(
             padding: const EdgeInsets.all(28),
             decoration: BoxDecoration(
-              color: _cardBg.withValues(alpha: 0.3),
+              color: const Color(0xFF0B0F17),
               border: Border.all(color: Colors.white10),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.5),
+                  blurRadius: 16,
+                  offset: const Offset(0, 6),
+                ),
+              ],
             ),
             child: Column(children: [
               _buildContactRow(icon: Icons.alternate_email,
@@ -874,8 +848,15 @@ class _ConnectPageState extends State<ConnectPage> {
           Expanded(child: Container(
             padding: const EdgeInsets.all(28),
             decoration: BoxDecoration(
-              color: _cardBg.withValues(alpha: 0.3),
+              color: const Color(0xFF0B0F17),
               border: Border.all(color: Colors.white10),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.5),
+                  blurRadius: 16,
+                  offset: const Offset(0, 6),
+                ),
+              ],
             ),
             child: Column(children: [
               _buildContactRow(icon: Icons.public,
@@ -931,7 +912,7 @@ class _ConnectPageState extends State<ConnectPage> {
       width: double.infinity,
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: _cardBg.withValues(alpha: 0.3),
+        color: const Color(0xFF0B0F17),
         border: Border.all(color: Colors.white10),
       ),
       child: _buildContactRow(
@@ -940,14 +921,21 @@ class _ConnectPageState extends State<ConnectPage> {
   }
 
   // =========================================================================
-  // HONEST STATEMENT
+  // HONEST STATEMENT (Image 1)
   // =========================================================================
   Widget _buildHonestStatement(bool isMobile) {
     return Container(
       padding: EdgeInsets.all(isMobile ? 24 : 32),
       decoration: BoxDecoration(
-        color: _amber.withValues(alpha: 0.05),
+        color: const Color(0xFF0B0F17),
         border: Border(left: BorderSide(color: _amber, width: 3)),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.5),
+            blurRadius: 16,
+            offset: const Offset(0, 6),
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -971,12 +959,22 @@ class _ConnectPageState extends State<ConnectPage> {
     );
   }
 
+  // =========================================================================
+  // COLLAB CARDS (Image 2)
+  // =========================================================================
   Widget _buildCollabCard(String number, String title, String body) {
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: _cardBg.withValues(alpha: 0.3),
-        border: Border.all(color: _amber.withValues(alpha: 0.2)),
+        color: const Color(0xFF0B0F17),
+        border: Border.all(color: _amber.withValues(alpha: 0.3)),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.5),
+            blurRadius: 16,
+            offset: const Offset(0, 6),
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -999,14 +997,21 @@ class _ConnectPageState extends State<ConnectPage> {
   }
 
   // =========================================================================
-  // LIGHTWEIGHT FORM
+  // LIGHTWEIGHT FORM (Image 3)
   // =========================================================================
   Widget _buildLightweightForm(bool isMobile) {
     return Container(
       padding: const EdgeInsets.all(28),
       decoration: BoxDecoration(
-        color: _cardBg.withValues(alpha: 0.4),
-        border: Border.all(color: _amber.withValues(alpha: 0.25)),
+        color: const Color(0xFF0B0F17),
+        border: Border.all(color: _amber.withValues(alpha: 0.3)),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.5),
+            blurRadius: 16,
+            offset: const Offset(0, 6),
+          ),
+        ],
       ),
       child: _interestSubmitted
           ? Column(children: [
@@ -1130,13 +1135,12 @@ class _ConnectPageState extends State<ConnectPage> {
   }
 
   // =========================================================================
-  // ZONE 5: FAQ
+  // ZONE 5: FAQ (Image 5)
   // =========================================================================
   Widget _buildFaqZone(bool isMobile) {
     final Map<String, List<SentinelFAQ>> grouped = _filteredGroupedFaqs;
     return Container(
       key: _faqKey,
-      color: Colors.black.withValues(alpha: 0.3),
       child: LaunchSectionContainer(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -1177,8 +1181,8 @@ class _ConnectPageState extends State<ConnectPage> {
                 Container(
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
+                    color: const Color(0xFF0B0F17),
                     border: Border.all(color: Colors.white10),
-                    color: Colors.white.withValues(alpha: 0.005),
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -1254,7 +1258,7 @@ class _ConnectPageState extends State<ConnectPage> {
             })
             : null,
         filled: true,
-        fillColor: Colors.white.withValues(alpha: 0.02),
+        fillColor: const Color(0xFF0B0F17),
         enabledBorder: const OutlineInputBorder(
             borderSide: BorderSide(color: Colors.white10),
             borderRadius: BorderRadius.zero),
@@ -1296,14 +1300,17 @@ class _ConnectPageState extends State<ConnectPage> {
                 dividerColor: Colors.transparent,
                 expansionTileTheme: ExpansionTileThemeData(
                   iconColor: _green, collapsedIconColor: Colors.white38,
-                  tilePadding: EdgeInsets.zero,
-                  childrenPadding: const EdgeInsets.only(bottom: 24, top: 4),
+                  tilePadding: const EdgeInsets.symmetric(horizontal: 16),
+                  childrenPadding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
                 ),
               ),
               child: Column(
                 children: faqs.map((faq) => Container(
-                  decoration: const BoxDecoration(border: Border(
-                      bottom: BorderSide(color: Colors.white10, width: 1))),
+                  margin: const EdgeInsets.only(bottom: 8),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF0B0F17),
+                    border: Border.all(color: Colors.white10),
+                  ),
                   child: ExpansionTile(
                     title: Text(faq.question,
                         style: const TextStyle(color: Colors.white,
