@@ -303,7 +303,7 @@ class _SentinelPageState extends State<SentinelPage> {
                 label:
                 'Most organizations already try to manage fuel. They use manual dipping, driver reports, logbooks, and guesswork. Yet fuel still disappears, generators run dry unexpectedly, and fleet costs keep rising. The real issue is not a lack of effort — it is a lack of continuous, tamper-proof visibility.',
                 child: Text(
-                  "Most organizations already try to manage fuel. They use manual dipping, driver reports, logbooks, and guesswork. Yet fuel still disappears, generators run dry unexpectedly, and fleet costs keep rising.\n\nThe real issue isn't a lack of effort — it's a lack of continuous, tamper-proof visibility.",
+                  "Most organizations already try to manage fuel. They use manual dipping, driver reports, logbooks, and guesswork. Yet fuel still disappears, generators run dry unexpectedly, and fleet costs keep rising.\n\nThe real issue isn't a lack of effort. It's a lack of continuous, tamper proof visibility.",
                   style: GoogleFonts.poppins(
                     color: Colors.white70,
                     fontSize: isMobile ? 13 : 15,
@@ -437,7 +437,7 @@ class _SentinelPageState extends State<SentinelPage> {
           ),
           const SizedBox(height: 4),
           Text(
-            "Real-time data, reports & alerts",
+            "Real time data, reports & alerts",
             textAlign: TextAlign.center,
             style: GoogleFonts.poppins(
               color: Colors.white70,
@@ -588,7 +588,7 @@ class _SentinelPageState extends State<SentinelPage> {
                 _buildSectorCard(
                   "LOGISTICS & TRANSPORT FLEETS",
                   [
-                    "Inter-state Buses", "Haulage Trucks",
+                    "Inter state Buses", "Haulage Trucks",
                     "Delivery Fleets", "Commercial Vans"
                   ],
                   isMobile,
@@ -615,7 +615,7 @@ class _SentinelPageState extends State<SentinelPage> {
                   child: _buildSectorCard(
                     "LOGISTICS & TRANSPORT FLEETS",
                     [
-                      "Inter-state Buses", "Haulage Trucks",
+                      "Inter state Buses", "Haulage Trucks",
                       "Delivery Fleets", "Commercial Vans"
                     ],
                     isMobile,
@@ -729,7 +729,7 @@ class _SentinelPageState extends State<SentinelPage> {
             ),
             const SizedBox(height: 16),
             Text(
-              "What Changes When You Deploy Sentinel",
+              "What Changes When You Deploy Cortex Core",
               style: TextStyle(
                 color: Colors.white,
                 fontSize: isMobile ? 22 : 32,

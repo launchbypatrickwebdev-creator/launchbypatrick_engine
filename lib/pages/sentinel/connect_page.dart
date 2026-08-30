@@ -108,7 +108,7 @@ class _ConnectPageState extends State<ConnectPage> {
   static const List<SentinelFAQ> _faqs = [
     SentinelFAQ(category: 'HOW IT WORKS',
       question: 'How does the EchoLevel Sentinel system work?',
-      answer: 'The system is modular with two main parts. The Shell mounts on the generator or vehicle and contains all sensors — ultrasonic, acoustic, temperature, and vibration. The Head unit stays in a safe location such as an office or control room. It receives data from the Shell wirelessly, uploads everything to the cloud, and sends real time alerts to your dashboard or phone. Data is stored locally and synced to the cloud automatically.',
+      answer: 'The system is modular with two main parts. The Shell mounts on the generator or vehicle. The Head unit stays in a safe location such as an office or control room. It receives data from the Shell wirelessly, uploads everything to the cloud, and sends real time alerts to your dashboard or phone. Data is stored locally and synced to the cloud automatically.',
     ),
     SentinelFAQ(category: 'HOW IT WORKS',
       question: 'What is the difference between the Head and the Shell?',
@@ -124,7 +124,7 @@ class _ConnectPageState extends State<ConnectPage> {
     ),
     SentinelFAQ(category: 'MEASUREMENT & ACCURACY',
       question: 'How do you detect fuel adulteration?',
-      answer: 'We use an acoustic sensor combined with Fast Fourier Transform (FFT) signal analysis. Different fuel compositions — pure diesel, diesel mixed with water, diesel mixed with kerosene — produce distinct acoustic signatures. Our algorithm compares the detected signature against a known pure diesel baseline and raises an alert on significant deviation. Non-invasive, no sampling required.',
+      answer: 'We use an acoustic signal analysis. Different fuel compositions — pure diesel, diesel mixed with water, diesel mixed with kerosene, produce distinct acoustic signatures. Our algorithm compares the detected signature against a known pure diesel baseline and raises an alert on significant deviation. Non invasive, no sampling required.',
     ),
     SentinelFAQ(category: 'MEASUREMENT & ACCURACY',
       question: 'How do you prevent false theft alarms?',
@@ -132,7 +132,7 @@ class _ConnectPageState extends State<ConnectPage> {
     ),
     SentinelFAQ(category: 'INSTALLATION & POWER',
       question: 'Do you need to drill into the fuel tank?',
-      answer: 'No. Cortex Core is completely non invasive. The ultrasonic sensor mounts externally using brackets, strong industrial tape, or existing access points. No drilling, no tank modification, no warranty voiding.',
+      answer: 'No. Cortex Core is completely non invasive. The ultrasonic mounts externally using brackets, strong industrial tape, or existing access points. No drilling, no tank modification, no warranty voiding.',
     ),
     SentinelFAQ(category: 'INSTALLATION & POWER',
       question: 'How long does installation take?',
@@ -140,7 +140,7 @@ class _ConnectPageState extends State<ConnectPage> {
     ),
     SentinelFAQ(category: 'INSTALLATION & POWER',
       question: 'How do you power the device?',
-      answer: 'The Sensor Shell runs on a dedicated rechargeable battery. Completely independent of the asset. No drain on the generator battery or vehicle electrical system. A small solar panel can be added for indefinite runtime.',
+      answer: 'The Shell runs on a dedicated rechargeable battery. Completely independent of the asset. No drain on the generator battery or vehicle electrical system. A small solar panel can be added for indefinite runtime.',
     ),
     SentinelFAQ(category: 'INSTALLATION & POWER',
       question: 'What is the battery life?',
@@ -364,44 +364,58 @@ class _ConnectPageState extends State<ConnectPage> {
   }
 
   // =========================================================================
-  // ZONE 2: PATH SELECTOR
-  // =========================================================================
+// ZONE 2: PATH SELECTOR
+// =========================================================================
   Widget _buildPathSelector(bool isMobile) {
     return Container(
-      color: Colors.black.withValues(alpha: 0.3),
+      color: Colors.black.withValues(alpha: 0.3), // Overall background untouched
       child: LaunchSectionContainer(
         child: Column(
           children: [
             isMobile
                 ? Column(children: [
-              _buildPathCard(icon: Icons.sensors,
+              _buildPathCard(
+                  icon: Icons.sensors,
                   title: 'DEPLOY SENTINEL',
-                  subtitle: 'I need fuel telemetry for my operation, fleet, or facility.',
+                  subtitle:
+                  'I need fuel telemetry for my operation, fleet, or facility.',
                   cta: 'Go to Pilot & Inquiry →',
-                  color: _green, isMobile: isMobile,
+                  color: _green,
+                  isMobile: isMobile,
                   onTap: () => _scrollTo(_deployKey)),
               const SizedBox(height: 16),
-              _buildPathCard(icon: Icons.build_circle_outlined,
+              _buildPathCard(
+                  icon: Icons.build_circle_outlined,
                   title: 'BUILD SENTINEL',
-                  subtitle: 'I want to contribute to what Sentinel is building.',
+                  subtitle:
+                  'I want to contribute to what Sentinel is building.',
                   cta: 'Go to Opportunities →',
-                  color: _amber, isMobile: isMobile,
+                  color: _amber,
+                  isMobile: isMobile,
                   onTap: () => _scrollTo(_buildKey)),
             ])
                 : Row(children: [
-              Expanded(child: _buildPathCard(icon: Icons.sensors,
-                  title: 'DEPLOY SENTINEL',
-                  subtitle: 'I need fuel telemetry for my operation, fleet, or facility.',
-                  cta: 'Go to Pilot & Inquiry →',
-                  color: _green, isMobile: isMobile,
-                  onTap: () => _scrollTo(_deployKey))),
+              Expanded(
+                  child: _buildPathCard(
+                      icon: Icons.sensors,
+                      title: 'DEPLOY SENTINEL',
+                      subtitle:
+                      'I need fuel telemetry for my operation, fleet, or facility.',
+                      cta: 'Go to Pilot & Inquiry →',
+                      color: _green,
+                      isMobile: isMobile,
+                      onTap: () => _scrollTo(_deployKey))),
               const SizedBox(width: 24),
-              Expanded(child: _buildPathCard(icon: Icons.build_circle_outlined,
-                  title: 'BUILD SENTINEL',
-                  subtitle: 'I want to contribute to what Sentinel is building.',
-                  cta: 'Go to Opportunities →',
-                  color: _amber, isMobile: isMobile,
-                  onTap: () => _scrollTo(_buildKey))),
+              Expanded(
+                  child: _buildPathCard(
+                      icon: Icons.build_circle_outlined,
+                      title: 'BUILD SENTINEL',
+                      subtitle:
+                      'I want to contribute to what Sentinel is building.',
+                      cta: 'Go to Opportunities →',
+                      color: _amber,
+                      isMobile: isMobile,
+                      onTap: () => _scrollTo(_buildKey))),
             ]),
             const SizedBox(height: 20),
           ],
@@ -411,9 +425,12 @@ class _ConnectPageState extends State<ConnectPage> {
   }
 
   Widget _buildPathCard({
-    required IconData icon, required String title,
-    required String subtitle, required String cta,
-    required Color color, required bool isMobile,
+    required IconData icon,
+    required String title,
+    required String subtitle,
+    required String cta,
+    required Color color,
+    required bool isMobile,
     required VoidCallback onTap,
   }) {
     return GestureDetector(
@@ -421,23 +438,55 @@ class _ConnectPageState extends State<ConnectPage> {
       child: Container(
         padding: EdgeInsets.all(isMobile ? 24 : 32),
         decoration: BoxDecoration(
-          color: color.withValues(alpha: 0.05),
-          border: Border.all(color: color.withValues(alpha: 0.3)),
+          // Solid dark base blended with accent tint makes the card background thick and opaque
+          color: Color.alphaBlend(
+            color.withValues(alpha: 0.15),
+            const Color(0xFF0B0F17),
+          ),
+          border: Border.all(
+            color: color.withValues(alpha: 0.4),
+            width: 1.5,
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.6),
+              blurRadius: 16,
+              offset: const Offset(0, 6),
+            ),
+          ],
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Icon(icon, color: color, size: 32),
             const SizedBox(height: 16),
-            Text(title, style: GoogleFonts.robotoMono(
-                color: Colors.white, fontSize: isMobile ? 16 : 18,
-                fontWeight: FontWeight.bold, letterSpacing: 1.0)),
+            Text(
+              title,
+              style: GoogleFonts.robotoMono(
+                color: Colors.white,
+                fontSize: isMobile ? 16 : 18,
+                fontWeight: FontWeight.bold,
+                letterSpacing: 1.0,
+              ),
+            ),
             const SizedBox(height: 8),
-            Text(subtitle, style: GoogleFonts.poppins(
-                color: Colors.white54, fontSize: 13, height: 1.5)),
+            Text(
+              subtitle,
+              style: GoogleFonts.poppins(
+                color: Colors.white70,
+                fontSize: 13,
+                height: 1.5,
+              ),
+            ),
             const SizedBox(height: 20),
-            Text(cta, style: GoogleFonts.robotoMono(
-                color: color, fontSize: 12, fontWeight: FontWeight.bold)),
+            Text(
+              cta,
+              style: GoogleFonts.robotoMono(
+                color: color,
+                fontSize: 12,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
           ],
         ),
       ),
@@ -647,9 +696,9 @@ class _ConnectPageState extends State<ConnectPage> {
   }
 
   // =========================================================================
-  // REUSABLE DROPDOWN FORM WRAPPER
-  // isLocked = true means it shows a redirect hint instead of expanding
-  // =========================================================================
+// REUSABLE DROPDOWN FORM WRAPPER
+// isLocked = true means it shows a redirect hint instead of expanding
+// =========================================================================
   Widget _buildFormDropdown({
     required bool isExpanded,
     required bool isLocked,
@@ -660,103 +709,110 @@ class _ConnectPageState extends State<ConnectPage> {
     required String? lockedMessage,
     required Widget? child,
   }) {
-    return Column(
-      children: [
-        GestureDetector(
-          onTap: onToggle,
-          child: Container(
-            padding: const EdgeInsets.all(20),
-            decoration: BoxDecoration(
-              color: isLocked
-                  ? Colors.transparent
-                  : isExpanded
-                  ? color.withValues(alpha: 0.08)
-                  : Colors.transparent,
-              border: Border.all(
-                color: isLocked
-                    ? Colors.white10
-                    : isExpanded
-                    ? color.withValues(alpha: 0.4)
-                    : Colors.white.withValues(alpha: 0.12),
-              ),
-            ),
-            child: Row(
-              children: [
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          if (isLocked)
-                            Padding(
-                              padding: const EdgeInsets.only(right: 8),
-                              child: Icon(Icons.lock_outline,
-                                  color: Colors.white24, size: 12),
-                            ),
-                          Expanded(
-                            child: Text(title,
-                                style: GoogleFonts.robotoMono(
-                                    color: isLocked
-                                        ? Colors.white24
-                                        : isExpanded
-                                        ? color
-                                        : Colors.white70,
-                                    fontSize: 11,
-                                    fontWeight: FontWeight.bold,
-                                    letterSpacing: 1.0)),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        isLocked && lockedMessage != null
-                            ? lockedMessage
-                            : subtitle,
-                        style: GoogleFonts.poppins(
-                            color: isLocked
-                                ? color.withValues(alpha: 0.6)
-                                : Colors.white38,
-                            fontSize: 12,
-                            height: 1.4),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(width: 16),
-                Icon(
-                  isLocked
-                      ? Icons.arrow_forward
-                      : isExpanded
-                      ? Icons.expand_less
-                      : Icons.expand_more,
-                  color: isLocked
-                      ? color.withValues(alpha: 0.5)
-                      : isExpanded
-                      ? color
-                      : Colors.white38,
-                  size: 20,
-                ),
-              ],
-            ),
-          ),
+    return Container(
+      decoration: BoxDecoration(
+        // Solid dark base blended with tint blocks the background image completely
+        color: Color.alphaBlend(
+          color.withValues(alpha: isExpanded ? 0.12 : 0.06),
+          const Color(0xFF0B0F17),
         ),
-
-        // Expanded content
-        if (!isLocked && isExpanded && child != null)
-          Container(
-            padding: const EdgeInsets.all(24),
-            decoration: BoxDecoration(
-              color: color.withValues(alpha: 0.03),
-              border: Border(
-                left: BorderSide(color: color.withValues(alpha: 0.3)),
-                right: BorderSide(color: color.withValues(alpha: 0.1)),
-                bottom: BorderSide(color: color.withValues(alpha: 0.1)),
+        border: Border.all(
+          color: isExpanded ? color : color.withValues(alpha: 0.3),
+          width: isExpanded ? 1.5 : 1.0,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.5),
+            blurRadius: 16,
+            offset: const Offset(0, 6),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          GestureDetector(
+            onTap: onToggle,
+            child: Container(
+              padding: const EdgeInsets.all(20),
+              color: Colors.transparent, // Inherits opaque background from parent Container
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            if (isLocked)
+                              const Padding(
+                                padding: EdgeInsets.only(right: 8),
+                                child: Icon(Icons.lock_outline,
+                                    color: Colors.white24, size: 12),
+                              ),
+                            Expanded(
+                              child: Text(
+                                title,
+                                style: GoogleFonts.robotoMono(
+                                  color: isLocked
+                                      ? Colors.white38
+                                      : isExpanded
+                                      ? color
+                                      : Colors.white,
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.bold,
+                                  letterSpacing: 1.0,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          isLocked && lockedMessage != null
+                              ? lockedMessage
+                              : subtitle,
+                          style: GoogleFonts.poppins(
+                            color: isLocked
+                                ? color.withValues(alpha: 0.8)
+                                : Colors.white54,
+                            fontSize: 12,
+                            height: 1.4,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(width: 16),
+                  Icon(
+                    isLocked
+                        ? Icons.arrow_forward
+                        : isExpanded
+                        ? Icons.expand_less
+                        : Icons.expand_more,
+                    color: isLocked
+                        ? color
+                        : isExpanded
+                        ? color
+                        : Colors.white38,
+                    size: 20,
+                  ),
+                ],
               ),
             ),
-            child: child,
           ),
-      ],
+
+          // Expanded content body with thick dark cover
+          if (!isLocked && isExpanded && child != null)
+            Container(
+              padding: const EdgeInsets.fromLTRB(20, 0, 20, 24),
+              decoration: const BoxDecoration(
+                color: Color(0xFF07080C), // Solid dark cover for internal form
+              ),
+              child: child,
+            ),
+        ],
+      ),
     );
   }
 
