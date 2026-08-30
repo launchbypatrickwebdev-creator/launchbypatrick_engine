@@ -399,7 +399,7 @@ class _SentinelPageState extends State<SentinelPage> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Image.asset(
-            'assets/images/sentinel_dashboard_mockup.webp', // Laptop + Phone graphic
+            'assets/backgrounds/sentinel_dashboard_mockup.webp', // Laptop + Phone graphic
             fit: BoxFit.contain,
             errorBuilder: (_, __, ___) => Center(
               child: Column(
