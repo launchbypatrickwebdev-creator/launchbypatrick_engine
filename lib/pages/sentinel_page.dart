@@ -26,7 +26,7 @@ class _SentinelPageState extends State<SentinelPage> {
   // Dark green + charcoal industrial palette
   // =========================================================================
   static const Color _green     = Color(0xFF00C853); // primary accent
- // static const Color _greenDim  = Color(0xFF1B4332); // border/card accent
+  static const Color _greenDim  = Color(0xFF1B4332); // border/card accent
   static const Color _cardBg    = Color(0xFF0A1A0F); // deep forest dark card
   static const Color _pageBg    = Color(0xFF07080C); // page background
 
@@ -399,7 +399,7 @@ class _SentinelPageState extends State<SentinelPage> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Image.asset(
-            'assets/images/sentinel_dashboard_mockup.png', // Laptop + Phone graphic
+            'assets/images/sentinel_dashboard_mockup.webp', // Laptop + Phone graphic
             fit: BoxFit.contain,
             errorBuilder: (_, __, ___) => Center(
               child: Column(
@@ -453,7 +453,7 @@ class _SentinelPageState extends State<SentinelPage> {
       decoration: BoxDecoration(
         color: const Color(0xFF07080C),
         image: DecorationImage(
-          image: const AssetImage('assets/images/sentinel_chip_core.webp'),
+          image: const AssetImage('assets/backgrounds/sentinel_chip_core.webp'),
           fit: BoxFit.cover,
           // Dims glowing traces to maintain text contrast
           colorFilter: ColorFilter.mode(
@@ -1024,7 +1024,7 @@ class _SentinelPageState extends State<SentinelPage> {
           ],
         ),
         child: Image.asset(
-          'assets/images/sentinel_target_assets.webp', // Standby generators, buses & haulage trucks asset
+          'assets/backgrounds/sentinel_target_assets.webp', // Standby generators, buses & haulage trucks asset
           fit: BoxFit.cover,
           errorBuilder: (_, __, ___) => Container(
             color: const Color(0xFF0B0F17),
