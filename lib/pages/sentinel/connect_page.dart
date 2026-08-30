@@ -508,31 +508,40 @@ class _ConnectPageState extends State<ConnectPage> {
             const SizedBox(height: 20),
             _buildZoneLabel("DEPLOY SENTINEL", _green),
             const SizedBox(height: 12),
-            Text("For Organisations That Need Sentinel",
-                style: TextStyle(color: Colors.white,
-                    fontSize: isMobile ? 22 : 30,
-                    fontWeight: FontWeight.bold)),
+            Text(
+              "For Organisations That Need Sentinel",
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: isMobile ? 22 : 30,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
             const SizedBox(height: 8),
-            Text("Facility managers, fleet operators, institutional partners, and investors. Start with a question or apply directly for your free pilot.",
-                style: GoogleFonts.poppins(color: Colors.white54,
-                    fontSize: isMobile ? 12 : 14, height: 1.5)),
+            Text(
+              "Facility managers, fleet operators, institutional partners, and investors. Start with a question or apply directly for your free pilot.",
+              style: GoogleFonts.poppins(
+                color: Colors.white54,
+                fontSize: isMobile ? 12 : 14,
+                height: 1.5,
+              ),
+            ),
             const SizedBox(height: 40),
 
-            // DROPDOWN: Mission Partner form
+            // 1. Mission Partner Form (Green)
             _buildFormDropdown(
               isExpanded: _deployFormExpanded,
               isLocked: false,
               color: _green,
               title: "MISSION PARTNER — INITIALIZE YOUR CONNECTION",
-              subtitle: "Facility managers, fleet operators, institutional partners, and investors.",
-              onToggle: () => setState(() =>
-              _deployFormExpanded = !_deployFormExpanded),
+              subtitle:
+              "Facility managers, fleet operators, institutional partners, and investors.",
+              onToggle: () =>
+                  setState(() => _deployFormExpanded = !_deployFormExpanded),
               lockedMessage: null,
               child: _deployFormExpanded
                   ? Align(
                 alignment: Alignment.center,
                 child: ConstrainedBox(
-                  // Constrained width so form doesn't span full screen
                   constraints: const BoxConstraints(maxWidth: 720),
                   child: ConnectionForm(
                     pageFocusNode: _pageFocusNode,
@@ -545,11 +554,13 @@ class _ConnectPageState extends State<ConnectPage> {
                         backgroundColor: _green,
                         duration: const Duration(seconds: 3),
                         content: Text(
-                            "CONNECTION INITIALIZED — CHECK YOUR INBOX.",
-                            style: GoogleFonts.robotoMono(
-                                color: Colors.black,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 12)),
+                          "CONNECTION INITIALIZED — CHECK YOUR INBOX.",
+                          style: GoogleFonts.robotoMono(
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 12,
+                          ),
+                        ),
                       ));
                     },
                   ),
@@ -558,14 +569,16 @@ class _ConnectPageState extends State<ConnectPage> {
                   : null,
             ),
 
-            // Locked Specialized Operative — redirects to Build zone
             const SizedBox(height: 16),
+
+            // 2. Specialized Operative Dropdown (Amber / Yellow)
             _buildFormDropdown(
               isExpanded: false,
               isLocked: true,
-              color: _green,
+              color: _amber, // Dynamic yellow identity
               title: "SPECIALIZED OPERATIVE",
-              subtitle: "Looking to contribute technically? This path is in the Build section.",
+              subtitle:
+              "Looking to contribute technically? This path is in the Build section.",
               onToggle: () => _scrollTo(_buildKey),
               lockedMessage: "→ Go to Build Sentinel section",
               child: null,
@@ -711,13 +724,12 @@ class _ConnectPageState extends State<ConnectPage> {
   }) {
     return Container(
       decoration: BoxDecoration(
-        // Solid dark base blended with tint blocks the background image completely
         color: Color.alphaBlend(
           color.withValues(alpha: isExpanded ? 0.12 : 0.06),
           const Color(0xFF0B0F17),
         ),
         border: Border.all(
-          color: isExpanded ? color : color.withValues(alpha: 0.3),
+          color: isExpanded ? color : color.withValues(alpha: 0.35),
           width: isExpanded ? 1.5 : 1.0,
         ),
         boxShadow: [
@@ -735,7 +747,7 @@ class _ConnectPageState extends State<ConnectPage> {
             onTap: onToggle,
             child: Container(
               padding: const EdgeInsets.all(20),
-              color: Colors.transparent, // Inherits opaque background from parent Container
+              color: Colors.transparent,
               child: Row(
                 children: [
                   Expanded(
@@ -745,17 +757,18 @@ class _ConnectPageState extends State<ConnectPage> {
                         Row(
                           children: [
                             if (isLocked)
-                              const Padding(
-                                padding: EdgeInsets.only(right: 8),
+                              Padding(
+                                padding: const EdgeInsets.only(right: 8),
                                 child: Icon(Icons.lock_outline,
-                                    color: Colors.white24, size: 12),
+                                    color: color.withValues(alpha: 0.6),
+                                    size: 14),
                               ),
                             Expanded(
                               child: Text(
                                 title,
                                 style: GoogleFonts.robotoMono(
                                   color: isLocked
-                                      ? Colors.white38
+                                      ? color.withValues(alpha: 0.8)
                                       : isExpanded
                                       ? color
                                       : Colors.white,
@@ -767,17 +780,17 @@ class _ConnectPageState extends State<ConnectPage> {
                             ),
                           ],
                         ),
-                        const SizedBox(height: 4),
+                        const SizedBox(height: 6),
                         Text(
                           isLocked && lockedMessage != null
                               ? lockedMessage
                               : subtitle,
                           style: GoogleFonts.poppins(
-                            color: isLocked
-                                ? color.withValues(alpha: 0.8)
-                                : Colors.white54,
+                            color: isLocked ? color : Colors.white54,
                             fontSize: 12,
                             height: 1.4,
+                            fontWeight:
+                            isLocked ? FontWeight.w600 : FontWeight.normal,
                           ),
                         ),
                       ],
@@ -790,11 +803,7 @@ class _ConnectPageState extends State<ConnectPage> {
                         : isExpanded
                         ? Icons.expand_less
                         : Icons.expand_more,
-                    color: isLocked
-                        ? color
-                        : isExpanded
-                        ? color
-                        : Colors.white38,
+                    color: color,
                     size: 20,
                   ),
                 ],
@@ -802,12 +811,12 @@ class _ConnectPageState extends State<ConnectPage> {
             ),
           ),
 
-          // Expanded content body with thick dark cover
+          // Expanded form container
           if (!isLocked && isExpanded && child != null)
             Container(
               padding: const EdgeInsets.fromLTRB(20, 0, 20, 24),
               decoration: const BoxDecoration(
-                color: Color(0xFF07080C), // Solid dark cover for internal form
+                color: Color(0xFF07080C),
               ),
               child: child,
             ),
