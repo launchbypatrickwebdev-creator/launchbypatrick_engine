@@ -1,7 +1,6 @@
 // lib/pages/sentinel/connect_page.dart
 // Changes: dropdown/collapsible forms, centered Mission Partner width
 
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -271,7 +270,7 @@ class _ConnectPageState extends State<ConnectPage> {
         children: [
           const Positioned.fill(
             child: OpsBackgroundEngine(
-              assetPath: 'assets/videos/sentinel_matrix_loop.mp4',
+              assetPath: 'assets/images/sentinel_connect.webp',
             ),
           ),
           LaunchTactileEngine(

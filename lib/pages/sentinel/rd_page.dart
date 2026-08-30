@@ -136,7 +136,7 @@ class _RDPageState extends State<RDPage> {
         children: [
           const Positioned.fill(
             child: OpsBackgroundEngine(
-              assetPath: 'assets/videos/sentinel_matrix_loop.mp4',
+              assetPath: 'assets/videos/sentinel_rd_loop.mp4',
             ),
           ),
           LaunchTactileEngine(
