@@ -259,19 +259,18 @@ class _SentinelPageState extends State<SentinelPage> {
   }
 
   // =========================================================================
-  // 02. THE QUIET PROBLEM
-  // =========================================================================
+// 02. THE QUIET PROBLEM
+// =========================================================================
   Widget _buildQuietProblem(bool isMobile) {
     return Container(
-      // full-width dark treatment — no LaunchSectionContainer padding here,
-      // we pad manually so the card bleeds closer to the edges
+      // Full-width solid dark background — completely covers the background video
       width: double.infinity,
-      color: Colors.black.withValues(alpha: 0.4),
+      color: const Color(0xFF07080C), // Solid dark background (or Colors.black)
       child: LaunchSectionContainer(
         child: Container(
           padding: EdgeInsets.all(isMobile ? 28 : 48),
           decoration: BoxDecoration(
-            color: _cardBg.withValues(alpha: 0.5),
+            color: _cardBg, // Solid card background (removed alpha transparency)
             border: Border.all(color: _green.withValues(alpha: 0.25)),
           ),
           child: Column(
