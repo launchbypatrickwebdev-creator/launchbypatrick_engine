@@ -1245,9 +1245,13 @@ class _ConnectPageState extends State<ConnectPage> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(' ${_faqs.length}',
-                          style: GoogleFonts.robotoMono(
-                              color: _green, fontSize: 11)),
+                      Text(
+                        ' ${_faqs.length}',
+                        style: GoogleFonts.robotoMono(
+                          color: _green,
+                          fontSize: 11,
+                        ),
+                      ),
                       const SizedBox(height: 6),
                       Text('FILTER_STATUS: ${_searchQuery.isNotEmpty ? "ACTIVE" : "IDLE"}',
                           style: GoogleFonts.robotoMono(
