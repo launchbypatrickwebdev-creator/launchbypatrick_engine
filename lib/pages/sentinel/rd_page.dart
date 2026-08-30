@@ -37,27 +37,9 @@ class _RDPageState extends State<RDPage> {
   // Research nodes
   static const List<Map<String, String>> _researchNodes = [
     {
-      'title': 'Ultrasonic Fuel Sensing Accuracy at High Temperatures',
-      'date': 'Q4 2025',
-      'status': 'CLASSIFIED',
-      'summary': '',
-    },
-    {
-      'title': 'ESP32 Edge Compute Optimization for Offline Black-Box Mode',
-      'date': 'Q1 2026',
-      'status': 'CLASSIFIED',
-      'summary': '',
-    },
-    {
       'title': 'Temperature Compensation Algorithm v1.0',
       'date': 'Q2 2026',
       'status': 'UNDER REVIEW',
-      'summary': '',
-    },
-    {
-      'title': 'Non-Invasive Tank Mounting Protocol — OEM Warranty Analysis',
-      'date': 'Q3 2026',
-      'status': 'CLASSIFIED',
       'summary': '',
     },
   ];

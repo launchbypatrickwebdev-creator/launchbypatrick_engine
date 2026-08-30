@@ -64,4 +64,7 @@ flutter:
     - assets/images/earth_night.webp
     - assets/images/background.webp
     - assets/images/sentinel_connect.webp
+    - assets/backgrounds/sentinel_target_assets.webp
+    - assets/backgrounds/sentinel_dashboard_mockup.webp
     - assets/backgrounds/system_matrix_bg.webp
+    - assets/backgrounds/sentinel_chip_core.webp

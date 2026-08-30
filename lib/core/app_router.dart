@@ -15,6 +15,7 @@ import '../pages/sentinel_page.dart';
 import '../pages/sentinel/growth_engine_page.dart' as sentinel_growth;
 import '../pages/sentinel/rd_page.dart';
 import '../pages/sentinel/connect_page.dart' as sentinel_contact;
+import '../../widgets/connection_form.dart';
 
 import '../data/products_data.dart';
 

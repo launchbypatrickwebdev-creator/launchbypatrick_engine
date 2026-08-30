@@ -26,7 +26,7 @@ class _SentinelPageState extends State<SentinelPage> {
   // Dark green + charcoal industrial palette
   // =========================================================================
   static const Color _green     = Color(0xFF00C853); // primary accent
-  static const Color _greenDim  = Color(0xFF1B4332); // border/card accent
+ // static const Color _greenDim  = Color(0xFF1B4332); // border/card accent
   static const Color _cardBg    = Color(0xFF0A1A0F); // deep forest dark card
   static const Color _pageBg    = Color(0xFF07080C); // page background
 
@@ -71,7 +71,7 @@ class _SentinelPageState extends State<SentinelPage> {
         children: [
           const Positioned.fill(
             child: OpsBackgroundEngine(
-              assetPath: 'assets/videos/sentinel_matrix_loop.mp4',
+              assetPath: 'assets/videos/sentinel_matrix.mp4',
             ),
           ),
           LaunchTactileEngine(
@@ -319,8 +319,8 @@ class _SentinelPageState extends State<SentinelPage> {
   }
 
   // =========================================================================
-  // 03. WHAT WE DO FOR YOU
-  // =========================================================================
+// 03. WHAT WE DO FOR YOU
+// =========================================================================
   Widget _buildCapabilities(bool isMobile) {
     const List<Map<String, String>> caps = [
       {
@@ -360,8 +360,7 @@ class _SentinelPageState extends State<SentinelPage> {
       children: [
         Semantics(
           header: true,
-          label:
-          'System capabilities — what EchoLevel Sentinel does for you.',
+          label: 'System capabilities — what EchoLevel Sentinel does for you.',
           child: Text(
             "",
             style: GoogleFonts.robotoMono(
@@ -383,58 +382,105 @@ class _SentinelPageState extends State<SentinelPage> {
         ),
         const SizedBox(height: 32),
         ...caps.map(
-                (c) => _buildCapTile(c['n']!, c['title']!, c['body']!, isMobile)),
+              (c) => _buildCapTile(c['n']!, c['title']!, c['body']!, isMobile),
+        ),
       ],
     );
 
+    // 🛰️ DEVICE MOCKUP SHOWCASE CARD
     final Widget dashboardSlot = Container(
-      constraints: BoxConstraints(minHeight: isMobile ? 260 : 520),
+      padding: EdgeInsets.all(isMobile ? 20 : 32),
       decoration: BoxDecoration(
-        color: _cardBg.withValues(alpha: 0.4),
-        border: Border.all(color: _greenDim),
+        color: _cardBg, // Opaque background anchors the hardware asset
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: _green.withValues(alpha: 0.2)),
       ),
-      child: Image.asset(
-        'assets/images/sentinel_dashboard.webp',
-        fit: BoxFit.cover,
-        errorBuilder: (_, __, ___) => Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(Icons.monitor_rounded,
-                  color: _green.withValues(alpha: 0.3), size: 48),
-              const SizedBox(height: 16),
-              Text(
-                "SENTINEL DASHBOARD\nPREVIEW",
-                textAlign: TextAlign.center,
-                style: GoogleFonts.robotoMono(
-                  color: _green.withValues(alpha: 0.4),
-                  fontSize: 11,
-                  letterSpacing: 1.5,
-                ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Image.asset(
+            'assets/images/sentinel_dashboard_mockup.png', // Laptop + Phone graphic
+            fit: BoxFit.contain,
+            errorBuilder: (_, __, ___) => Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.monitor_rounded,
+                    color: _green.withValues(alpha: 0.3),
+                    size: 48,
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    "SENTINEL DASHBOARD\nPREVIEW",
+                    textAlign: TextAlign.center,
+                    style: GoogleFonts.robotoMono(
+                      color: _green.withValues(alpha: 0.4),
+                      fontSize: 11,
+                      letterSpacing: 1.5,
+                    ),
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
-        ),
+          const SizedBox(height: 24),
+          Text(
+            "SECURE DASHBOARD",
+            textAlign: TextAlign.center,
+            style: GoogleFonts.poppins(
+              color: Colors.white,
+              fontSize: isMobile ? 14 : 16,
+              fontWeight: FontWeight.bold,
+              letterSpacing: 1.5,
+            ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            "Real-time data, reports & alerts",
+            textAlign: TextAlign.center,
+            style: GoogleFonts.poppins(
+              color: Colors.white70,
+              fontSize: isMobile ? 12 : 14,
+            ),
+          ),
+        ],
       ),
     );
 
-    return LaunchSectionContainer(
-      child: isMobile
-          ? Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          capList,
-          const SizedBox(height: 48),
-          dashboardSlot,
-        ],
-      )
-          : Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Expanded(flex: 5, child: capList),
-          const SizedBox(width: 56),
-          Expanded(flex: 5, child: dashboardSlot),
-        ],
+    return Container(
+      width: double.infinity,
+      decoration: BoxDecoration(
+        color: const Color(0xFF07080C),
+        image: DecorationImage(
+          image: const AssetImage('assets/images/sentinel_chip_core.webp'),
+          fit: BoxFit.cover,
+          // Dims glowing traces to maintain text contrast
+          colorFilter: ColorFilter.mode(
+            Colors.black.withValues(alpha: 0.82),
+            BlendMode.darken,
+          ),
+        ),
+      ),
+      child: LaunchSectionContainer(
+        child: isMobile
+            ? Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            capList,
+            const SizedBox(height: 48),
+            dashboardSlot,
+          ],
+        )
+            : Row(
+          // Vertical center aligns dashboard alongside Points 01–05 instead of top title
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Expanded(flex: 5, child: capList),
+            const SizedBox(width: 56),
+            Expanded(flex: 5, child: dashboardSlot),
+          ],
+        ),
       ),
     );
   }
@@ -447,7 +493,7 @@ class _SentinelPageState extends State<SentinelPage> {
         margin: const EdgeInsets.only(bottom: 16),
         padding: EdgeInsets.all(isMobile ? 16 : 24),
         decoration: BoxDecoration(
-          color: _cardBg.withValues(alpha: 0.25),
+          color: _cardBg, // Solid surface prevents chip background bleed
           border: Border.all(color: Colors.white10),
         ),
         child: Row(
@@ -466,17 +512,23 @@ class _SentinelPageState extends State<SentinelPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(title,
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontSize: isMobile ? 15 : 18,
-                          fontWeight: FontWeight.bold)),
+                  Text(
+                    title,
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: isMobile ? 15 : 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                   const SizedBox(height: 6),
-                  Text(body,
-                      style: GoogleFonts.poppins(
-                          color: Colors.white60,
-                          fontSize: isMobile ? 12 : 14,
-                          height: 1.5)),
+                  Text(
+                    body,
+                    style: GoogleFonts.poppins(
+                      color: Colors.white60,
+                      fontSize: isMobile ? 12 : 14,
+                      height: 1.5,
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -487,11 +539,12 @@ class _SentinelPageState extends State<SentinelPage> {
   }
 
   // =========================================================================
-  // 04. WHO WE SERVE
-  // =========================================================================
+// 04. WHO WE SERVE (Solid Full-Width Dark Backdrop)
+// =========================================================================
   Widget _buildWhoWeServe(bool isMobile) {
     return Container(
-      color: Colors.black.withValues(alpha: 0.3),
+      width: double.infinity,
+      color: const Color(0xFF07080C), // Seals section completely from ambient video bleed
       child: LaunchSectionContainer(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -584,8 +637,9 @@ class _SentinelPageState extends State<SentinelPage> {
         width: double.infinity,
         padding: EdgeInsets.all(isMobile ? 20 : 28),
         decoration: BoxDecoration(
-          color: _cardBg.withValues(alpha: 0.3),
+          color: _cardBg, // Opaque tile background
           border: Border.all(color: _green.withValues(alpha: 0.2)),
+          borderRadius: BorderRadius.circular(12),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -608,15 +662,18 @@ class _SentinelPageState extends State<SentinelPage> {
                 padding: const EdgeInsets.symmetric(
                     horizontal: 10, vertical: 6),
                 decoration: BoxDecoration(
-                  color:
-                  _green.withValues(alpha: 0.06),
+                  color: _green.withValues(alpha: 0.06),
                   border: Border.all(
                       color: _green.withValues(alpha: 0.2)),
+                  borderRadius: BorderRadius.circular(4),
                 ),
-                child: Text(item,
-                    style: GoogleFonts.poppins(
-                        color: Colors.white70,
-                        fontSize: 12)),
+                child: Text(
+                  item,
+                  style: GoogleFonts.poppins(
+                    color: Colors.white70,
+                    fontSize: 12,
+                  ),
+                ),
               ))
                   .toList(),
             ),
@@ -627,8 +684,8 @@ class _SentinelPageState extends State<SentinelPage> {
   }
 
   // =========================================================================
-  // 05. HOW IT FEELS TO USE
-  // =========================================================================
+// 05. HOW IT FEELS TO USE (Box-Only Dark Background)
+// =========================================================================
   Widget _buildFeelSection(bool isMobile) {
     const List<String> painPoints = [
       "Rely on verbal reports or handwritten fuel receipts",
@@ -639,18 +696,27 @@ class _SentinelPageState extends State<SentinelPage> {
 
     return LaunchSectionContainer(
       child: Container(
-        padding: EdgeInsets.all(isMobile ? 28 : 48),
+        width: double.infinity,
+        padding: EdgeInsets.all(isMobile ? 24 : 40),
         decoration: BoxDecoration(
-          color: Colors.black.withValues(alpha: 0.5),
-          border: Border.all(color: Colors.white10),
+          // Solid dark surface applied strictly to the box enclosure
+          color: const Color(0xFF0B0F17),
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: _green.withValues(alpha: 0.2)),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.6),
+              blurRadius: 32,
+              offset: const Offset(0, 12),
+            ),
+          ],
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Semantics(
               header: true,
-              label:
-              'Operational shift — before and after EchoLevel Sentinel.',
+              label: 'Operational shift — before and after EchoLevel Sentinel.',
               child: Text(
                 "",
                 style: GoogleFonts.robotoMono(
@@ -674,29 +740,35 @@ class _SentinelPageState extends State<SentinelPage> {
             Text(
               "You no longer have to:",
               style: GoogleFonts.robotoMono(
-                color: Colors.redAccent,
+                color: const Color(0xFFFF5252),
                 fontSize: 13,
                 fontWeight: FontWeight.bold,
               ),
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: 16),
             ...painPoints.map((p) => _buildPainBullet(p)),
             const SizedBox(height: 32),
             Semantics(
               label:
               'Instead, you simply open a clear, unassailable record of what actually happened.',
               child: Container(
-                padding: const EdgeInsets.all(24),
+                width: double.infinity,
+                padding: EdgeInsets.all(isMobile ? 16 : 20),
                 decoration: BoxDecoration(
-                  color: _green.withValues(alpha: 0.07),
-                  border: Border(
-                      left: BorderSide(color: _green, width: 3)),
+                  color: _green.withValues(alpha: 0.08),
+                  border: const Border(
+                    left: BorderSide(color: _green, width: 4),
+                  ),
+                  borderRadius: const BorderRadius.only(
+                    topRight: Radius.circular(8),
+                    bottomRight: Radius.circular(8),
+                  ),
                 ),
                 child: Text(
                   "Instead, you simply open a clear, unassailable record of what actually happened.",
                   style: GoogleFonts.poppins(
                     color: Colors.white,
-                    fontSize: isMobile ? 14 : 16,
+                    fontSize: isMobile ? 13 : 16,
                     fontWeight: FontWeight.w500,
                   ),
                 ),
@@ -716,14 +788,23 @@ class _SentinelPageState extends State<SentinelPage> {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text("✕ ",
-                style: TextStyle(
-                    color: Colors.redAccent,
-                    fontWeight: FontWeight.bold)),
+            const Text(
+              "✕ ",
+              style: TextStyle(
+                color: Color(0xFFFF5252),
+                fontWeight: FontWeight.bold,
+                fontSize: 14,
+              ),
+            ),
             Expanded(
-              child: Text(text,
-                  style:
-                  GoogleFonts.poppins(color: Colors.white70, fontSize: 13)),
+              child: Text(
+                text,
+                style: GoogleFonts.poppins(
+                  color: Colors.white70,
+                  fontSize: 13,
+                  height: 1.4,
+                ),
+              ),
             ),
           ],
         ),
@@ -732,32 +813,36 @@ class _SentinelPageState extends State<SentinelPage> {
   }
 
   // =========================================================================
-  // 06. HOW IT WORKS
-  // =========================================================================
+// 06. HOW IT WORKS (Solid Dark Section & Telemetry Pipeline Flow)
+// =========================================================================
   Widget _buildHowItWorks(bool isMobile) {
-    const List<Map<String, String>> steps = [
+    const List<Map<String, dynamic>> steps = [
       {
         'n': '01',
         'title': 'MOUNT',
+        'icon': Icons.sensors_rounded,
         'body':
         'A compact telemetry unit mounts non invasively on your generator or vehicle. No tank alteration, no warranty voiding.',
       },
       {
         'n': '02',
         'title': 'MONITOR',
+        'icon': Icons.memory_rounded,
         'body':
         'The unit quietly processes and secures fuel level, engine runtime, and diagnostic data locally with or without network connectivity.',
       },
       {
         'n': '03',
         'title': 'CONTROL',
+        'icon': Icons.shield_rounded,
         'body':
         'Receive instant theft alerts, weekly consumption trends, and verifiable asset health scores directly on your Sentinel dashboard.',
       },
     ];
 
     return Container(
-      color: Colors.black.withValues(alpha: 0.2),
+      width: double.infinity,
+      color: const Color(0xFF07080C), // Solid backdrop seals out ambient background video
       child: LaunchSectionContainer(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -785,29 +870,66 @@ class _SentinelPageState extends State<SentinelPage> {
                 fontWeight: FontWeight.bold,
               ),
             ),
-            const SizedBox(height: 32),
+            const SizedBox(height: 36),
             isMobile
                 ? Column(
-              children: steps
-                  .map((s) => Padding(
-                padding: const EdgeInsets.only(bottom: 16),
-                child: _buildStepBox(
-                    s['n']!, s['title']!, s['body']!, isMobile),
-              ))
-                  .toList(),
+              children: steps.asMap().entries.map((entry) {
+                final idx = entry.key;
+                final s = entry.value;
+                return Column(
+                  children: [
+                    _buildStepBox(
+                      s['n'] as String,
+                      s['title'] as String,
+                      s['body'] as String,
+                      s['icon'] as IconData,
+                      isMobile,
+                    ),
+                    if (idx < steps.length - 1)
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        child: Icon(
+                          Icons.arrow_downward_rounded,
+                          color: _green.withValues(alpha: 0.4),
+                          size: 20,
+                        ),
+                      ),
+                  ],
+                );
+              }).toList(),
             )
                 : Row(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: steps
-                  .map((s) => Expanded(
-                child: Padding(
-                  padding: EdgeInsets.only(
-                      right: s['n'] != '03' ? 20 : 0),
-                  child: _buildStepBox(s['n']!, s['title']!,
-                      s['body']!, isMobile),
-                ),
-              ))
-                  .toList(),
+              children: steps.asMap().entries.map((entry) {
+                final idx = entry.key;
+                final s = entry.value;
+                return Expanded(
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        child: _buildStepBox(
+                          s['n'] as String,
+                          s['title'] as String,
+                          s['body'] as String,
+                          s['icon'] as IconData,
+                          isMobile,
+                        ),
+                      ),
+                      if (idx < steps.length - 1)
+                        Padding(
+                          padding: const EdgeInsets.only(
+                              top: 40, left: 12, right: 12),
+                          child: Icon(
+                            Icons.arrow_forward_rounded,
+                            color: _green.withValues(alpha: 0.4),
+                            size: 20,
+                          ),
+                        ),
+                    ],
+                  ),
+                );
+              }).toList(),
             ),
           ],
         ),
@@ -816,35 +938,64 @@ class _SentinelPageState extends State<SentinelPage> {
   }
 
   Widget _buildStepBox(
-      String step, String title, String body, bool isMobile) {
+      String step, String title, String body, IconData icon, bool isMobile) {
     return Semantics(
       label: 'Step $step: $title. $body',
       child: Container(
         width: double.infinity,
         padding: EdgeInsets.all(isMobile ? 20 : 28),
         decoration: BoxDecoration(
-          color: _cardBg.withValues(alpha: 0.3),
-          border: Border.all(color: Colors.white10),
+          color: const Color(0xFF0B0F17), // Solid opaque card surface stops contrast loss
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: _green.withValues(alpha: 0.2)),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.5),
+              blurRadius: 24,
+              offset: const Offset(0, 8),
+            ),
+          ],
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(step,
-                style: GoogleFonts.robotoMono(
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  step,
+                  style: GoogleFonts.robotoMono(
                     color: _green,
                     fontSize: 28,
-                    fontWeight: FontWeight.bold)),
-            const SizedBox(height: 12),
-            Text(title,
-                style: GoogleFonts.robotoMono(
-                    color: Colors.white,
-                    fontSize: 16,
                     fontWeight: FontWeight.bold,
-                    letterSpacing: 1.5)),
+                  ),
+                ),
+                Icon(
+                  icon,
+                  color: _green.withValues(alpha: 0.7),
+                  size: 24,
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
+            Text(
+              title,
+              style: GoogleFonts.robotoMono(
+                color: Colors.white,
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                letterSpacing: 1.5,
+              ),
+            ),
             const SizedBox(height: 12),
-            Text(body,
-                style: GoogleFonts.poppins(
-                    color: Colors.white60, fontSize: 13, height: 1.5)),
+            Text(
+              body,
+              style: GoogleFonts.poppins(
+                color: Colors.white60,
+                fontSize: 13,
+                height: 1.5,
+              ),
+            ),
           ],
         ),
       ),
@@ -852,69 +1003,120 @@ class _SentinelPageState extends State<SentinelPage> {
   }
 
   // =========================================================================
-  // 07. FREE PILOT PROGRAM
-  // =========================================================================
+// 07. FREE PILOT PROGRAM (50/50 Split Layout)
+// =========================================================================
   Widget _buildPilotProgram(bool isMobile) {
-    return LaunchSectionContainer(
+    // 📸 LEFT SIDE: Free-Floating Generator & Fleet Visual Asset
+    final Widget assetImage = ClipRRect(
+      borderRadius: BorderRadius.circular(16),
       child: Container(
-        padding: EdgeInsets.all(isMobile ? 28 : 52),
+        height: isMobile ? 260 : 440,
+        width: double.infinity,
         decoration: BoxDecoration(
-          color: _green.withValues(alpha: 0.05),
-          border: Border.all(color: _green, width: 1.5),
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.4),
+              blurRadius: 24,
+              offset: const Offset(0, 8),
+            ),
+          ],
         ),
-        child: Column(
+        child: Image.asset(
+          'assets/images/sentinel_target_assets.webp', // Standby generators, buses & haulage trucks asset
+          fit: BoxFit.cover,
+          errorBuilder: (_, __, ___) => Container(
+            color: const Color(0xFF0B0F17),
+            child: const Center(
+              child: Icon(Icons.inventory_2_rounded, color: Colors.white24, size: 56),
+            ),
+          ),
+        ),
+      ),
+    );
+
+    // 📝 RIGHT SIDE: Enterprise Proof of Concept Copy & CTA
+    final Widget pilotContent = Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        // ── enterprise badge ──────────────────────────────────────
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+          color: _green,
+          child: Text(
+            "ENTERPRISE PROOF OF CONCEPT",
+            style: GoogleFonts.robotoMono(
+              color: Colors.black,
+              fontSize: 10,
+              fontWeight: FontWeight.bold,
+              letterSpacing: 1.5,
+            ),
+          ),
+        ),
+        const SizedBox(height: 24),
+
+        Semantics(
+          header: true,
+          label: 'Free 2 to 4 week pilot program for EchoLevel Sentinel.',
+          child: Text(
+            "Free 2–4 Week Pilot Program",
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: isMobile ? 26 : 38,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+        const SizedBox(height: 16),
+
+        Semantics(
+          label:
+          'See the proof on your own assets before spending a Naira. We install our telemetry unit on one generator or one commercial vehicle for 2 to 4 weeks at zero cost. You get full access to live reports and theft alerts to evaluate the system in real operating conditions.',
+          child: Text(
+            "See the proof on your own assets before spending a Naira.\n\nWe install our telemetry unit on one generator or one commercial vehicle for 2 to 4 weeks at zero cost. You get full access to live reports and theft alerts to evaluate the system in real operating conditions.",
+            style: GoogleFonts.poppins(
+              color: Colors.white70,
+              fontSize: isMobile ? 13 : 15,
+              height: 1.7,
+            ),
+          ),
+        ),
+        const SizedBox(height: 32),
+
+        // ── pilot CTA — routes to intake form ─────────────────────
+        _buildPilotButton(isMobile),
+      ],
+    );
+
+    return Container(
+      width: double.infinity,
+      color: const Color(0xFF07080C), // Solid backdrop seals out ambient background video
+      child: LaunchSectionContainer(
+        child: isMobile
+            ? Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // ── enterprise badge ──────────────────────────────────────
-            Container(
-              padding:
-              const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-              color: _green,
-              child: Text(
-                "ENTERPRISE PROOF OF CONCEPT",
-                style: GoogleFonts.robotoMono(
-                  color: Colors.black,
-                  fontSize: 10,
-                  fontWeight: FontWeight.bold,
-                  letterSpacing: 1.5,
-                ),
-              ),
+            assetImage,
+            const SizedBox(height: 36),
+            pilotContent,
+          ],
+        )
+            : Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            // 50% Left Side: Floating Asset Image Scene
+            Expanded(
+              flex: 5,
+              child: assetImage,
             ),
-            const SizedBox(height: 24),
-
-            Semantics(
-              header: true,
-              label: 'Free 2 to 4 week pilot program for EchoLevel Sentinel.',
-              child: Text(
-                "Free 2–4 Week Pilot Program",
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: isMobile ? 26 : 38,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
+            const SizedBox(width: 56),
+            // 50% Right Side: Content & Button Action
+            Expanded(
+              flex: 5,
+              child: pilotContent,
             ),
-            const SizedBox(height: 16),
-
-            Semantics(
-              label:
-              'See the proof on your own assets before spending a Naira. We install our telemetry unit on one generator or one commercial vehicle for 2 to 4 weeks at zero cost. You get full access to live reports and theft alerts to evaluate the system in real operating conditions.',
-              child: ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: 700),
-                child: Text(
-                  "See the proof on your own assets before spending a Naira.\n\nWe install our telemetry unit on one generator or one commercial vehicle for 2 to 4 weeks at zero cost. You get full access to live reports and theft alerts to evaluate the system in real operating conditions.",
-                  style: GoogleFonts.poppins(
-                    color: Colors.white70,
-                    fontSize: isMobile ? 13 : 15,
-                    height: 1.7,
-                  ),
-                ),
-              ),
-            ),
-            const SizedBox(height: 32),
-
-            // ── pilot CTA — routes to intake form ─────────────────────
-            _buildPilotButton(isMobile),
           ],
         ),
       ),
@@ -949,13 +1151,22 @@ class _SentinelPageState extends State<SentinelPage> {
     ];
 
     return Container(
-      color: Colors.black.withValues(alpha: 0.3),
+      width: double.infinity,
+      color: const Color(0xFF07080C), // Solid backdrop seals the section completely
       child: LaunchSectionContainer(
         child: Container(
           padding: EdgeInsets.all(isMobile ? 24 : 40),
           decoration: BoxDecoration(
-            color: _cardBg.withValues(alpha: 0.2),
+            color: const Color(0xFF0B0F17), // Opaque main card surface
+            borderRadius: BorderRadius.circular(16),
             border: Border.all(color: Colors.white10),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.5),
+                blurRadius: 32,
+                offset: const Offset(0, 12),
+              ),
+            ],
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -1060,9 +1271,11 @@ class _SentinelPageState extends State<SentinelPage> {
       child: Container(
         padding: EdgeInsets.all(isMobile ? 16 : 20),
         decoration: BoxDecoration(
-          color: Colors.black.withValues(alpha: 0.35),
+          color: _cardBg, // Opaque surface stops contrast loss
+          borderRadius: BorderRadius.circular(8),
           border: Border.all(
-              color: Colors.white.withValues(alpha: 0.07)),
+            color: Colors.white.withValues(alpha: 0.08),
+          ),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
