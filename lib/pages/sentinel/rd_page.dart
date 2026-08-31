@@ -209,10 +209,8 @@ class _RDPageState extends State<RDPage> {
   }
 
   // =========================================================================
-  // MISSION, VISION, VALUES
-  // UPDATED: mission reflects full sovereign vision, not just industrial
-  // UPDATED: vision has two clear horizons — 2035 and 2040
-  // =========================================================================
+// MISSION, VISION, VALUES
+// =========================================================================
   Widget _buildMVV(bool isMobile) {
     return Container(
       width: double.infinity,
@@ -241,7 +239,7 @@ class _RDPageState extends State<RDPage> {
                 : Row(crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Expanded(flex: 5, child: _buildMissionBlock(isMobile)),
-                  const SizedBox(width: 60),
+                  const SizedBox(width: 40),
                   Expanded(flex: 7, child: _buildVisionBlock(isMobile)),
                 ]),
 
@@ -262,33 +260,33 @@ class _RDPageState extends State<RDPage> {
             isMobile
                 ? Column(children: [
               _buildValueCard( number: '01', title:  'VERIFIABLE TRUTH OVER COMFORTABLE GUESSES', body:
-                  'We do not estimate. We do not approximate. Every reading Sentinel produces is defensible in a court, a bank, or a boardroom.'),
+              'We do not estimate. We do not approximate. Every reading Sentinel produces is defensible in a court, a bank, or a boardroom.'),
               const SizedBox(height: 16),
               _buildValueCard( number: '02', title:  'INDIGENOUS ENGINEERING', body:
-                  'We build what Africa needs using African hands, African context, and African ingenuity. We do not bolt foreign solutions onto local problems.'),
+              'We build what Africa needs using African hands, African context, and African ingenuity. We do not bolt foreign solutions onto local problems.'),
               const SizedBox(height: 16),
               _buildValueCard( number: '03', title:  'OFFLINE FIRST, ALWAYS', body:
-                  'We design for the reality we operate in, not the ideal environment we wish we had. If the network goes down, Sentinel keeps recording.'),
+              'We design for the reality we operate in, not the ideal environment we wish we had. If the network goes down, Sentinel keeps recording.'),
               const SizedBox(height: 16),
               _buildValueCard( number: '04', title:  'SOVEREIGNTY OVER CONVENIENCE', body:
-                  'We will take the harder engineering path if it means our clients own their data, their systems, and their future. Dependency on foreign rails is a liability we refuse to build into our products.'),
+              'We will take the harder engineering path if it means our clients own their data, their systems, and their future. Dependency on foreign rails is a liability we refuse to build into our products.'),
             ])
                 : Row(crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Expanded(child: Column(children: [
                     _buildValueCard( number: '01', title:  'VERIFIABLE TRUTH OVER COMFORTABLE GUESSES', body:
-                        'We do not estimate. We do not approximate. Every reading Sentinel produces is defensible in a court, a bank, or a boardroom.'),
+                    'We do not estimate. We do not approximate. Every reading Sentinel produces is defensible in a court, a bank, or a boardroom.'),
                     const SizedBox(height: 16),
                     _buildValueCard( number: '03', title:  'OFFLINE FIRST, ALWAYS', body:
-                        'We design for the reality we operate in, not the ideal environment we wish we had. If the network goes down, Sentinel keeps recording.'),
+                    'We design for the reality we operate in, not the ideal environment we wish we had. If the network goes down, Sentinel keeps recording.'),
                   ])),
                   const SizedBox(width: 16),
                   Expanded(child: Column(children: [
                     _buildValueCard( number: '02', title:  'INDIGENOUS ENGINEERING', body:
-                        'We build what Africa needs using African hands, African context, and African ingenuity. We do not bolt foreign solutions onto local problems.'),
+                    'We build what Africa needs using African hands, African context, and African ingenuity. We do not bolt foreign solutions onto local problems.'),
                     const SizedBox(height: 16),
                     _buildValueCard( number: '04', title:  'SOVEREIGNTY OVER CONVENIENCE', body:
-                        'We will take the harder engineering path if it means our clients own their data, their systems, and their future. Dependency on foreign rails is a liability we refuse to build into our products.'),
+                    'We will take the harder engineering path if it means our clients own their data, their systems, and their future. Dependency on foreign rails is a liability we refuse to build into our products.'),
                   ])),
                 ]),
             const SizedBox(height: 72),
@@ -298,7 +296,6 @@ class _RDPageState extends State<RDPage> {
     );
   }
 
-  // UPDATED: mission reflects full scope — not just industrial
   Widget _buildMissionBlock(bool isMobile) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -308,16 +305,16 @@ class _RDPageState extends State<RDPage> {
             fontWeight: FontWeight.bold, letterSpacing: 2.0)),
         const SizedBox(height: 20),
         Semantics(
-          label: 'Mission: EchoLevel Sentinel exists to make every Nigerian asset, business, and person verifiable — starting with the fuel in their generators. We are building the trust infrastructure Africa should have engineered for itself decades ago.',
+          label: 'Mission statement',
           child: Container(
             padding: const EdgeInsets.only(left: 20),
             decoration: const BoxDecoration(
                 border: Border(left: BorderSide(color: Color(0xFFFFEA00), width: 2))),
             child: Text(
-              'EchoLevel Sentinel exists to make every Nigerian asset, business, and person verifiable — starting with the fuel in their generators.\n\nWe are building the trust infrastructure Africa should have engineered for itself decades ago.',
+              'To establish sovereign technological independence and security for Africa digital and physical future.\n\n',
               style: TextStyle(color: Colors.white,
                   fontSize: isMobile ? 16 : 20,
-                  fontWeight: FontWeight.w500, height: 1.55, letterSpacing: -0.2),
+                  fontWeight: FontWeight.bold, height: 1.55, letterSpacing: -0.2),
             ),
           ),
         ),
@@ -325,7 +322,7 @@ class _RDPageState extends State<RDPage> {
     );
   }
 
-  // UPDATED: two-horizon vision — 2035 industrial + 2040 citizen
+// UPDATED: Structured 5-Year Vision layout matching your exact specification
   Widget _buildVisionBlock(bool isMobile) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -334,73 +331,174 @@ class _RDPageState extends State<RDPage> {
             color: Colors.white38, fontSize: 10,
             fontWeight: FontWeight.bold, letterSpacing: 2.0)),
         const SizedBox(height: 20),
-        Semantics(
-          label: 'Vision: By 2035, every Nigerian industrial asset is bankable. By 2040, every Nigerian citizen has a verifiable trust score.',
+        Container(
+          padding: const EdgeInsets.all(24),
+          decoration: BoxDecoration(
+            color: const Color(0xFF0B0F17),
+            border: Border.all(color: _amber.withValues(alpha: 0.3)),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.5),
+                blurRadius: 16,
+                offset: const Offset(0, 6),
+              ),
+            ],
+          ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Horizon 1 — 2035
-              Container(
-                margin: const EdgeInsets.only(bottom: 20),
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: _amber.withValues(alpha: 0.06),
-                  border: Border.all(color: _amber.withValues(alpha: 0.2)),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text("BY 2035 — INDUSTRIAL ASSET SOVEREIGNTY",
-                        style: GoogleFonts.robotoMono(
-                            color: _amber, fontSize: 10,
-                            fontWeight: FontWeight.bold, letterSpacing: 1.2)),
-                    const SizedBox(height: 10),
-                    Text(
-                      'Every generator, fuel tank, and logistics fleet operating in Nigeria will have a verifiable, tamper-proof operational record — accessible to owners, auditable by institutions, and owned by no foreign platform. Every Nigerian industrial asset becomes bankable.',
-                      style: TextStyle(color: Colors.white.withValues(alpha: 0.75),
-                          fontSize: isMobile ? 13 : 15, height: 1.65,
-                          fontWeight: FontWeight.w300),
-                    ),
-                  ],
+              Text(
+                "The 5 Years Vision (By 2031)",
+                style: GoogleFonts.robotoMono(
+                  color: _amber,
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: 1.2,
                 ),
               ),
-
-              // Horizon 2 — 2040
-              Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: _green.withValues(alpha: 0.04),
-                  border: Border.all(color: _green.withValues(alpha: 0.2)),
+              const SizedBox(height: 12),
+              Text(
+                "We do not pursue power or scale for its own sake; we aspire to build a resilient, self-sustaining industrial anchor that lasts for over a century.",
+                style: GoogleFonts.poppins(
+                  color: Colors.white,
+                  fontSize: 13,
+                  fontWeight: FontWeight.bold,
+                  height: 1.6,
                 ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text("BY 2040 — CITIZEN TRUST INFRASTRUCTURE",
-                        style: GoogleFonts.robotoMono(
-                            color: _green, fontSize: 10,
-                            fontWeight: FontWeight.bold, letterSpacing: 1.2)),
-                    const SizedBox(height: 10),
-                    Text(
-                      'Every Nigerian — regardless of formal employment, credit history, or bank account status — will have a verifiable trust score built from real behavioral data: data usage, school fees, land ownership, recharge cards, utility payments, DSTV subscriptions.',
-                      style: TextStyle(color: Colors.white.withValues(alpha: 0.75),
-                          fontSize: isMobile ? 13 : 15, height: 1.65,
-                          fontWeight: FontWeight.w300),
+              ),
+              const SizedBox(height: 28),
+              isMobile
+                  ? Column(
+                children: [
+                  _buildHorizonPhaseCard(
+                    horizon: "[ YEAR 1 - 2 ]",
+                    title: "Commercial B2B Anchor",
+                    points: [
+                      "Fuel & Asset Telemetry",
+                      "Industrial Asset Protection",
+                      "CBN Sandbox Validation",
+                    ],
+                  ),
+                  const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 12),
+                    child: Icon(Icons.arrow_downward, color: _amber, size: 20),
+                  ),
+                  _buildHorizonPhaseCard(
+                    horizon: "[ YEAR 3 - 5 ]",
+                    title: "National Trust Layer",
+                    points: [
+                      "Asset Trust Score to Banks",
+                      "Individual Citizen Trust Identity",
+                      "Making Citizens Credit Worthy",
+                    ],
+                  ),
+                ],
+              )
+                  : Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: _buildHorizonPhaseCard(
+                      horizon: "[ YEAR 1 - 2 ]",
+                      title: "Commercial B2B Anchor",
+                      points: [
+                        "Fuel & Asset Telemetry",
+                        "Industrial Asset Protection",
+                        "CBN Sandbox Validation",
+                      ],
                     ),
-                    const SizedBox(height: 12),
-                    Text(
-                      'We are building what the three credit bureaus cannot reach. The last mile of financial inclusion in Nigeria runs through Sentinel.',
-                      style: TextStyle(color: _amber.withValues(alpha: 0.85),
-                          fontSize: isMobile ? 13 : 14, height: 1.6,
-                          fontWeight: FontWeight.w400,
-                          fontStyle: FontStyle.italic),
+                  ),
+                  const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 12, vertical: 36),
+                    child: Text(
+                      "──►",
+                      style: TextStyle(
+                        color: _amber,
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                  ],
-                ),
+                  ),
+                  Expanded(
+                    child: _buildHorizonPhaseCard(
+                      horizon: "[ YEAR 3 - 5 ]",
+                      title: "National Trust Layer",
+                      points: [
+                        "Asset Trust Score to Banks",
+                        "Individual Citizen Trust Identity",
+                        "Making Citizens Credit Worthy",
+                      ],
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
         ),
       ],
+    );
+  }
+
+  Widget _buildHorizonPhaseCard({
+    required String horizon,
+    required String title,
+    required List<String> points,
+  }) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: const Color(0xFF07080C),
+        border: Border.all(color: Colors.white10),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            horizon,
+            style: GoogleFonts.robotoMono(
+              color: _amber,
+              fontSize: 11,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            title,
+            style: GoogleFonts.poppins(
+              color: Colors.white,
+              fontSize: 14,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(height: 12),
+          ...points.map(
+                (pt) => Padding(
+              padding: const EdgeInsets.only(bottom: 6),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    "• ",
+                    style: TextStyle(color: _amber, fontWeight: FontWeight.bold),
+                  ),
+                  Expanded(
+                    child: Text(
+                      pt,
+                      style: GoogleFonts.poppins(
+                        color: Colors.white70,
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold,
+                        height: 1.4,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -413,23 +511,30 @@ class _RDPageState extends State<RDPage> {
         width: double.infinity,
         padding: const EdgeInsets.all(28),
         decoration: BoxDecoration(
-          color: Colors.white.withValues(alpha: 0.02),
-          border: Border.all(color: Colors.white.withValues(alpha: 0.07)),
+          color: const Color(0xFF0B0F17),
+          border: Border.all(color: Colors.white10),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.4),
+              blurRadius: 10,
+              offset: const Offset(0, 4),
+            ),
+          ],
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(number, style: TextStyle(color: _amber.withValues(alpha: 0.5),
+            Text(number, style: TextStyle(color: _amber,
                 fontSize: 11, fontFamily: 'monospace',
                 fontWeight: FontWeight.bold, letterSpacing: 1.5)),
             const SizedBox(height: 12),
             Text(title, style: const TextStyle(color: Colors.white,
                 fontSize: 13, fontWeight: FontWeight.bold, letterSpacing: 0.8)),
             const SizedBox(height: 12),
-            Container(height: 1, width: 32, color: _amber.withValues(alpha: 0.3)),
+            Container(height: 1, width: 32, color: _amber.withValues(alpha: 0.5)),
             const SizedBox(height: 16),
-            Text(body, style: TextStyle(color: Colors.white.withValues(alpha: 0.60),
-                fontSize: 13, height: 1.65, fontWeight: FontWeight.w300)),
+            Text(body, style: TextStyle(color: Colors.white,
+                fontSize: 13, height: 1.65, fontWeight: FontWeight.bold)),
           ],
         ),
       ),

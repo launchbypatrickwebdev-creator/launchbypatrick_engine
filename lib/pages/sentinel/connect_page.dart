@@ -831,85 +831,113 @@ class _ConnectPageState extends State<ConnectPage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text("DIRECT CONTACT",
-            style: GoogleFonts.robotoMono(color: Colors.white54, fontSize: 10,
-                fontWeight: FontWeight.bold, letterSpacing: 2.0)),
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+          decoration: BoxDecoration(
+            color: const Color(0xFF0B0F17),
+            border: Border.all(color: _green.withValues(alpha: 0.4)),
+          ),
+          child: Text(
+            "DIRECT CONTACT",
+            style: GoogleFonts.robotoMono(
+              color: _green,
+              fontSize: 10,
+              fontWeight: FontWeight.bold,
+              letterSpacing: 2.0,
+            ),
+          ),
+        ),
         const SizedBox(height: 20),
         isMobile
             ? Column(children: [
-          _buildContactBox(icon: Icons.alternate_email,
+          _buildContactBox(
+              icon: Icons.alternate_email,
               label: "EMAIL",
               value: "launchbypatrick.webdev@gmail.com",
               onTap: _launchEmail),
           const SizedBox(height: 12),
-          _buildContactBox(icon: Icons.access_time,
+          _buildContactBox(
+              icon: Icons.access_time,
               label: "TIMEZONE",
-              value: "09:00 – 18:00 (GMT+1)", onTap: null),
+              value: "09:00 – 18:00 (GMT+1)",
+              onTap: null),
           const SizedBox(height: 12),
-          _buildContactBox(icon: Icons.public,
+          _buildContactBox(
+              icon: Icons.public,
               label: "LOCATION",
               value: "Ibadan, Nigeria  ·  Lagos Ops  ·  Remote",
               onTap: null),
         ])
             : Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Expanded(child: Container(
-            padding: const EdgeInsets.all(28),
-            decoration: BoxDecoration(
-              color: const Color(0xFF0B0F17),
-              border: Border.all(color: _green.withValues(alpha: 0.3)),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.6),
-                  blurRadius: 16,
-                  offset: const Offset(0, 6),
-                ),
-              ],
+          Expanded(
+            child: Container(
+              padding: const EdgeInsets.all(28),
+              decoration: BoxDecoration(
+                color: const Color(0xFF0B0F17),
+                border: Border.all(color: _green.withValues(alpha: 0.3)),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.5),
+                    blurRadius: 16,
+                    offset: const Offset(0, 6),
+                  ),
+                ],
+              ),
+              child: Column(children: [
+                _buildContactRow(
+                    icon: Icons.alternate_email,
+                    label: "EMAIL",
+                    value: "launchbypatrick.webdev@gmail.com",
+                    onTap: _launchEmail),
+                const Divider(color: Colors.white10, height: 28),
+                _buildContactRow(
+                    icon: Icons.access_time,
+                    label: "TIMEZONE",
+                    value: "09:00 – 18:00 (GMT+1)",
+                    onTap: null),
+              ]),
             ),
-            child: Column(children: [
-              _buildContactRow(icon: Icons.alternate_email,
-                  label: "EMAIL",
-                  value: "launchbypatrick.webdev@gmail.com",
-                  onTap: _launchEmail),
-              const Divider(color: Colors.white10, height: 28),
-              _buildContactRow(icon: Icons.access_time,
-                  label: "TIMEZONE",
-                  value: "09:00 – 18:00 (GMT+1)", onTap: null),
-            ]),
-          )),
+          ),
           const SizedBox(width: 16),
-          Expanded(child: Container(
-            padding: const EdgeInsets.all(28),
-            decoration: BoxDecoration(
-              color: const Color(0xFF0B0F17),
-              border: Border.all(color: _green.withValues(alpha: 0.3)),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.6),
-                  blurRadius: 16,
-                  offset: const Offset(0, 6),
-                ),
-              ],
+          Expanded(
+            child: Container(
+              padding: const EdgeInsets.all(28),
+              decoration: BoxDecoration(
+                color: const Color(0xFF0B0F17),
+                border: Border.all(color: _green.withValues(alpha: 0.3)),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.5),
+                    blurRadius: 16,
+                    offset: const Offset(0, 6),
+                  ),
+                ],
+              ),
+              child: Column(children: [
+                _buildContactRow(
+                    icon: Icons.public,
+                    label: "LOCATION",
+                    value: "Ibadan, Nigeria  ·  Lagos Ops  ·  Remote",
+                    onTap: null),
+                const Divider(color: Colors.white10, height: 28),
+                _buildContactRow(
+                    icon: Icons.schedule_send_outlined,
+                    label: "RESPONSE TIME",
+                    value: "Within 24 hours on working days",
+                    onTap: null),
+              ]),
             ),
-            child: Column(children: [
-              _buildContactRow(icon: Icons.public,
-                  label: "LOCATION",
-                  value: "Ibadan, Nigeria  ·  Lagos Ops  ·  Remote",
-                  onTap: null),
-              const Divider(color: Colors.white10, height: 28),
-              _buildContactRow(icon: Icons.schedule_send_outlined,
-                  label: "RESPONSE TIME",
-                  value: "Within 24 hours on working days",
-                  onTap: null),
-            ]),
-          )),
+          ),
         ]),
       ],
     );
   }
 
   Widget _buildContactRow({
-    required IconData icon, required String label,
-    required String value, required VoidCallback? onTap,
+    required IconData icon,
+    required String label,
+    required String value,
+    required VoidCallback? onTap,
   }) {
     return InkWell(
       onTap: onTap,
@@ -917,19 +945,33 @@ class _ConnectPageState extends State<ConnectPage> {
           ? SystemMouseCursors.click
           : SystemMouseCursors.basic,
       child: Row(children: [
-        Icon(icon, color: Colors.white38, size: 16),
+        Icon(icon, color: _green, size: 16),
         const SizedBox(width: 14),
-        Expanded(child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(label, style: GoogleFonts.robotoMono(
-                color: Colors.white54, fontSize: 9,
-                fontWeight: FontWeight.bold, letterSpacing: 1.5)),
-            const SizedBox(height: 4),
-            Text(value, style: GoogleFonts.robotoMono(
-                color: Colors.white, fontSize: 12)),
-          ],
-        )),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                label,
+                style: GoogleFonts.robotoMono(
+                  color: Colors.white54,
+                  fontSize: 9,
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: 1.5,
+                ),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                value,
+                style: GoogleFonts.robotoMono(
+                  color: Colors.white,
+                  fontSize: 12,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
+        ),
         if (onTap != null)
           Icon(Icons.arrow_forward, color: _green, size: 12),
       ]),
@@ -937,8 +979,10 @@ class _ConnectPageState extends State<ConnectPage> {
   }
 
   Widget _buildContactBox({
-    required IconData icon, required String label,
-    required String value, required VoidCallback? onTap,
+    required IconData icon,
+    required String label,
+    required String value,
+    required VoidCallback? onTap,
   }) {
     return Container(
       width: double.infinity,
@@ -946,6 +990,13 @@ class _ConnectPageState extends State<ConnectPage> {
       decoration: BoxDecoration(
         color: const Color(0xFF0B0F17),
         border: Border.all(color: _green.withValues(alpha: 0.3)),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.4),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
       child: _buildContactRow(
           icon: icon, label: label, value: value, onTap: onTap),
