@@ -426,7 +426,7 @@ class _RDPageState extends State<RDPage> {
               ),
               const SizedBox(height: 12),
               Text(
-                "We do not pursue power or scale for its own sake; we aspire to build a resilient, self-sustaining industrial anchor that lasts for over a century.",
+                "We do not pursue power or scale for its own sake; we aspire to build a resilient, self sustaining industrial anchor that lasts for over a century.",
                 style: GoogleFonts.poppins(
                   color: Colors.white,
                   fontSize: 13,
@@ -1314,7 +1314,7 @@ class _CortexDiagramPainter extends CustomPainter {
     _drawLabel(canvas, "CORTEX CORE™", Offset(cx, headY + 46), amber);
     _drawLabel(canvas, "FIRMWARE",     Offset(bodyXPositions[0], bodyY + 28), white);
     _drawLabel(canvas, "HARDWARE",     Offset(bodyXPositions[1], bodyY + 28), white);
-    _drawLabel(canvas, "INFRA\nSTRUCTURE", Offset(bodyXPositions[2], bodyY + 28), white);
+    _drawLabel(canvas, "INFRASTRUCTURE", Offset(bodyXPositions[2], bodyY + 28), white);
   }
 
   void _drawLabel(Canvas canvas, String text, Offset position, Color color) {

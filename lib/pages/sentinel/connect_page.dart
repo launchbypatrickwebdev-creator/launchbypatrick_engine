@@ -1230,7 +1230,7 @@ class _ConnectPageState extends State<ConnectPage> {
     final Map<String, List<SentinelFAQ>> grouped = _filteredGroupedFaqs;
     return Container(
       key: _faqKey,
-      color: const Color(0xFF06080E), // Solid dark background hides underlying ops video
+      color: Colors.black.withValues(alpha: 0.3), // Restored semi-transparent background to reveal ops media
       child: LaunchSectionContainer(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -1551,7 +1551,6 @@ class _ConnectPageState extends State<ConnectPage> {
     );
   }
 
-// Helper with monochrome styling
   Widget _buildZoneLabel(String label, Color color) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
