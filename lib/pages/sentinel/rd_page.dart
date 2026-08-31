@@ -209,8 +209,10 @@ class _RDPageState extends State<RDPage> {
   }
 
   // =========================================================================
-// MISSION, VISION, VALUES
-// =========================================================================
+  // MISSION, VISION, VALUES
+  // UPDATED: mission reflects full sovereign vision, not just industrial
+  // UPDATED: vision has two clear horizons — 2035 and 2040
+  // =========================================================================
   Widget _buildMVV(bool isMobile) {
     return Container(
       width: double.infinity,
@@ -239,7 +241,7 @@ class _RDPageState extends State<RDPage> {
                 : Row(crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Expanded(flex: 5, child: _buildMissionBlock(isMobile)),
-                  const SizedBox(width: 40),
+                  const SizedBox(width: 60),
                   Expanded(flex: 7, child: _buildVisionBlock(isMobile)),
                 ]),
 
@@ -260,33 +262,33 @@ class _RDPageState extends State<RDPage> {
             isMobile
                 ? Column(children: [
               _buildValueCard( number: '01', title:  'VERIFIABLE TRUTH OVER COMFORTABLE GUESSES', body:
-              'We do not estimate. We do not approximate. Every reading Sentinel produces is defensible in a court, a bank, or a boardroom.'),
+                  'We do not estimate. We do not approximate. Every reading Sentinel produces is defensible in a court, a bank, or a boardroom.'),
               const SizedBox(height: 16),
               _buildValueCard( number: '02', title:  'INDIGENOUS ENGINEERING', body:
-              'We build what Africa needs using African hands, African context, and African ingenuity. We do not bolt foreign solutions onto local problems.'),
+                  'We build what Africa needs using African hands, African context, and African ingenuity. We do not bolt foreign solutions onto local problems.'),
               const SizedBox(height: 16),
               _buildValueCard( number: '03', title:  'OFFLINE FIRST, ALWAYS', body:
-              'We design for the reality we operate in, not the ideal environment we wish we had. If the network goes down, Sentinel keeps recording.'),
+                  'We design for the reality we operate in, not the ideal environment we wish we had. If the network goes down, Sentinel keeps recording.'),
               const SizedBox(height: 16),
               _buildValueCard( number: '04', title:  'SOVEREIGNTY OVER CONVENIENCE', body:
-              'We will take the harder engineering path if it means our clients own their data, their systems, and their future. Dependency on foreign rails is a liability we refuse to build into our products.'),
+                  'We will take the harder engineering path if it means our clients own their data, their systems, and their future. Dependency on foreign rails is a liability we refuse to build into our products.'),
             ])
                 : Row(crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Expanded(child: Column(children: [
                     _buildValueCard( number: '01', title:  'VERIFIABLE TRUTH OVER COMFORTABLE GUESSES', body:
-                    'We do not estimate. We do not approximate. Every reading Sentinel produces is defensible in a court, a bank, or a boardroom.'),
+                        'We do not estimate. We do not approximate. Every reading Sentinel produces is defensible in a court, a bank, or a boardroom.'),
                     const SizedBox(height: 16),
                     _buildValueCard( number: '03', title:  'OFFLINE FIRST, ALWAYS', body:
-                    'We design for the reality we operate in, not the ideal environment we wish we had. If the network goes down, Sentinel keeps recording.'),
+                        'We design for the reality we operate in, not the ideal environment we wish we had. If the network goes down, Sentinel keeps recording.'),
                   ])),
                   const SizedBox(width: 16),
                   Expanded(child: Column(children: [
                     _buildValueCard( number: '02', title:  'INDIGENOUS ENGINEERING', body:
-                    'We build what Africa needs using African hands, African context, and African ingenuity. We do not bolt foreign solutions onto local problems.'),
+                        'We build what Africa needs using African hands, African context, and African ingenuity. We do not bolt foreign solutions onto local problems.'),
                     const SizedBox(height: 16),
                     _buildValueCard( number: '04', title:  'SOVEREIGNTY OVER CONVENIENCE', body:
-                    'We will take the harder engineering path if it means our clients own their data, their systems, and their future. Dependency on foreign rails is a liability we refuse to build into our products.'),
+                        'We will take the harder engineering path if it means our clients own their data, their systems, and their future. Dependency on foreign rails is a liability we refuse to build into our products.'),
                   ])),
                 ]),
             const SizedBox(height: 72),
@@ -296,6 +298,7 @@ class _RDPageState extends State<RDPage> {
     );
   }
 
+  // UPDATED: mission reflects full scope — not just industrial
   Widget _buildMissionBlock(bool isMobile) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -305,7 +308,7 @@ class _RDPageState extends State<RDPage> {
             fontWeight: FontWeight.bold, letterSpacing: 2.0)),
         const SizedBox(height: 20),
         Semantics(
-          label: 'Mission statement',
+          label: 'Mission: EchoLevel Sentinel exists to make every Nigerian asset, business, and person verifiable — starting with the fuel in their generators. We are building the trust infrastructure Africa should have engineered for itself decades ago.',
           child: Container(
             padding: const EdgeInsets.only(left: 20),
             decoration: const BoxDecoration(
@@ -314,7 +317,7 @@ class _RDPageState extends State<RDPage> {
               'To establish sovereign technological independence and security for Africa digital and physical future.\n\n',
               style: TextStyle(color: Colors.white,
                   fontSize: isMobile ? 16 : 20,
-                  fontWeight: FontWeight.bold, height: 1.55, letterSpacing: -0.2),
+                  fontWeight: FontWeight.w500, height: 1.55, letterSpacing: -0.2),
             ),
           ),
         ),
@@ -322,7 +325,7 @@ class _RDPageState extends State<RDPage> {
     );
   }
 
-// UPDATED: Structured 5-Year Vision layout matching your exact specification
+  // UPDATED: two-horizon vision — 2035 industrial + 2040 citizen
   Widget _buildVisionBlock(bool isMobile) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
