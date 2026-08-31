@@ -1218,13 +1218,38 @@ class _ConnectPageState extends State<ConnectPage> {
               children: [
                 _buildZoneLabel("FREQUENTLY ASKED QUESTIONS", _green),
                 const SizedBox(height: 24),
-                const Text("Technical Briefings",
-                    style: TextStyle(color: Colors.white,
-                        fontSize: 22, fontWeight: FontWeight.bold)),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF0B0F17),
+                    border: Border.all(color: _green.withValues(alpha: 0.3)),
+                  ),
+                  child: const Text(
+                    "Technical Briefings",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
                 const SizedBox(height: 12),
-                Text("Everything prospects, partners, investors, and evaluators typically ask — with complete answers.",
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF0B0F17),
+                    border: Border.all(color: Colors.white10),
+                  ),
+                  child: Text(
+                    "Everything prospects, partners, investors, and evaluators typically ask — with complete answers.",
                     style: GoogleFonts.poppins(
-                        color: Colors.white54, fontSize: 13, height: 1.5)),
+                      color: Colors.white,
+                      fontSize: 13,
+                      fontWeight: FontWeight.bold,
+                      height: 1.5,
+                    ),
+                  ),
+                ),
                 const SizedBox(height: 32),
                 Container(
                   padding: const EdgeInsets.all(16),
@@ -1250,12 +1275,18 @@ class _ConnectPageState extends State<ConnectPage> {
                         style: GoogleFonts.robotoMono(
                           color: _green,
                           fontSize: 11,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
                       const SizedBox(height: 6),
-                      Text('FILTER_STATUS: ${_searchQuery.isNotEmpty ? "ACTIVE" : "IDLE"}',
-                          style: GoogleFonts.robotoMono(
-                              color: Colors.white38, fontSize: 11)),
+                      Text(
+                        'FILTER_STATUS: ${_searchQuery.isNotEmpty ? "ACTIVE" : "IDLE"}',
+                        style: GoogleFonts.robotoMono(
+                          color: Colors.white70,
+                          fontSize: 11,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                     ],
                   ),
                 ),
@@ -1284,13 +1315,38 @@ class _ConnectPageState extends State<ConnectPage> {
       children: [
         _buildZoneLabel("FREQUENTLY ASKED QUESTIONS", _green),
         const SizedBox(height: 16),
-        const Text("Technical Briefings",
-            style: TextStyle(color: Colors.white,
-                fontSize: 22, fontWeight: FontWeight.bold)),
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+          decoration: BoxDecoration(
+            color: const Color(0xFF0B0F17),
+            border: Border.all(color: _green.withValues(alpha: 0.3)),
+          ),
+          child: const Text(
+            "Technical Briefings",
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 22,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
         const SizedBox(height: 8),
-        Text("Everything prospects, partners, investors, and evaluators typically ask.",
+        Container(
+          padding: const EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            color: const Color(0xFF0B0F17),
+            border: Border.all(color: Colors.white10),
+          ),
+          child: Text(
+            "Everything prospects, partners, investors, and evaluators typically ask.",
             style: GoogleFonts.poppins(
-                color: Colors.white54, fontSize: 13, height: 1.5)),
+              color: Colors.white,
+              fontSize: 13,
+              fontWeight: FontWeight.bold,
+              height: 1.5,
+            ),
+          ),
+        ),
         const SizedBox(height: 20),
         _buildFaqSearch(),
         const SizedBox(height: 16),
@@ -1303,31 +1359,41 @@ class _ConnectPageState extends State<ConnectPage> {
     return TextField(
       controller: _searchController,
       focusNode: _searchFocus,
-      style: GoogleFonts.robotoMono(color: Colors.white, fontSize: 13),
+      style: GoogleFonts.robotoMono(
+        color: Colors.white,
+        fontSize: 13,
+        fontWeight: FontWeight.bold,
+      ),
       cursorColor: _green,
       onChanged: (val) => setState(() => _searchQuery = val),
       onTapOutside: (_) => _pageFocusNode.requestFocus(),
       decoration: InputDecoration(
         hintText: 'SEARCH QUESTIONS...',
-        hintStyle: GoogleFonts.robotoMono(color: Colors.white24, fontSize: 12),
-        prefixIcon: const Icon(Icons.search, color: Colors.white38, size: 18),
+        hintStyle: GoogleFonts.robotoMono(
+          color: Colors.white54,
+          fontSize: 12,
+          fontWeight: FontWeight.bold,
+        ),
+        prefixIcon: const Icon(Icons.search, color: _green, size: 18),
         suffixIcon: _searchQuery.isNotEmpty
             ? IconButton(
-            icon: const Icon(Icons.close, color: Colors.white38, size: 16),
+            icon: const Icon(Icons.close, color: Colors.white70, size: 16),
             onPressed: () {
               _searchController.clear();
               setState(() => _searchQuery = '');
             })
             : null,
         filled: true,
-        fillColor: Colors.white.withValues(alpha: 0.02),
-        enabledBorder: const OutlineInputBorder(
-            borderSide: BorderSide(color: Colors.white10),
-            borderRadius: BorderRadius.zero),
+        fillColor: const Color(0xFF0B0F17),
+        enabledBorder: OutlineInputBorder(
+          borderSide: BorderSide(color: _green.withValues(alpha: 0.4)),
+          borderRadius: BorderRadius.zero,
+        ),
         focusedBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: _green),
-            borderRadius: BorderRadius.zero),
-        contentPadding: const EdgeInsets.symmetric(vertical: 16),
+          borderSide: BorderSide(color: _green),
+          borderRadius: BorderRadius.zero,
+        ),
+        contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
       ),
     );
   }
@@ -1336,9 +1402,20 @@ class _ConnectPageState extends State<ConnectPage> {
     if (grouped.isEmpty) {
       return Padding(
         padding: const EdgeInsets.symmetric(vertical: 60),
-        child: Center(child: Text('NO MATCHING QUESTIONS FOUND.',
-            style: GoogleFonts.robotoMono(
-                color: Colors.white24, fontSize: 12))),
+        child: Center(
+          child: Container(
+            padding: const EdgeInsets.all(16),
+            color: const Color(0xFF0B0F17),
+            child: Text(
+              'NO MATCHING QUESTIONS FOUND.',
+              style: GoogleFonts.robotoMono(
+                color: Colors.white70,
+                fontSize: 12,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+        ),
       );
     }
     return ListView.builder(
@@ -1353,32 +1430,81 @@ class _ConnectPageState extends State<ConnectPage> {
           children: [
             Padding(
               padding: const EdgeInsets.only(top: 32, bottom: 12),
-              child: Text(category, style: GoogleFonts.robotoMono(
-                  color: _green, fontSize: 10,
-                  fontWeight: FontWeight.bold, letterSpacing: 1.5)),
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF0B0F17),
+                  border: Border.all(color: _green.withValues(alpha: 0.3)),
+                ),
+                child: Text(
+                  category,
+                  style: GoogleFonts.robotoMono(
+                    color: _green,
+                    fontSize: 11,
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: 1.5,
+                  ),
+                ),
+              ),
             ),
             Theme(
               data: Theme.of(context).copyWith(
                 dividerColor: Colors.transparent,
                 expansionTileTheme: ExpansionTileThemeData(
-                  iconColor: _green, collapsedIconColor: Colors.white38,
+                  iconColor: _green,
+                  collapsedIconColor: Colors.white70,
                   tilePadding: EdgeInsets.zero,
-                  childrenPadding: const EdgeInsets.only(bottom: 24, top: 4),
+                  childrenPadding: const EdgeInsets.only(bottom: 16, top: 8),
                 ),
               ),
               child: Column(
                 children: faqs.map((faq) => Container(
-                  decoration: const BoxDecoration(border: Border(
-                      bottom: BorderSide(color: Colors.white10, width: 1))),
+                  margin: const EdgeInsets.only(bottom: 12),
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: Color.alphaBlend(
+                      _green.withValues(alpha: 0.08),
+                      const Color(0xFF0B0F17),
+                    ),
+                    border: Border.all(color: _green.withValues(alpha: 0.3)),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.4),
+                        blurRadius: 10,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
+                  ),
                   child: ExpansionTile(
-                    title: Text(faq.question,
-                        style: const TextStyle(color: Colors.white,
-                            fontSize: 15, fontWeight: FontWeight.w500,
-                            height: 1.4)),
+                    title: Text(
+                      faq.question,
+                      style: GoogleFonts.poppins(
+                        color: Colors.white,
+                        fontSize: 15,
+                        fontWeight: FontWeight.bold,
+                        height: 1.4,
+                      ),
+                    ),
                     expandedCrossAxisAlignment: CrossAxisAlignment.start,
-                    children: [Text(faq.answer,
-                        style: GoogleFonts.poppins(
-                            color: Colors.white70, fontSize: 14, height: 1.65))],
+                    children: [
+                      Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.all(14),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFF07080C),
+                          border: Border.all(color: Colors.white10),
+                        ),
+                        child: Text(
+                          faq.answer,
+                          style: GoogleFonts.poppins(
+                            color: Colors.white,
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                            height: 1.65,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 )).toList(),
               ),
@@ -1395,7 +1521,10 @@ class _ConnectPageState extends State<ConnectPage> {
   Widget _buildZoneLabel(String label, Color color) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-      color: color.withValues(alpha: 0.12),
+      decoration: BoxDecoration(
+        color: const Color(0xFF0B0F17),
+        border: Border.all(color: color.withValues(alpha: 0.4)),
+      ),
       child: Text(label, style: GoogleFonts.robotoMono(
           color: color, fontSize: 10,
           fontWeight: FontWeight.bold, letterSpacing: 2.0)),
