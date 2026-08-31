@@ -530,7 +530,7 @@ class _ConnectPageState extends State<ConnectPage> {
             _buildFormDropdown(
               isExpanded: _deployFormExpanded,
               isLocked: false,
-              color: _green,
+              color: _amber,
               title: "MISSION PARTNER — INITIALIZE YOUR CONNECTION",
               subtitle:
               "Facility managers, fleet operators, institutional partners, and investors.",
@@ -550,7 +550,7 @@ class _ConnectPageState extends State<ConnectPage> {
                     onInitialize: (data) {
                       setState(() => _deployFormExpanded = false);
                       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                        backgroundColor: _green,
+                        backgroundColor: _amber,
                         duration: const Duration(seconds: 3),
                         content: Text(
                           "CONNECTION INITIALIZED — CHECK YOUR INBOX.",
@@ -574,7 +574,7 @@ class _ConnectPageState extends State<ConnectPage> {
             _buildFormDropdown(
               isExpanded: false,
               isLocked: true,
-              color: _amber, // Dynamic yellow identity
+              color: _green, // Dynamic yellow identity
               title: "SPECIALIZED OPERATIVE",
               subtitle:
               "Looking to contribute technically? This path is in the Build section.",
@@ -593,9 +593,9 @@ class _ConnectPageState extends State<ConnectPage> {
   }
 
   // =========================================================================
-  // ZONE 4: BUILD PATH
-  // Lightweight form + collapsible Specialized Operative ConnectionForm
-  // =========================================================================
+// ZONE 4: BUILD PATH
+// Lightweight form + collapsible Specialized Operative ConnectionForm
+// =========================================================================
   Widget _buildBuildZone(bool isMobile) {
     return Container(
       key: _buildKey,
@@ -648,11 +648,11 @@ class _ConnectPageState extends State<ConnectPage> {
             _buildLightweightForm(isMobile),
             const SizedBox(height: 32),
 
-            // DROPDOWN: Specialized Operative ConnectionForm
+            // DROPDOWN: Specialized Operative ConnectionForm (GREEN)
             _buildFormDropdown(
               isExpanded: _buildFormExpanded,
               isLocked: false,
-              color: _amber,
+              color: _green, // CHANGED TO GREEN
               title: "SPECIALIZED OPERATIVE — GO DEEPER",
               subtitle: "For engineers serious about active R&D contribution. Submit a full request — potential full access to the Sentinel labs pipeline.",
               onToggle: () => setState(() =>
@@ -671,7 +671,7 @@ class _ConnectPageState extends State<ConnectPage> {
                     onInitialize: (data) {
                       setState(() => _buildFormExpanded = false);
                       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                        backgroundColor: _amber,
+                        backgroundColor: _green, // CHANGED TO GREEN
                         duration: const Duration(seconds: 3),
                         content: Text(
                             "OPERATIVE UPLINK INITIALIZED — CHECK YOUR INBOX.",
@@ -687,12 +687,12 @@ class _ConnectPageState extends State<ConnectPage> {
                   : null,
             ),
 
-            // Locked Mission Partner — redirects to Deploy zone
+            // Locked Mission Partner — redirects to Deploy zone (AMBER / YELLOW)
             const SizedBox(height: 16),
             _buildFormDropdown(
               isExpanded: false,
               isLocked: true,
-              color: _amber,
+              color: _amber, // REMAINS YELLOW
               title: "MISSION PARTNER",
               subtitle: "Looking to deploy Sentinel for your operation? This path is in the Deploy section.",
               onToggle: () => _scrollTo(_deployKey),
@@ -707,10 +707,10 @@ class _ConnectPageState extends State<ConnectPage> {
     );
   }
 
-  // =========================================================================
-  // REUSABLE DROPDOWN FORM WRAPPER
-  // isLocked = true means it shows a redirect hint instead of expanding
-  // =========================================================================
+// =========================================================================
+// REUSABLE DROPDOWN FORM WRAPPER
+// isLocked = true means it shows a redirect hint instead of expanding
+// =========================================================================
   Widget _buildFormDropdown({
     required bool isExpanded,
     required bool isLocked,
