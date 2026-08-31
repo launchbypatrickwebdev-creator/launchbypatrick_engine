@@ -823,7 +823,7 @@ class _GrowthEnginePageState
       'YOUR OPERATION', 'PRIMARY SECTORS', 'ADD MORE', 'YOUR EXPOSURE'
     ];
     return Container(
-      color: Colors.black.withValues(alpha: 0.4),
+      color: _pageBg, // Solid opaque cover
       padding: EdgeInsets.symmetric(
           horizontal: isMobile ? 16 : 60, vertical: 20),
       child: Row(
@@ -960,9 +960,7 @@ class _GrowthEnginePageState
         duration: const Duration(milliseconds: 200),
         padding: EdgeInsets.all(isMobile ? 20 : 28),
         decoration: BoxDecoration(
-          color: isSelected
-              ? _green.withValues(alpha: 0.1)
-              : _cardBg.withValues(alpha: 0.3),
+          color: isSelected ? const Color(0xFF0E2318) : _cardBg, // Solid background cover
           border: Border.all(
               color: isSelected ? _green : Colors.white10,
               width: isSelected ? 1.5 : 1),
@@ -1078,9 +1076,7 @@ class _GrowthEnginePageState
                     child: Container(
                       padding: EdgeInsets.all(isMobile ? 16 : 20),
                       decoration: BoxDecoration(
-                        color: isExpanded
-                            ? sector.accentColor.withValues(alpha: 0.08)
-                            : _cardBg.withValues(alpha: 0.2),
+                        color: isExpanded ? const Color(0xFF121E16) : _cardBg, // Solid background cover
                         border: Border.all(
                             color: isExpanded
                                 ? sector.accentColor.withValues(alpha: 0.4)
@@ -1131,7 +1127,7 @@ class _GrowthEnginePageState
                     Container(
                       padding: EdgeInsets.all(isMobile ? 16 : 24),
                       decoration: BoxDecoration(
-                        color: sector.accentColor.withValues(alpha: 0.03),
+                        color: const Color(0xFF0B140D), // Solid cover for expanded content
                         border: Border(
                           left: BorderSide(
                               color: sector.accentColor.withValues(alpha: 0.3)),
@@ -1160,7 +1156,7 @@ class _GrowthEnginePageState
     final double sectorLoss = _calculateSectorLoss(sector);
     return Container(
       decoration: BoxDecoration(
-        color: _cardBg.withValues(alpha: 0.3),
+        color: _cardBg, // Solid cover
         border:
         Border.all(color: sector.accentColor.withValues(alpha: 0.25)),
       ),
@@ -1441,7 +1437,7 @@ class _GrowthEnginePageState
             width: double.infinity,
             padding: EdgeInsets.all(isMobile ? 24 : 40),
             decoration: BoxDecoration(
-              color: _red.withValues(alpha: 0.06),
+              color: const Color(0xFF140808), // Solid cover for annual loss result box
               border: Border.all(color: _red.withValues(alpha: 0.3)),
             ),
             child: Column(
@@ -1563,7 +1559,7 @@ class _GrowthEnginePageState
       return Container(
         padding: const EdgeInsets.all(24),
         decoration: BoxDecoration(
-          color: Colors.white.withValues(alpha: 0.02),
+          color: _cardBg, // Solid cover
           border: Border.all(color: Colors.white10),
         ),
         child: Text(
@@ -1577,7 +1573,7 @@ class _GrowthEnginePageState
       return Container(
         padding: EdgeInsets.all(isMobile ? 20 : 32),
         decoration: BoxDecoration(
-          color: _amber.withValues(alpha: 0.05),
+          color: const Color(0xFF1A170A), // Solid amber-tinted cover
           border: Border.all(color: _amber.withValues(alpha: 0.3)),
         ),
         child: Column(
@@ -1631,7 +1627,7 @@ class _GrowthEnginePageState
     return Container(
       padding: EdgeInsets.all(isMobile ? 20 : 32),
       decoration: BoxDecoration(
-        color: _green.withValues(alpha: 0.05),
+        color: _cardBg, // Solid background cover
         border: Border.all(color: _green, width: 1.5),
       ),
       child: Column(
@@ -1768,7 +1764,7 @@ class _GrowthEnginePageState
           onSubmitted: (_) => focusNode.unfocus(),
           decoration: InputDecoration(
             filled: true,
-            fillColor: Colors.white.withValues(alpha: 0.03),
+            fillColor: _pageBg, // Solid background cover
             enabledBorder: const OutlineInputBorder(
                 borderSide: BorderSide(color: Colors.white10),
                 borderRadius: BorderRadius.zero),
