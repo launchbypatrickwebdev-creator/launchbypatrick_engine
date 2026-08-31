@@ -1230,7 +1230,7 @@ class _ConnectPageState extends State<ConnectPage> {
     final Map<String, List<SentinelFAQ>> grouped = _filteredGroupedFaqs;
     return Container(
       key: _faqKey,
-      color: Colors.black.withValues(alpha: 0.3),
+      color: const Color(0xFF06080E), // Solid dark background hides underlying ops video
       child: LaunchSectionContainer(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -1258,13 +1258,13 @@ class _ConnectPageState extends State<ConnectPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _buildZoneLabel("FREQUENTLY ASKED QUESTIONS", _green),
+                _buildZoneLabel("FREQUENTLY ASKED QUESTIONS", Colors.white70),
                 const SizedBox(height: 24),
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
                   decoration: BoxDecoration(
                     color: const Color(0xFF0B0F17),
-                    border: Border.all(color: _green.withValues(alpha: 0.3)),
+                    border: Border.all(color: Colors.white24),
                   ),
                   child: const Text(
                     "Technical Briefings",
@@ -1296,11 +1296,8 @@ class _ConnectPageState extends State<ConnectPage> {
                 Container(
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
-                    color: Color.alphaBlend(
-                      _green.withValues(alpha: 0.10),
-                      const Color(0xFF0B0F17),
-                    ),
-                    border: Border.all(color: _green.withValues(alpha: 0.3)),
+                    color: const Color(0xFF0B0F17),
+                    border: Border.all(color: Colors.white24),
                     boxShadow: [
                       BoxShadow(
                         color: Colors.black.withValues(alpha: 0.5),
@@ -1313,9 +1310,9 @@ class _ConnectPageState extends State<ConnectPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        ' ${_faqs.length}',
+                        ' TOTAL_FAQS: ${_faqs.length}',
                         style: GoogleFonts.robotoMono(
-                          color: _green,
+                          color: Colors.white,
                           fontSize: 11,
                           fontWeight: FontWeight.bold,
                         ),
@@ -1355,13 +1352,13 @@ class _ConnectPageState extends State<ConnectPage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildZoneLabel("FREQUENTLY ASKED QUESTIONS", _green),
+        _buildZoneLabel("FREQUENTLY ASKED QUESTIONS", Colors.white70),
         const SizedBox(height: 16),
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
           decoration: BoxDecoration(
             color: const Color(0xFF0B0F17),
-            border: Border.all(color: _green.withValues(alpha: 0.3)),
+            border: Border.all(color: Colors.white24),
           ),
           child: const Text(
             "Technical Briefings",
@@ -1406,7 +1403,7 @@ class _ConnectPageState extends State<ConnectPage> {
         fontSize: 13,
         fontWeight: FontWeight.bold,
       ),
-      cursorColor: _green,
+      cursorColor: Colors.white,
       onChanged: (val) => setState(() => _searchQuery = val),
       onTapOutside: (_) => _pageFocusNode.requestFocus(),
       decoration: InputDecoration(
@@ -1416,7 +1413,7 @@ class _ConnectPageState extends State<ConnectPage> {
           fontSize: 12,
           fontWeight: FontWeight.bold,
         ),
-        prefixIcon: const Icon(Icons.search, color: _green, size: 18),
+        prefixIcon: const Icon(Icons.search, color: Colors.white70, size: 18),
         suffixIcon: _searchQuery.isNotEmpty
             ? IconButton(
             icon: const Icon(Icons.close, color: Colors.white70, size: 16),
@@ -1427,12 +1424,12 @@ class _ConnectPageState extends State<ConnectPage> {
             : null,
         filled: true,
         fillColor: const Color(0xFF0B0F17),
-        enabledBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: _green.withValues(alpha: 0.4)),
+        enabledBorder: const OutlineInputBorder(
+          borderSide: BorderSide(color: Colors.white24),
           borderRadius: BorderRadius.zero,
         ),
-        focusedBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: _green),
+        focusedBorder: const OutlineInputBorder(
+          borderSide: BorderSide(color: Colors.white),
           borderRadius: BorderRadius.zero,
         ),
         contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
@@ -1476,12 +1473,12 @@ class _ConnectPageState extends State<ConnectPage> {
                 padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                 decoration: BoxDecoration(
                   color: const Color(0xFF0B0F17),
-                  border: Border.all(color: _green.withValues(alpha: 0.3)),
+                  border: Border.all(color: Colors.white24),
                 ),
                 child: Text(
                   category,
                   style: GoogleFonts.robotoMono(
-                    color: _green,
+                    color: Colors.white,
                     fontSize: 11,
                     fontWeight: FontWeight.bold,
                     letterSpacing: 1.5,
@@ -1492,11 +1489,11 @@ class _ConnectPageState extends State<ConnectPage> {
             Theme(
               data: Theme.of(context).copyWith(
                 dividerColor: Colors.transparent,
-                expansionTileTheme: ExpansionTileThemeData(
-                  iconColor: _green,
+                expansionTileTheme: const ExpansionTileThemeData(
+                  iconColor: Colors.white,
                   collapsedIconColor: Colors.white70,
                   tilePadding: EdgeInsets.zero,
-                  childrenPadding: const EdgeInsets.only(bottom: 16, top: 8),
+                  childrenPadding: EdgeInsets.only(bottom: 16, top: 8),
                 ),
               ),
               child: Column(
@@ -1504,11 +1501,8 @@ class _ConnectPageState extends State<ConnectPage> {
                   margin: const EdgeInsets.only(bottom: 12),
                   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                   decoration: BoxDecoration(
-                    color: Color.alphaBlend(
-                      _green.withValues(alpha: 0.08),
-                      const Color(0xFF0B0F17),
-                    ),
-                    border: Border.all(color: _green.withValues(alpha: 0.3)),
+                    color: const Color(0xFF0B0F17),
+                    border: Border.all(color: Colors.white10),
                     boxShadow: [
                       BoxShadow(
                         color: Colors.black.withValues(alpha: 0.4),
@@ -1539,9 +1533,9 @@ class _ConnectPageState extends State<ConnectPage> {
                         child: Text(
                           faq.answer,
                           style: GoogleFonts.poppins(
-                            color: Colors.white,
+                            color: Colors.white70,
                             fontSize: 14,
-                            fontWeight: FontWeight.bold,
+                            fontWeight: FontWeight.w400,
                             height: 1.65,
                           ),
                         ),
@@ -1557,9 +1551,7 @@ class _ConnectPageState extends State<ConnectPage> {
     );
   }
 
-  // =========================================================================
-  // SHARED HELPERS
-  // =========================================================================
+// Helper with monochrome styling
   Widget _buildZoneLabel(String label, Color color) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
@@ -1567,9 +1559,15 @@ class _ConnectPageState extends State<ConnectPage> {
         color: const Color(0xFF0B0F17),
         border: Border.all(color: color.withValues(alpha: 0.4)),
       ),
-      child: Text(label, style: GoogleFonts.robotoMono(
-          color: color, fontSize: 10,
-          fontWeight: FontWeight.bold, letterSpacing: 2.0)),
+      child: Text(
+        label,
+        style: GoogleFonts.robotoMono(
+          color: color,
+          fontSize: 10,
+          fontWeight: FontWeight.bold,
+          letterSpacing: 2.0,
+        ),
+      ),
     );
   }
 }
