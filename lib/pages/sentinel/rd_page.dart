@@ -166,7 +166,7 @@ class _RDPageState extends State<RDPage> {
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
               color: _amber.withValues(alpha: 0.15),
-              child: Text("LAB ARCHITECTURE // CORE HARDWARE SPECIFICATIONS",
+              child: Text("",
                   style: GoogleFonts.robotoMono(color: _amber,
                       fontSize: isMobile ? 8 : 10,
                       fontWeight: FontWeight.bold, letterSpacing: 2.0)),
@@ -179,7 +179,7 @@ class _RDPageState extends State<RDPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('DEEP-DIVE HARDWARE',
+                Text('DEEP DIVE HARDWARE',
                     style: TextStyle(fontSize: isMobile ? 32 : 54,
                         fontWeight: FontWeight.bold, color: Colors.white,
                         letterSpacing: 1.5, height: 1.1)),
@@ -224,7 +224,7 @@ class _RDPageState extends State<RDPage> {
             Semantics(
               header: true,
               label: 'Who we are — EchoLevel Sentinel mission, vision, and values.',
-              child: Text("WHO WE ARE // COMPANY DNA",
+              child: Text("",
                   style: GoogleFonts.robotoMono(color: _amber, fontSize: 11,
                       fontWeight: FontWeight.bold, letterSpacing: 2.0)),
             ),
@@ -268,7 +268,7 @@ class _RDPageState extends State<RDPage> {
                   'We build what Africa needs using African hands, African context, and African ingenuity. We do not bolt foreign solutions onto local problems.'),
               const SizedBox(height: 16),
               _buildValueCard( number: '03', title:  'OFFLINE FIRST, ALWAYS', body:
-                  'We design for the reality we operate in — not the ideal environment we wish we had. If the network goes down, Sentinel keeps recording.'),
+                  'We design for the reality we operate in, not the ideal environment we wish we had. If the network goes down, Sentinel keeps recording.'),
               const SizedBox(height: 16),
               _buildValueCard( number: '04', title:  'SOVEREIGNTY OVER CONVENIENCE', body:
                   'We will take the harder engineering path if it means our clients own their data, their systems, and their future. Dependency on foreign rails is a liability we refuse to build into our products.'),
@@ -280,7 +280,7 @@ class _RDPageState extends State<RDPage> {
                         'We do not estimate. We do not approximate. Every reading Sentinel produces is defensible in a court, a bank, or a boardroom.'),
                     const SizedBox(height: 16),
                     _buildValueCard( number: '03', title:  'OFFLINE FIRST, ALWAYS', body:
-                        'We design for the reality we operate in — not the ideal environment we wish we had. If the network goes down, Sentinel keeps recording.'),
+                        'We design for the reality we operate in, not the ideal environment we wish we had. If the network goes down, Sentinel keeps recording.'),
                   ])),
                   const SizedBox(width: 16),
                   Expanded(child: Column(children: [
@@ -458,7 +458,7 @@ class _RDPageState extends State<RDPage> {
             Semantics(
               header: true,
               label: 'The architecture — Cortex Core, the 1 Head, 3 Bodies philosophy.',
-              child: Text("THE ARCHITECTURE // CORTEX CORE™",
+              child: Text("CORTEX CORE™",
                   style: GoogleFonts.robotoMono(color: _amber, fontSize: 11,
                       fontWeight: FontWeight.bold, letterSpacing: 2.0)),
             ),
@@ -491,7 +491,7 @@ class _RDPageState extends State<RDPage> {
         Semantics(
           label: 'At the heart of every Sentinel industrial solution is the Cortex Core — a proprietary offline-first IoT engine. It acts as the universal Head — a high-performance cognitive center that adapts to diverse operational bodies.',
           child: Text(
-            "At the heart of every Sentinel industrial solution is the Cortex Core™ — a proprietary, offline-first IoT engine designed specifically for Africa's volatile power and data environments.\n\nThe Cortex Core™ acts as the universal 'Head' — a high-performance cognitive center that adapts to diverse Operational Bodies. We don't build products; we build a Proprietary Platform that converts physical entropy into Verifiable Truth, ensuring 99.9% uptime in the most hostile industrial corridors.",
+            "At the heart of every Sentinel industrial solution is the Cortex Core™. A proprietary, offline first IoT engine designed specifically for Africa's volatile power and data environments.\n\nThe Cortex Core™ acts as the universal Head, a high performance cognitive center that adapts to diverse Operational Bodies. We build a Proprietary Platform that converts physical entropy into Verifiable Truth, ensuring 99.9% uptime in the most hostile industrial corridors.",
             style: GoogleFonts.poppins(color: Colors.white70,
                 fontSize: isMobile ? 13 : 15, height: 1.7),
           ),
@@ -500,17 +500,17 @@ class _RDPageState extends State<RDPage> {
 
         // BODY 01 — FIRMWARE (updated subtext)
         _buildBodyType("BODY 01", "FIRMWARE",
-            "The intelligence layer. Embedded decision-making that runs on-device, offline-first, and survives every power interruption Nigeria can throw at it."),
+            "The intelligence layer. Embedded decision making that runs on device, offline first, and survives every power interruption Nigeria can throw at it."),
         const SizedBox(height: 16),
 
         // BODY 02 — HARDWARE (updated subtext)
         _buildBodyType("BODY 02", "HARDWARE",
-            "The physical layer. Non-invasive sensor modules engineered for Nigerian conditions — harmattan dust, voltage spikes, fuel vapor, and equatorial heat."),
+            "The physical layer. Non invasive modules engineered for Nigeria and Africa conditions."),
         const SizedBox(height: 16),
 
         // BODY 03 — INFRASTRUCTURE (updated subtext — broader scope)
         _buildBodyType("BODY 03", "INFRASTRUCTURE",
-            "The coverage layer. Starting with standby generators and logistics fleets across 8 fuel sectors. Expanding to every critical asset class where trust, visibility, and accountability are missing."),
+            "The coverage layer. Starting with standby generators and logistics fleets sectors. Expanding to every critical asset class where trust, visibility, and accountability are missing."),
       ],
     );
   }
@@ -560,7 +560,7 @@ class _RDPageState extends State<RDPage> {
           Semantics(
             header: true,
             label: 'Published research nodes — EchoLevel Sentinel active and classified research tracks.',
-            child: Text("RESEARCH NODES // PUBLICATION FEED",
+            child: Text("",
                 style: GoogleFonts.robotoMono(color: _amber, fontSize: 11,
                     fontWeight: FontWeight.bold, letterSpacing: 2.0)),
           ),
@@ -569,7 +569,7 @@ class _RDPageState extends State<RDPage> {
               style: TextStyle(color: Colors.white,
                   fontSize: isMobile ? 26 : 36, fontWeight: FontWeight.bold)),
           const SizedBox(height: 8),
-          Text("Research outcomes are published here when ready for external review. Classified and under-review nodes require full R&D access.",
+          Text("Research outcomes are published here when ready for external review. Classified and under review nodes require full R&D access.",
               style: GoogleFonts.poppins(color: Colors.white54,
                   fontSize: isMobile ? 12 : 14, height: 1.5)),
           const SizedBox(height: 40),
@@ -678,7 +678,7 @@ class _RDPageState extends State<RDPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text("ACCESS PROTOCOL // INITIALIZE CONNECTION",
+            Text("",
                 style: GoogleFonts.robotoMono(color: _amber, fontSize: 11,
                     fontWeight: FontWeight.bold, letterSpacing: 2.0)),
             const SizedBox(height: 48),

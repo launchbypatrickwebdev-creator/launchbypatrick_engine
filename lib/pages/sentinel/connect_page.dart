@@ -825,14 +825,14 @@ class _ConnectPageState extends State<ConnectPage> {
   }
 
   // =========================================================================
-  // CONTACT DETAILS
-  // =========================================================================
+// CONTACT DETAILS
+// =========================================================================
   Widget _buildContactDetails(bool isMobile) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text("DIRECT CONTACT",
-            style: GoogleFonts.robotoMono(color: Colors.white38, fontSize: 10,
+            style: GoogleFonts.robotoMono(color: Colors.white54, fontSize: 10,
                 fontWeight: FontWeight.bold, letterSpacing: 2.0)),
         const SizedBox(height: 20),
         isMobile
@@ -855,14 +855,11 @@ class _ConnectPageState extends State<ConnectPage> {
           Expanded(child: Container(
             padding: const EdgeInsets.all(28),
             decoration: BoxDecoration(
-              color: Color.alphaBlend(
-                _green.withValues(alpha: 0.10),
-                const Color(0xFF0B0F17),
-              ),
+              color: const Color(0xFF0B0F17),
               border: Border.all(color: _green.withValues(alpha: 0.3)),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.4),
+                  color: Colors.black.withValues(alpha: 0.6),
                   blurRadius: 16,
                   offset: const Offset(0, 6),
                 ),
@@ -883,14 +880,11 @@ class _ConnectPageState extends State<ConnectPage> {
           Expanded(child: Container(
             padding: const EdgeInsets.all(28),
             decoration: BoxDecoration(
-              color: Color.alphaBlend(
-                _green.withValues(alpha: 0.10),
-                const Color(0xFF0B0F17),
-              ),
+              color: const Color(0xFF0B0F17),
               border: Border.all(color: _green.withValues(alpha: 0.3)),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.4),
+                  color: Colors.black.withValues(alpha: 0.6),
                   blurRadius: 16,
                   offset: const Offset(0, 6),
                 ),
@@ -923,13 +917,13 @@ class _ConnectPageState extends State<ConnectPage> {
           ? SystemMouseCursors.click
           : SystemMouseCursors.basic,
       child: Row(children: [
-        Icon(icon, color: Colors.white24, size: 16),
+        Icon(icon, color: Colors.white38, size: 16),
         const SizedBox(width: 14),
         Expanded(child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(label, style: GoogleFonts.robotoMono(
-                color: Colors.white38, fontSize: 9,
+                color: Colors.white54, fontSize: 9,
                 fontWeight: FontWeight.bold, letterSpacing: 1.5)),
             const SizedBox(height: 4),
             Text(value, style: GoogleFonts.robotoMono(
@@ -950,10 +944,7 @@ class _ConnectPageState extends State<ConnectPage> {
       width: double.infinity,
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Color.alphaBlend(
-          _green.withValues(alpha: 0.10),
-          const Color(0xFF0B0F17),
-        ),
+        color: const Color(0xFF0B0F17),
         border: Border.all(color: _green.withValues(alpha: 0.3)),
       ),
       child: _buildContactRow(
