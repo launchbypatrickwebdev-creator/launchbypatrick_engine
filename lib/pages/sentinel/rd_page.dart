@@ -213,10 +213,14 @@ class _RDPageState extends State<RDPage> {
   // UPDATED: mission reflects full sovereign vision, not just industrial
   // UPDATED: vision has two clear horizons — 2035 and 2040
   // =========================================================================
+  // =========================================================================
+// MISSION, VISION, VALUES
+// UPDATED: Solid dark background (hides background video) + 6 Core Values
+// =========================================================================
   Widget _buildMVV(bool isMobile) {
     return Container(
       width: double.infinity,
-      color: Colors.black.withValues(alpha: 0.4),
+      color: const Color(0xFF06080E), // Solid dark background hides background video
       child: LaunchSectionContainer(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -241,7 +245,7 @@ class _RDPageState extends State<RDPage> {
                 : Row(crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Expanded(flex: 5, child: _buildMissionBlock(isMobile)),
-                  const SizedBox(width: 60),
+                  const SizedBox(width: 40),
                   Expanded(flex: 7, child: _buildVisionBlock(isMobile)),
                 ]),
 
@@ -251,44 +255,105 @@ class _RDPageState extends State<RDPage> {
 
             Semantics(
               header: true,
-              label: 'Our values.',
-              child: Text("VALUES",
+              label: 'Our core values.',
+              child: Text("VALUES & OPERATING PRINCIPLES",
                   style: GoogleFonts.robotoMono(color: Colors.white38,
                       fontSize: 11, fontWeight: FontWeight.bold,
                       letterSpacing: 2.0)),
             ),
             const SizedBox(height: 32),
 
+            // 6 Core Values Grid
             isMobile
                 ? Column(children: [
-              _buildValueCard( number: '01', title:  'VERIFIABLE TRUTH OVER COMFORTABLE GUESSES', body:
-                  'We do not estimate. We do not approximate. Every reading Sentinel produces is defensible in a court, a bank, or a boardroom.'),
+              _buildValueCard(
+                category: 'STRATEGIC PRIORITY',
+                number: '01',
+                title: 'SOVEREIGNTY FIRST, EXECUTION SECOND, LEGACY ALWAYS',
+                body: 'Every system, piece of land, software line, and hardware architecture we build must protect local integrity and control above short-term convenience.',
+              ),
               const SizedBox(height: 16),
-              _buildValueCard( number: '02', title:  'INDIGENOUS ENGINEERING', body:
-                  'We build what Africa needs using African hands, African context, and African ingenuity. We do not bolt foreign solutions onto local problems.'),
+              _buildValueCard(
+                category: 'CULTURE & OPERATIONS',
+                number: '02',
+                title: 'TRUST MAKES EVERYTHING SIMPLE',
+                body: 'Clear, unassailable trust between leadership, team members, and the local community is what keeps deep-level operations secure and nimble.',
+              ),
               const SizedBox(height: 16),
-              _buildValueCard( number: '03', title:  'OFFLINE FIRST, ALWAYS', body:
-                  'We design for the reality we operate in, not the ideal environment we wish we had. If the network goes down, Sentinel keeps recording.'),
+              _buildValueCard(
+                category: 'CULTURE & OPERATIONS',
+                number: '03',
+                title: 'ADAPTABILITY IS SURVIVAL',
+                body: 'Technology, security environments, and market conditions shift rapidly. We embrace change as the only constant and design flexible, modular systems.',
+              ),
               const SizedBox(height: 16),
-              _buildValueCard( number: '04', title:  'SOVEREIGNTY OVER CONVENIENCE', body:
-                  'We will take the harder engineering path if it means our clients own their data, their systems, and their future. Dependency on foreign rails is a liability we refuse to build into our products.'),
+              _buildValueCard(
+                category: 'MINDSET & EXECUTION',
+                number: '04',
+                title: 'IF NOT NOW, WHEN? IF NOT ME, WHO?',
+                body: 'Every team member takes absolute ownership of their domain. We do not wait for external rescue or approval to solve critical problems.',
+              ),
+              const SizedBox(height: 16),
+              _buildValueCard(
+                category: 'MINDSET & EXECUTION',
+                number: '05',
+                title: "TODAY'S BEST PERFORMANCE IS TOMORROW'S BASELINE.",
+                body: 'Continuous refinement is our standard. What was considered a breakthrough yesterday becomes the starting foundation for what we build today.',
+              ),
+              const SizedBox(height: 16),
+              _buildValueCard(
+                category: 'MINDSET & EXECUTION',
+                number: '06',
+                title: 'LIVE SERIOUSLY, WORK PURPOSEFULLY.',
+                body: 'Building foundational infrastructure requires deep discipline, personal integrity, and total pride in the mission we share.',
+              ),
             ])
                 : Row(crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Expanded(child: Column(children: [
-                    _buildValueCard( number: '01', title:  'VERIFIABLE TRUTH OVER COMFORTABLE GUESSES', body:
-                        'We do not estimate. We do not approximate. Every reading Sentinel produces is defensible in a court, a bank, or a boardroom.'),
+                    _buildValueCard(
+                      category: 'STRATEGIC PRIORITY',
+                      number: '01',
+                      title: 'SOVEREIGNTY FIRST, EXECUTION SECOND, LEGACY ALWAYS',
+                      body: 'Every system, piece of land, software line, and hardware architecture we build must protect local integrity and control above short-term convenience.',
+                    ),
                     const SizedBox(height: 16),
-                    _buildValueCard( number: '03', title:  'OFFLINE FIRST, ALWAYS', body:
-                        'We design for the reality we operate in, not the ideal environment we wish we had. If the network goes down, Sentinel keeps recording.'),
+                    _buildValueCard(
+                      category: 'CULTURE & OPERATIONS',
+                      number: '03',
+                      title: 'ADAPTABILITY IS SURVIVAL',
+                      body: 'Technology, security environments, and market conditions shift rapidly. We embrace change as the only constant and design flexible, modular systems.',
+                    ),
+                    const SizedBox(height: 16),
+                    _buildValueCard(
+                      category: 'MINDSET & EXECUTION',
+                      number: '05',
+                      title: "TODAY'S BEST PERFORMANCE IS TOMORROW'S BASELINE.",
+                      body: 'Continuous refinement is our standard. What was considered a breakthrough yesterday becomes the starting foundation for what we build today.',
+                    ),
                   ])),
                   const SizedBox(width: 16),
                   Expanded(child: Column(children: [
-                    _buildValueCard( number: '02', title:  'INDIGENOUS ENGINEERING', body:
-                        'We build what Africa needs using African hands, African context, and African ingenuity. We do not bolt foreign solutions onto local problems.'),
+                    _buildValueCard(
+                      category: 'CULTURE & OPERATIONS',
+                      number: '02',
+                      title: 'TRUST MAKES EVERYTHING SIMPLE',
+                      body: 'Clear, unassailable trust between leadership, team members, and the local community is what keeps deep-level operations secure and nimble.',
+                    ),
                     const SizedBox(height: 16),
-                    _buildValueCard( number: '04', title:  'SOVEREIGNTY OVER CONVENIENCE', body:
-                        'We will take the harder engineering path if it means our clients own their data, their systems, and their future. Dependency on foreign rails is a liability we refuse to build into our products.'),
+                    _buildValueCard(
+                      category: 'MINDSET & EXECUTION',
+                      number: '04',
+                      title: 'IF NOT NOW, WHEN? IF NOT ME, WHO?',
+                      body: 'Every team member takes absolute ownership of their domain. We do not wait for external rescue or approval to solve critical problems.',
+                    ),
+                    const SizedBox(height: 16),
+                    _buildValueCard(
+                      category: 'MINDSET & EXECUTION',
+                      number: '06',
+                      title: 'LIVE SERIOUSLY, WORK PURPOSEFULLY.',
+                      body: 'Building foundational infrastructure requires deep discipline, personal integrity, and total pride in the mission we share.',
+                    ),
                   ])),
                 ]),
             const SizedBox(height: 72),
@@ -298,7 +363,7 @@ class _RDPageState extends State<RDPage> {
     );
   }
 
-  // UPDATED: mission reflects full scope — not just industrial
+// MISSION BLOCK
   Widget _buildMissionBlock(bool isMobile) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -308,7 +373,7 @@ class _RDPageState extends State<RDPage> {
             fontWeight: FontWeight.bold, letterSpacing: 2.0)),
         const SizedBox(height: 20),
         Semantics(
-          label: 'Mission: EchoLevel Sentinel exists to make every Nigerian asset, business, and person verifiable — starting with the fuel in their generators. We are building the trust infrastructure Africa should have engineered for itself decades ago.',
+          label: 'Mission: EchoLevel Sentinel exists to make every Nigerian asset, business, and person verifiable.',
           child: Container(
             padding: const EdgeInsets.only(left: 20),
             decoration: const BoxDecoration(
@@ -317,7 +382,7 @@ class _RDPageState extends State<RDPage> {
               'To establish sovereign technological independence and security for Africa digital and physical future.\n\n',
               style: TextStyle(color: Colors.white,
                   fontSize: isMobile ? 16 : 20,
-                  fontWeight: FontWeight.w500, height: 1.55, letterSpacing: -0.2),
+                  fontWeight: FontWeight.bold, height: 1.55, letterSpacing: -0.2),
             ),
           ),
         ),
@@ -325,7 +390,7 @@ class _RDPageState extends State<RDPage> {
     );
   }
 
-  // UPDATED: two-horizon vision — 2035 industrial + 2040 citizen
+// VISION BLOCK (Exact 5-Year Structure)
   Widget _buildVisionBlock(bool isMobile) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -505,17 +570,21 @@ class _RDPageState extends State<RDPage> {
     );
   }
 
+// VALUE CARD DESIGN WITH CATEGORY & SOLID DARK CONTAINER
   Widget _buildValueCard({
-    required String number, required String title, required String body,
+    required String category,
+    required String number,
+    required String title,
+    required String body,
   }) {
     return Semantics(
-      label: 'Value $number: $title. $body',
+      label: '$category — Value $number: $title. $body',
       child: Container(
         width: double.infinity,
         padding: const EdgeInsets.all(28),
         decoration: BoxDecoration(
           color: const Color(0xFF0B0F17),
-          border: Border.all(color: Colors.white10),
+          border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withValues(alpha: 0.4),
@@ -527,17 +596,51 @@ class _RDPageState extends State<RDPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(number, style: TextStyle(color: _amber,
-                fontSize: 11, fontFamily: 'monospace',
-                fontWeight: FontWeight.bold, letterSpacing: 1.5)),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  category,
+                  style: GoogleFonts.robotoMono(
+                    color: Colors.white38,
+                    fontSize: 9,
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: 1.5,
+                  ),
+                ),
+                Text(
+                  number,
+                  style: GoogleFonts.robotoMono(
+                    color: _amber,
+                    fontSize: 11,
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: 1.5,
+                  ),
+                ),
+              ],
+            ),
             const SizedBox(height: 12),
-            Text(title, style: const TextStyle(color: Colors.white,
-                fontSize: 13, fontWeight: FontWeight.bold, letterSpacing: 0.8)),
+            Text(
+              title,
+              style: GoogleFonts.poppins(
+                color: Colors.white,
+                fontSize: 13,
+                fontWeight: FontWeight.bold,
+                letterSpacing: 0.4,
+              ),
+            ),
             const SizedBox(height: 12),
             Container(height: 1, width: 32, color: _amber.withValues(alpha: 0.5)),
             const SizedBox(height: 16),
-            Text(body, style: TextStyle(color: Colors.white,
-                fontSize: 13, height: 1.65, fontWeight: FontWeight.bold)),
+            Text(
+              body,
+              style: GoogleFonts.poppins(
+                color: Colors.white70,
+                fontSize: 13,
+                height: 1.65,
+                fontWeight: FontWeight.w400,
+              ),
+            ),
           ],
         ),
       ),
