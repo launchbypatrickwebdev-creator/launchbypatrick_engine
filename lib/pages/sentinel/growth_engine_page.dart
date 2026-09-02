@@ -83,7 +83,7 @@ class FuelSector {
 }
 
 // =============================================================================
-// CALCULATION FORMULAS — top-level for unit testability
+// CALCULATION FORMULAS
 // =============================================================================
 
 double calcGeneratorLoss(Map<MetricKey, double> m) {
@@ -144,18 +144,18 @@ double calcComplianceLoss(Map<MetricKey, double> m) {
 // PAGE
 // =============================================================================
 
-class GrowthEnginePage extends StatefulWidget {
-  const GrowthEnginePage({super.key});
+class SentinelGrowthEnginePage extends StatefulWidget {
+  const SentinelGrowthEnginePage({super.key});
 
   @override
-  State<GrowthEnginePage> createState() =>
-      _GrowthEnginePageState();
+  State<SentinelGrowthEnginePage> createState() =>
+      _SentinelGrowthEnginePageState();
 }
 
-class _GrowthEnginePageState
-    extends State<GrowthEnginePage> {
+class _SentinelGrowthEnginePageState
+    extends State<SentinelGrowthEnginePage> {
 
-  // ── Brand tokens ──────────────────────────────────────────────────────────
+  // ── Brand tokens ────────────────────────────────────────────────────────
   static const Color _green  = Color(0xFF00C853);
   static const Color _amber  = Color(0xFFFFEA00);
   static const Color _red    = Color(0xFFFF3B3B);
@@ -166,10 +166,13 @@ class _GrowthEnginePageState
       'https://zljdfgkvlipwbvmlizyx.supabase.co/functions/v1/generate-sentinel-pdf';
   static const double _qualificationThreshold = 2000000;
 
+  // FIX 1: page-level focus node — the neutral owner that LaunchTactileEngine
+  // needs. Without this, unfocusing any TextField leaves the scroll engine
+  // as the only focus consumer, causing it to steal all key events.
   final FocusNode _pageFocusNode = FocusNode();
 
-  // ── Step / audience state ──────────────────────────────────────────────────
-  int     _currentStep     = 0;
+  // ── Step / audience state ────────────────────────────────────────────────
+  int     _currentStep      = 0;
   String? _selectedAudience;
   final Set<String> _expandedSecondarySectors = {};
 
@@ -179,31 +182,30 @@ class _GrowthEnginePageState
   // FIX 2: metric focus nodes use the corrected factory (horizontal only)
   final Map<MetricKey, FocusNode>             _metricFocusNodes  = {};
 
-  // ── Results ───────────────────────────────────────────────────────────────
+  // ── Results ──────────────────────────────────────────────────────────────
   bool   _isCalculating   = false;
   bool   _isExportingPdf  = false;
   double _totalAnnualLoss = 0;
 
-  // ── Capture fields — with isolated FocusNodes ────────────────────────────
+  // ── Capture fields ────────────────────────────────────────────────────────
   final TextEditingController _orgNameController  = TextEditingController();
   final TextEditingController _emailController    = TextEditingController();
   final TextEditingController _locationController = TextEditingController();
 
-  // FIX: isolated FocusNodes for capture fields
-  // onKeyEvent intercepts arrow keys and space so they stay in the TextField
-  // instead of being swallowed by LaunchTactileEngine's scroll handler
+  // FIX 2: capture field focus nodes — horizontal arrows + space only
   late final FocusNode _orgFocus      = _makeIsolatedFocus();
   late final FocusNode _emailFocus    = _makeIsolatedFocus();
   late final FocusNode _locationFocus = _makeIsolatedFocus();
 
-  // ── Sector cache ──────────────────────────────────────────────────────────
+  // ── Sector cache ─────────────────────────────────────────────────────────
   List<FuelSector>? _cachedPrimarySectors;
   String?           _cachedAudience;
 
   // =========================================================================
-  // FOCUS NODE FACTORY
-  // Returns a FocusNode that isolates arrow keys and space from the
-  // parent scroll handler — identical pattern to growth_intakeform_page.dart
+  // FIX 2: isolated focus factory
+  // Intercepts horizontal arrows + space ONLY.
+  // Does NOT intercept arrowUp / arrowDown — those scroll the page.
+  // Matches growth_intakeform_page.dart _createIsolatedFocusNode() exactly.
   // =========================================================================
   FocusNode _makeIsolatedFocus() {
     return FocusNode(
@@ -223,8 +225,8 @@ class _GrowthEnginePageState
 
   // =========================================================================
   // METRIC CONTROLLER / FOCUS ACCESSORS
-  // Creates on first access, reuses on subsequent calls
   // =========================================================================
+
   TextEditingController _controllerFor(
       String sectorId, String metricId, double defaultValue) {
     final MetricKey key = MetricKey(sectorId, metricId);
@@ -342,7 +344,7 @@ class _GrowthEnginePageState
     ),
     FuelSector(
       id: 'emergency', name: 'Emergency Procurement Premium', icon: '🚨',
-      description: 'The premium cost of buying fuel urgently at above market rates.',
+      description: 'The premium cost of buying fuel urgently at above-market rates.',
       targetAudience: 'Any site that has run dry unexpectedly',
       accentColor: const Color(0xFFFF9500),
       metrics: const [
@@ -438,9 +440,7 @@ class _GrowthEnginePageState
     final FuelSector? sector = _getSectorById(sectorId);
     if (sector == null) return 0;
     try {
-      return sector.metrics
-          .firstWhere((m) => m.id == metricId)
-          .defaultValue;
+      return sector.metrics.firstWhere((m) => m.id == metricId).defaultValue;
     } catch (_) {
       return 0;
     }
@@ -588,7 +588,6 @@ class _GrowthEnginePageState
       ));
       return;
     }
-
     setState(() => _isExportingPdf = true);
 
     final List<Map<String, dynamic>> breakdown = [];
@@ -596,13 +595,11 @@ class _GrowthEnginePageState
       final double loss = _calculateSectorLoss(sector);
       if (loss > 0) {
         breakdown.add({
-          'sector': sector.name,
-          'annual_loss': loss,
-          'formatted': _formatNaira(loss),
-          'percentage': _totalAnnualLoss > 0
-              ? ((loss / _totalAnnualLoss) * 100).toStringAsFixed(0)
-              : '0',
-        });
+        'sector': sector.name, 'annual_loss': loss,
+        'formatted': _formatNaira(loss),
+        'percentage': _totalAnnualLoss > 0
+            ? ((loss / _totalAnnualLoss) * 100).toStringAsFixed(0) : '0',
+      });
       }
     }
     for (final sector in _secondarySectors) {
@@ -610,13 +607,11 @@ class _GrowthEnginePageState
         final double loss = _calculateSectorLoss(sector);
         if (loss > 0) {
           breakdown.add({
-            'sector': sector.name,
-            'annual_loss': loss,
-            'formatted': _formatNaira(loss),
-            'percentage': _totalAnnualLoss > 0
-                ? ((loss / _totalAnnualLoss) * 100).toStringAsFixed(0)
-                : '0',
-          });
+          'sector': sector.name, 'annual_loss': loss,
+          'formatted': _formatNaira(loss),
+          'percentage': _totalAnnualLoss > 0
+              ? ((loss / _totalAnnualLoss) * 100).toStringAsFixed(0) : '0',
+        });
         }
       }
     }
@@ -668,30 +663,25 @@ class _GrowthEnginePageState
             : "PDF GENERATION FAILED — email us at launchbypatrick.webdev@gmail.com",
         style: GoogleFonts.robotoMono(
           color: success ? Colors.black : Colors.white,
-          fontWeight: FontWeight.bold,
-          fontSize: 11,
+          fontWeight: FontWeight.bold, fontSize: 11,
         ),
       ),
     ));
   }
 
-  // =========================================================================
-  // DISPOSE — clean up all dynamic controllers and focus nodes
-  // =========================================================================
-
   @override
   void dispose() {
+    // FIX 1: dispose page node
+    _pageFocusNode.dispose();
     _orgNameController.dispose();
     _emailController.dispose();
     _locationController.dispose();
     _orgFocus.dispose();
     _emailFocus.dispose();
     _locationFocus.dispose();
-    // Dispose all dynamically created metric controllers
     for (final ctrl in _metricControllers.values) {
       ctrl.dispose();
     }
-    // Dispose all dynamically created metric focus nodes
     for (final node in _metricFocusNodes.values) {
       node.dispose();
     }
@@ -715,7 +705,12 @@ class _GrowthEnginePageState
               assetPath: 'assets/videos/sentinel_matrix_loop.mp4',
             ),
           ),
+          // FIX 1: pageFocusNode passed to LaunchTactileEngine
+          // This is the neutral owner that the scroll engine needs.
+          // Without it, every TextField unfocus leaves the engine
+          // as sole focus consumer, stealing all keyboard events.
           LaunchTactileEngine(
+            focusNode: _pageFocusNode,
             onRefresh: () async =>
             await Future.delayed(const Duration(milliseconds: 800)),
             child: Column(
@@ -753,15 +748,12 @@ class _GrowthEnginePageState
           Semantics(
             label: 'Sentinel Fuel Loss Diagnostic Engine.',
             child: Container(
-              padding:
-              const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
               color: _green.withValues(alpha: 0.15),
-              child: Text("",
-                  style: GoogleFonts.robotoMono(
-                      color: _green,
+              child: Text("SENTINEL // FUEL LOSS DIAGNOSTIC ENGINE",
+                  style: GoogleFonts.robotoMono(color: _green,
                       fontSize: isMobile ? 8 : 10,
-                      fontWeight: FontWeight.bold,
-                      letterSpacing: 2.0)),
+                      fontWeight: FontWeight.bold, letterSpacing: 2.0)),
             ),
           ),
           const SizedBox(height: 20),
@@ -772,19 +764,13 @@ class _GrowthEnginePageState
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text('CALCULATE EXACTLY',
-                    style: TextStyle(
-                        fontSize: isMobile ? 28 : 48,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                        letterSpacing: 1.2,
-                        height: 1.1)),
+                    style: TextStyle(fontSize: isMobile ? 28 : 48,
+                        fontWeight: FontWeight.bold, color: Colors.white,
+                        letterSpacing: 1.2, height: 1.1)),
                 Text('WHAT YOU ARE LOSING.',
-                    style: TextStyle(
-                        fontSize: isMobile ? 28 : 48,
-                        fontWeight: FontWeight.bold,
-                        color: _green,
-                        letterSpacing: 1.2,
-                        height: 1.1)),
+                    style: TextStyle(fontSize: isMobile ? 28 : 48,
+                        fontWeight: FontWeight.bold, color: _green,
+                        letterSpacing: 1.2, height: 1.1)),
               ],
             ),
           ),
@@ -793,10 +779,8 @@ class _GrowthEnginePageState
             constraints: const BoxConstraints(maxWidth: 680),
             child: Text(
               'Answer three questions per sector. Get your annual fuel loss figure in Naira. Use the PDF report to justify the decision to act.',
-              style: GoogleFonts.poppins(
-                  color: Colors.white70,
-                  fontSize: isMobile ? 13 : 15,
-                  height: 1.6),
+              style: GoogleFonts.poppins(color: Colors.white70,
+                  fontSize: isMobile ? 13 : 15, height: 1.6),
             ),
           ),
           const SizedBox(height: 60),
@@ -813,66 +797,52 @@ class _GrowthEnginePageState
       'YOUR OPERATION', 'PRIMARY SECTORS', 'ADD MORE', 'YOUR EXPOSURE'
     ];
     return Container(
-      color: _pageBg, // Solid opaque cover
+      color: Colors.black.withValues(alpha: 0.4),
       padding: EdgeInsets.symmetric(
           horizontal: isMobile ? 16 : 60, vertical: 20),
       child: Row(
         children: List.generate(steps.length * 2 - 1, (i) {
           if (i.isOdd) {
-            return Expanded(
-              child: Container(
-                height: 1,
+            return Expanded(child: Container(height: 1,
                 color: _currentStep > (i ~/ 2)
-                    ? _green
-                    : Colors.white.withValues(alpha: 0.1),
-              ),
-            );
+                    ? _green : Colors.white.withValues(alpha: 0.1)));
           }
-          final int si        = i ~/ 2;
-          final bool isActive = _currentStep == si;
-          final bool isDone   = _currentStep > si;
-          return Column(
-            children: [
-              Container(
-                width: 28, height: 28,
-                decoration: BoxDecoration(
-                  color: isDone
-                      ? _green
-                      : isActive
-                      ? _green.withValues(alpha: 0.2)
-                      : Colors.transparent,
-                  border: Border.all(
+          final int si     = i ~/ 2;
+          final bool isActive  = _currentStep == si;
+          final bool isDone    = _currentStep > si;
+          return Column(children: [
+            Container(
+              width: 28, height: 28,
+              decoration: BoxDecoration(
+                color: isDone ? _green
+                    : isActive ? _green.withValues(alpha: 0.2)
+                    : Colors.transparent,
+                border: Border.all(
                     color: isDone || isActive ? _green : Colors.white24,
-                    width: 1,
-                  ),
-                ),
-                child: Center(
-                  child: isDone
-                      ? const Icon(Icons.check, color: Colors.black, size: 14)
-                      : Text('${si + 1}',
-                      style: GoogleFonts.robotoMono(
-                          color: isActive ? _green : Colors.white38,
-                          fontSize: 11,
-                          fontWeight: FontWeight.bold)),
-                ),
+                    width: 1),
               ),
-              if (!isMobile) ...[
-                const SizedBox(height: 6),
-                Text(steps[si],
-                    style: GoogleFonts.robotoMono(
-                        color: isActive || isDone ? _green : Colors.white24,
-                        fontSize: 8,
-                        letterSpacing: 1.0)),
-              ],
+              child: Center(
+                child: isDone
+                    ? const Icon(Icons.check, color: Colors.black, size: 14)
+                    : Text('${si + 1}', style: GoogleFonts.robotoMono(
+                    color: isActive ? _green : Colors.white38,
+                    fontSize: 11, fontWeight: FontWeight.bold)),
+              ),
+            ),
+            if (!isMobile) ...[
+              const SizedBox(height: 6),
+              Text(steps[si], style: GoogleFonts.robotoMono(
+                  color: isActive || isDone ? _green : Colors.white24,
+                  fontSize: 8, letterSpacing: 1.0)),
             ],
-          );
+          ]);
         }),
       ),
     );
   }
 
   // =========================================================================
-  // STEP 0: AUDIENCE SELECTOR
+  // AUDIENCE SELECTOR
   // =========================================================================
   Widget _buildAudienceSelector(bool isMobile) {
     return LaunchSectionContainer(
@@ -880,20 +850,17 @@ class _GrowthEnginePageState
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const SizedBox(height: 20),
-          Text("STEP 01: IDENTIFY YOUR OPERATION",
-              style: GoogleFonts.robotoMono(
-                  color: _green, fontSize: 11,
+          Text("STEP 01 // IDENTIFY YOUR OPERATION",
+              style: GoogleFonts.robotoMono(color: _green, fontSize: 11,
                   fontWeight: FontWeight.bold, letterSpacing: 2.0)),
           const SizedBox(height: 16),
           Text("Which best describes you?",
-              style: TextStyle(
-                  color: Colors.white,
-                  fontSize: isMobile ? 22 : 30,
-                  fontWeight: FontWeight.bold)),
+              style: TextStyle(color: Colors.white,
+                  fontSize: isMobile ? 22 : 30, fontWeight: FontWeight.bold)),
           const SizedBox(height: 8),
           Text("We'll show you the sectors most relevant to your operation first.",
-              style: GoogleFonts.poppins(
-                  color: Colors.white54, fontSize: isMobile ? 12 : 14)),
+              style: GoogleFonts.poppins(color: Colors.white54,
+                  fontSize: isMobile ? 12 : 14)),
           const SizedBox(height: 40),
           isMobile
               ? Column(children: [
@@ -950,7 +917,9 @@ class _GrowthEnginePageState
         duration: const Duration(milliseconds: 200),
         padding: EdgeInsets.all(isMobile ? 20 : 28),
         decoration: BoxDecoration(
-          color: isSelected ? const Color(0xFF0E2318) : _cardBg, // Solid background cover
+          color: isSelected
+              ? _green.withValues(alpha: 0.1)
+              : _cardBg.withValues(alpha: 0.3),
           border: Border.all(
               color: isSelected ? _green : Colors.white10,
               width: isSelected ? 1.5 : 1),
@@ -960,25 +929,20 @@ class _GrowthEnginePageState
           children: [
             Text(icon, style: const TextStyle(fontSize: 32)),
             const SizedBox(height: 16),
-            Text(title,
-                style: TextStyle(
-                    color: isSelected ? Colors.white : Colors.white70,
-                    fontSize: isMobile ? 16 : 18,
-                    fontWeight: FontWeight.bold,
-                    height: 1.3)),
+            Text(title, style: TextStyle(
+                color: isSelected ? Colors.white : Colors.white70,
+                fontSize: isMobile ? 16 : 18,
+                fontWeight: FontWeight.bold, height: 1.3)),
             const SizedBox(height: 8),
-            Text(subtitle,
-                style: GoogleFonts.poppins(
-                    color: Colors.white38, fontSize: 12, height: 1.4)),
+            Text(subtitle, style: GoogleFonts.poppins(
+                color: Colors.white38, fontSize: 12, height: 1.4)),
             if (isSelected) ...[
               const SizedBox(height: 16),
               Row(children: [
                 Container(width: 8, height: 8, color: _green),
                 const SizedBox(width: 8),
-                Text("SELECTED",
-                    style: GoogleFonts.robotoMono(
-                        color: _green, fontSize: 10,
-                        fontWeight: FontWeight.bold)),
+                Text("SELECTED", style: GoogleFonts.robotoMono(
+                    color: _green, fontSize: 10, fontWeight: FontWeight.bold)),
               ]),
             ],
           ],
@@ -988,7 +952,7 @@ class _GrowthEnginePageState
   }
 
   // =========================================================================
-  // STEP 1: PRIMARY SECTORS
+  // PRIMARY SECTORS
   // =========================================================================
   Widget _buildPrimarySectors(bool isMobile) {
     return LaunchSectionContainer(
@@ -996,24 +960,17 @@ class _GrowthEnginePageState
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const SizedBox(height: 40),
-          Text("STEP 02: PRIMARY LOSS SECTORS",
-              style: GoogleFonts.robotoMono(
-                  color: _green, fontSize: 11,
+          Text("STEP 02 // PRIMARY LOSS SECTORS",
+              style: GoogleFonts.robotoMono(color: _green, fontSize: 11,
                   fontWeight: FontWeight.bold, letterSpacing: 2.0)),
           const SizedBox(height: 12),
           Text("Your Core Exposure Areas",
-              style: TextStyle(
-                  color: Colors.white,
-                  fontSize: isMobile ? 22 : 30,
-                  fontWeight: FontWeight.bold)),
+              style: TextStyle(color: Colors.white,
+                  fontSize: isMobile ? 22 : 30, fontWeight: FontWeight.bold)),
           const SizedBox(height: 8),
-          Text(
-            "Move the slider or type a number directly. Be conservative — most operations underestimate their losses.",
-            style: GoogleFonts.poppins(
-                color: Colors.white54,
-                fontSize: isMobile ? 12 : 14,
-                height: 1.5),
-          ),
+          Text("Move the slider or type a number directly. Be conservative — most operations underestimate their losses.",
+              style: GoogleFonts.poppins(color: Colors.white54,
+                  fontSize: isMobile ? 12 : 14, height: 1.5)),
           const SizedBox(height: 32),
           ..._primarySectorsForAudience.map((sector) => Padding(
             padding: const EdgeInsets.only(bottom: 24),
@@ -1025,7 +982,7 @@ class _GrowthEnginePageState
   }
 
   // =========================================================================
-  // STEP 2: SECONDARY SECTORS
+  // SECONDARY SECTORS
   // =========================================================================
   Widget _buildSecondarySectors(bool isMobile) {
     return LaunchSectionContainer(
@@ -1033,22 +990,17 @@ class _GrowthEnginePageState
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const SizedBox(height: 20),
-          Text("STEP 03: ADD MORE SECTORS (OPTIONAL)",
-              style: GoogleFonts.robotoMono(
-                  color: _amber, fontSize: 11,
+          Text("STEP 03 // ADD MORE SECTORS (OPTIONAL)",
+              style: GoogleFonts.robotoMono(color: _amber, fontSize: 11,
                   fontWeight: FontWeight.bold, letterSpacing: 2.0)),
           const SizedBox(height: 12),
           Text("Include More Loss Sources",
-              style: TextStyle(
-                  color: Colors.white,
-                  fontSize: isMobile ? 20 : 28,
-                  fontWeight: FontWeight.bold)),
+              style: TextStyle(color: Colors.white,
+                  fontSize: isMobile ? 20 : 28, fontWeight: FontWeight.bold)),
           const SizedBox(height: 8),
           Text("Expand any sector that applies. Each adds to your total exposure figure.",
-              style: GoogleFonts.poppins(
-                  color: Colors.white54,
-                  fontSize: isMobile ? 12 : 14,
-                  height: 1.5)),
+              style: GoogleFonts.poppins(color: Colors.white54,
+                  fontSize: isMobile ? 12 : 14, height: 1.5)),
           const SizedBox(height: 24),
           ..._secondarySectors.map((sector) {
             final bool isExpanded =
@@ -1057,80 +1009,67 @@ class _GrowthEnginePageState
             isExpanded ? _calculateSectorLoss(sector) : 0;
             return Padding(
               padding: const EdgeInsets.only(bottom: 12),
-              child: Column(
-                children: [
-                  GestureDetector(
-                    onTap: () => setState(() => isExpanded
-                        ? _expandedSecondarySectors.remove(sector.id)
-                        : _expandedSecondarySectors.add(sector.id)),
-                    child: Container(
-                      padding: EdgeInsets.all(isMobile ? 16 : 20),
-                      decoration: BoxDecoration(
-                        color: isExpanded ? const Color(0xFF121E16) : _cardBg, // Solid background cover
-                        border: Border.all(
-                            color: isExpanded
-                                ? sector.accentColor.withValues(alpha: 0.4)
-                                : Colors.white10),
-                      ),
-                      child: Row(
+              child: Column(children: [
+                GestureDetector(
+                  onTap: () => setState(() => isExpanded
+                      ? _expandedSecondarySectors.remove(sector.id)
+                      : _expandedSecondarySectors.add(sector.id)),
+                  child: Container(
+                    padding: EdgeInsets.all(isMobile ? 16 : 20),
+                    decoration: BoxDecoration(
+                      color: isExpanded
+                          ? sector.accentColor.withValues(alpha: 0.08)
+                          : _cardBg.withValues(alpha: 0.2),
+                      border: Border.all(
+                          color: isExpanded
+                              ? sector.accentColor.withValues(alpha: 0.4)
+                              : Colors.white10),
+                    ),
+                    child: Row(children: [
+                      Text(sector.icon,
+                          style: const TextStyle(fontSize: 20)),
+                      const SizedBox(width: 16),
+                      Expanded(child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(sector.icon,
-                              style: const TextStyle(fontSize: 20)),
-                          const SizedBox(width: 16),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(sector.name,
-                                    style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: isMobile ? 14 : 16,
-                                        fontWeight: FontWeight.bold)),
-                                Text(sector.description,
-                                    style: GoogleFonts.poppins(
-                                        color: Colors.white38,
-                                        fontSize: 11,
-                                        height: 1.4)),
-                              ],
-                            ),
-                          ),
-                          const SizedBox(width: 16),
-                          if (isExpanded && sectorLoss > 0)
-                            Text(_formatNaira(sectorLoss),
-                                style: GoogleFonts.robotoMono(
-                                    color: sector.accentColor,
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.bold)),
-                          const SizedBox(width: 12),
-                          Icon(
-                              isExpanded
-                                  ? Icons.expand_less
-                                  : Icons.expand_more,
-                              color: isExpanded
-                                  ? sector.accentColor
-                                  : Colors.white38),
+                          Text(sector.name, style: TextStyle(
+                              color: Colors.white,
+                              fontSize: isMobile ? 14 : 16,
+                              fontWeight: FontWeight.bold)),
+                          Text(sector.description, style: GoogleFonts.poppins(
+                              color: Colors.white38, fontSize: 11, height: 1.4)),
                         ],
-                      ),
-                    ),
+                      )),
+                      const SizedBox(width: 16),
+                      if (isExpanded && sectorLoss > 0)
+                        Text(_formatNaira(sectorLoss),
+                            style: GoogleFonts.robotoMono(
+                                color: sector.accentColor, fontSize: 14,
+                                fontWeight: FontWeight.bold)),
+                      const SizedBox(width: 12),
+                      Icon(isExpanded ? Icons.expand_less : Icons.expand_more,
+                          color: isExpanded
+                              ? sector.accentColor : Colors.white38),
+                    ]),
                   ),
-                  if (isExpanded)
-                    Container(
-                      padding: EdgeInsets.all(isMobile ? 16 : 24),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFF0B140D), // Solid cover for expanded content
-                        border: Border(
-                          left: BorderSide(
-                              color: sector.accentColor.withValues(alpha: 0.3)),
-                          right: BorderSide(
-                              color: sector.accentColor.withValues(alpha: 0.1)),
-                          bottom: BorderSide(
-                              color: sector.accentColor.withValues(alpha: 0.1)),
-                        ),
+                ),
+                if (isExpanded)
+                  Container(
+                    padding: EdgeInsets.all(isMobile ? 16 : 24),
+                    decoration: BoxDecoration(
+                      color: sector.accentColor.withValues(alpha: 0.03),
+                      border: Border(
+                        left: BorderSide(
+                            color: sector.accentColor.withValues(alpha: 0.3)),
+                        right: BorderSide(
+                            color: sector.accentColor.withValues(alpha: 0.1)),
+                        bottom: BorderSide(
+                            color: sector.accentColor.withValues(alpha: 0.1)),
                       ),
-                      child: _buildMetricsForSector(sector, isMobile),
                     ),
-                ],
-              ),
+                    child: _buildMetricsForSector(sector, isMobile),
+                  ),
+              ]),
             );
           }),
           const SizedBox(height: 20),
@@ -1146,57 +1085,43 @@ class _GrowthEnginePageState
     final double sectorLoss = _calculateSectorLoss(sector);
     return Container(
       decoration: BoxDecoration(
-        color: _cardBg, // Solid cover
-        border:
-        Border.all(color: sector.accentColor.withValues(alpha: 0.25)),
+        color: _cardBg.withValues(alpha: 0.3),
+        border: Border.all(color: sector.accentColor.withValues(alpha: 0.25)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
             padding: EdgeInsets.all(isMobile ? 16 : 24),
-            decoration: BoxDecoration(
-              border: Border(
-                  bottom: BorderSide(
-                      color: sector.accentColor.withValues(alpha: 0.15))),
-            ),
-            child: Row(
-              children: [
-                Text(sector.icon, style: const TextStyle(fontSize: 24)),
-                const SizedBox(width: 16),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(sector.name,
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontSize: isMobile ? 16 : 20,
-                              fontWeight: FontWeight.bold)),
-                      Text(sector.targetAudience,
-                          style: GoogleFonts.poppins(
-                              color: Colors.white38,
-                              fontSize: 11,
-                              height: 1.4)),
-                    ],
-                  ),
+            decoration: BoxDecoration(border: Border(
+                bottom: BorderSide(
+                    color: sector.accentColor.withValues(alpha: 0.15)))),
+            child: Row(children: [
+              Text(sector.icon, style: const TextStyle(fontSize: 24)),
+              const SizedBox(width: 16),
+              Expanded(child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(sector.name, style: TextStyle(color: Colors.white,
+                      fontSize: isMobile ? 16 : 20,
+                      fontWeight: FontWeight.bold)),
+                  Text(sector.targetAudience, style: GoogleFonts.poppins(
+                      color: Colors.white38, fontSize: 11, height: 1.4)),
+                ],
+              )),
+              if (sectorLoss > 0)
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Text(_formatNaira(sectorLoss), style: GoogleFonts.robotoMono(
+                        color: _red,
+                        fontSize: isMobile ? 18 : 22,
+                        fontWeight: FontWeight.bold)),
+                    Text("/ year", style: GoogleFonts.robotoMono(
+                        color: Colors.white38, fontSize: 10)),
+                  ],
                 ),
-                if (sectorLoss > 0)
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      Text(_formatNaira(sectorLoss),
-                          style: GoogleFonts.robotoMono(
-                              color: _red,
-                              fontSize: isMobile ? 18 : 22,
-                              fontWeight: FontWeight.bold)),
-                      Text("/ year",
-                          style: GoogleFonts.robotoMono(
-                              color: Colors.white38, fontSize: 10)),
-                    ],
-                  ),
-              ],
-            ),
+            ]),
           ),
           Padding(
             padding: EdgeInsets.all(isMobile ? 16 : 24),
@@ -1209,12 +1134,13 @@ class _GrowthEnginePageState
 
   // =========================================================================
   // METRICS — slider + editable text field, bidirectional sync
+  // FIX 3: onTapOutside and onSubmitted redirect to _pageFocusNode
+  // instead of calling focusNode.unfocus() into the void
   // =========================================================================
   Widget _buildMetricsForSector(FuelSector sector, bool isMobile) {
     return Column(
       children: sector.metrics.map((metric) {
         final double current = metricValue(sector.id, metric.id);
-        // Get or create the controller and focus node for this metric
         final TextEditingController ctrl =
         _controllerFor(sector.id, metric.id, metric.defaultValue);
         final FocusNode focusNode = _focusFor(sector.id, metric.id);
@@ -1224,22 +1150,13 @@ class _GrowthEnginePageState
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // ── label row ────────────────────────────────────────────
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Expanded(
-                    child: Text(metric.label,
-                        style: GoogleFonts.robotoMono(
-                            color: Colors.white54,
-                            fontSize: isMobile ? 9 : 10,
-                            letterSpacing: 1.2)),
-                  ),
+                  Expanded(child: Text(metric.label,
+                      style: GoogleFonts.robotoMono(color: Colors.white54,
+                          fontSize: isMobile ? 9 : 10, letterSpacing: 1.2))),
                   const SizedBox(width: 12),
-
-                  // ── FIX: editable text field replaces read-only Text ──
-                  // Isolated FocusNode prevents scroll engine from stealing
-                  // arrow key events when this field is active
                   SizedBox(
                     width: isMobile ? 90 : 120,
                     height: 36,
@@ -1249,26 +1166,20 @@ class _GrowthEnginePageState
                       keyboardType: const TextInputType.numberWithOptions(
                           decimal: true),
                       inputFormatters: [
-                        // Allow digits and one decimal point only
-                        FilteringTextInputFormatter.allow(
-                            RegExp(r'[\d.]')),
+                        FilteringTextInputFormatter.allow(RegExp(r'[\d.]')),
                       ],
                       textAlign: TextAlign.center,
-                      style: GoogleFonts.robotoMono(
-                          color: _green,
-                          fontSize: 13,
-                          fontWeight: FontWeight.bold),
+                      style: GoogleFonts.robotoMono(color: _green,
+                          fontSize: 13, fontWeight: FontWeight.bold),
                       decoration: InputDecoration(
                         filled: true,
                         fillColor: _cardBg,
                         isDense: true,
                         contentPadding: const EdgeInsets.symmetric(
                             horizontal: 8, vertical: 10),
-                        // Unit suffix hint
                         suffix: Text(
                           metric.unit == '₦' || metric.unit == '₦/L'
-                              ? '₦'
-                              : metric.unit,
+                              ? '₦' : metric.unit,
                           style: TextStyle(
                               color: _green.withValues(alpha: 0.5),
                               fontSize: 10),
@@ -1281,42 +1192,32 @@ class _GrowthEnginePageState
                             borderSide: BorderSide(color: _green),
                             borderRadius: BorderRadius.zero),
                       ),
-                      // Typing → parse → update slider
                       onChanged: (text) => _setMetricFromField(
                           sector.id, metric.id, text, metric),
-                      // On done/unfocus → clamp and reformat
                       onSubmitted: (_) {
                         final double clamped =
                         metricValue(sector.id, metric.id)
                             .clamp(metric.min, metric.max);
-                        _setMetricFromSlider(
-                            sector.id, metric.id, clamped);
+                        _setMetricFromSlider(sector.id, metric.id, clamped);
+                        // FIX 3: redirect to page node, not into void
+                        _pageFocusNode.requestFocus();
                       },
-                      // FIX: release scroll engine focus when tapping outside
                       onTapOutside: (_) {
                         final double clamped =
                         metricValue(sector.id, metric.id)
                             .clamp(metric.min, metric.max);
-                        _setMetricFromSlider(
-                            sector.id, metric.id, clamped);
-                        focusNode.unfocus();
+                        _setMetricFromSlider(sector.id, metric.id, clamped);
+                        // FIX 3: redirect to page node, not into void
+                        _pageFocusNode.requestFocus();
                       },
                     ),
                   ),
                 ],
               ),
-              const SizedBox(height: 10),
-
-              // ── display value formatted (read-only, below the label) ─
-              Text(
-                _formatMetricValue(current, metric),
-                style: TextStyle(
-                    color: Colors.white38,
-                    fontSize: 10),
-              ),
               const SizedBox(height: 6),
-
-              // ── slider ─────────────────────────────────────────────────
+              Text(_formatMetricValue(current, metric),
+                  style: const TextStyle(color: Colors.white38, fontSize: 10)),
+              const SizedBox(height: 6),
               SliderTheme(
                 data: SliderThemeData(
                   activeTrackColor: _green,
@@ -1324,35 +1225,29 @@ class _GrowthEnginePageState
                   thumbColor: _green,
                   overlayColor: _green.withValues(alpha: 0.15),
                   trackHeight: 2,
-                  thumbShape:
-                  const RoundSliderThumbShape(enabledThumbRadius: 8),
+                  thumbShape: const RoundSliderThumbShape(
+                      enabledThumbRadius: 8),
                 ),
                 child: Slider(
                   min: metric.min,
                   max: metric.max,
-                  divisions:
-                  ((metric.max - metric.min) / metric.step).round(),
+                  divisions: ((metric.max - metric.min) / metric.step).round(),
                   value: current.clamp(metric.min, metric.max),
-                  // Slider → update field + value
                   onChanged: (val) =>
                       _setMetricFromSlider(sector.id, metric.id, val),
                 ),
               ),
-
-              // ── range labels ───────────────────────────────────────────
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(_formatMetricValue(metric.min, metric),
                       style: const TextStyle(
                           color: Colors.white24, fontSize: 10)),
-                  Flexible(
-                    child: Text(metric.hint,
-                        textAlign: TextAlign.center,
-                        overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
-                            color: Colors.white24, fontSize: 9)),
-                  ),
+                  Flexible(child: Text(metric.hint,
+                      textAlign: TextAlign.center,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                          color: Colors.white24, fontSize: 9))),
                   Text(_formatMetricValue(metric.max, metric),
                       style: const TextStyle(
                           color: Colors.white24, fontSize: 10)),
@@ -1370,52 +1265,45 @@ class _GrowthEnginePageState
   // =========================================================================
   Widget _buildCalculateButton(bool isMobile) {
     return LaunchSectionContainer(
-      child: Column(
-        children: [
-          const SizedBox(height: 20),
-          SizedBox(
-            width: double.infinity,
-            child: ElevatedButton(
-              onPressed: _isCalculating ? null : _runCalculation,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: _green,
-                disabledBackgroundColor: _green.withValues(alpha: 0.4),
-                foregroundColor: Colors.black,
-                padding: const EdgeInsets.symmetric(vertical: 22),
-                shape: const RoundedRectangleBorder(
-                    borderRadius: BorderRadius.zero),
-                elevation: 0,
-              ),
-              child: _isCalculating
-                  ? Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const SizedBox(
-                        width: 16, height: 16,
-                        child: CircularProgressIndicator(
-                            color: Colors.black, strokeWidth: 2)),
-                    const SizedBox(width: 12),
-                    Text("CALCULATING EXPOSURE...",
-                        style: GoogleFonts.robotoMono(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 13,
-                            letterSpacing: 1.5)),
-                  ])
-                  : Text("CALCULATE MY FUEL LOSS EXPOSURE",
-                  style: GoogleFonts.robotoMono(
-                      fontWeight: FontWeight.w900,
-                      fontSize: isMobile ? 12 : 14,
-                      letterSpacing: 1.5)),
+      child: Column(children: [
+        const SizedBox(height: 20),
+        SizedBox(
+          width: double.infinity,
+          child: ElevatedButton(
+            onPressed: _isCalculating ? null : _runCalculation,
+            style: ElevatedButton.styleFrom(
+              backgroundColor: _green,
+              disabledBackgroundColor: _green.withValues(alpha: 0.4),
+              foregroundColor: Colors.black,
+              padding: const EdgeInsets.symmetric(vertical: 22),
+              shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.zero),
+              elevation: 0,
             ),
+            child: _isCalculating
+                ? Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+              const SizedBox(width: 16, height: 16,
+                  child: CircularProgressIndicator(
+                      color: Colors.black, strokeWidth: 2)),
+              const SizedBox(width: 12),
+              Text("CALCULATING EXPOSURE...",
+                  style: GoogleFonts.robotoMono(
+                      fontWeight: FontWeight.bold, fontSize: 13,
+                      letterSpacing: 1.5)),
+            ])
+                : Text("CALCULATE MY FUEL LOSS EXPOSURE",
+                style: GoogleFonts.robotoMono(
+                    fontWeight: FontWeight.w900,
+                    fontSize: isMobile ? 12 : 14, letterSpacing: 1.5)),
           ),
-          const SizedBox(height: 40),
-        ],
-      ),
+        ),
+        const SizedBox(height: 40),
+      ]),
     );
   }
 
   // =========================================================================
-  // STEP 3: RESULTS
+  // RESULTS
   // =========================================================================
   Widget _buildResults(bool isMobile) {
     return LaunchSectionContainer(
@@ -1427,29 +1315,24 @@ class _GrowthEnginePageState
             width: double.infinity,
             padding: EdgeInsets.all(isMobile ? 24 : 40),
             decoration: BoxDecoration(
-              color: const Color(0xFF140808), // Solid cover for annual loss result box
+              color: _red.withValues(alpha: 0.06),
               border: Border.all(color: _red.withValues(alpha: 0.3)),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text("ESTIMATED ANNUAL FUEL LOSS EXPOSURE",
-                    style: GoogleFonts.robotoMono(
-                        color: Colors.white38,
-                        fontSize: isMobile ? 9 : 11,
-                        letterSpacing: 2.0)),
+                    style: GoogleFonts.robotoMono(color: Colors.white38,
+                        fontSize: isMobile ? 9 : 11, letterSpacing: 2.0)),
                 const SizedBox(height: 16),
                 Text(_formatNaira(_totalAnnualLoss),
-                    style: TextStyle(
-                        color: _red,
+                    style: TextStyle(color: _red,
                         fontSize: isMobile ? 48 : 72,
                         fontWeight: FontWeight.w900,
-                        letterSpacing: -1,
-                        height: 1)),
+                        letterSpacing: -1, height: 1)),
                 const SizedBox(height: 8),
                 Text("per year — based on your inputs",
-                    style: GoogleFonts.poppins(
-                        color: Colors.white38,
+                    style: GoogleFonts.poppins(color: Colors.white38,
                         fontSize: isMobile ? 12 : 14)),
                 const SizedBox(height: 12),
                 Text("Over 3 years: ${_formatNaira(_totalAnnualLoss * 3)}",
@@ -1460,10 +1343,8 @@ class _GrowthEnginePageState
           ),
           const SizedBox(height: 24),
           Text("SECTOR BREAKDOWN",
-              style: GoogleFonts.robotoMono(
-                  color: Colors.white38,
-                  fontSize: 10,
-                  fontWeight: FontWeight.bold,
+              style: GoogleFonts.robotoMono(color: Colors.white38,
+                  fontSize: 10, fontWeight: FontWeight.bold,
                   letterSpacing: 2.0)),
           const SizedBox(height: 16),
           ..._buildSectorBreakdown(isMobile),
@@ -1494,49 +1375,35 @@ class _GrowthEnginePageState
       final double loss = entry.value;
       final double pct =
       _totalAnnualLoss > 0 ? (loss / _totalAnnualLoss * 100) : 0;
-
       return Padding(
         padding: const EdgeInsets.only(bottom: 16),
-        child: Row(
-          children: [
-            Text(sector.icon, style: const TextStyle(fontSize: 16)),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(sector.name,
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontSize: isMobile ? 12 : 14,
-                              fontWeight: FontWeight.w500)),
-                      Text(_formatNaira(loss),
-                          style: GoogleFonts.robotoMono(
-                              color: _red,
-                              fontSize: isMobile ? 12 : 14,
-                              fontWeight: FontWeight.bold)),
-                    ],
-                  ),
-                  const SizedBox(height: 6),
-                  Stack(children: [
-                    Container(height: 3, color: Colors.white10),
-                    FractionallySizedBox(
-                      widthFactor: pct / 100,
-                      child: Container(height: 3, color: _red),
-                    ),
+        child: Row(children: [
+          Text(sector.icon, style: const TextStyle(fontSize: 16)),
+          const SizedBox(width: 12),
+          Expanded(child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(sector.name, style: TextStyle(color: Colors.white,
+                        fontSize: isMobile ? 12 : 14,
+                        fontWeight: FontWeight.w500)),
+                    Text(_formatNaira(loss), style: GoogleFonts.robotoMono(
+                        color: _red, fontSize: isMobile ? 12 : 14,
+                        fontWeight: FontWeight.bold)),
                   ]),
-                  const SizedBox(height: 4),
-                  Text("${pct.toStringAsFixed(0)}% of total exposure",
-                      style: const TextStyle(
-                          color: Colors.white24, fontSize: 10)),
-                ],
-              ),
-            ),
-          ],
-        ),
+              const SizedBox(height: 6),
+              Stack(children: [
+                Container(height: 3, color: Colors.white10),
+                FractionallySizedBox(widthFactor: pct / 100,
+                    child: Container(height: 3, color: _red)),
+              ]),
+              const SizedBox(height: 4),
+              Text("${pct.toStringAsFixed(0)}% of total exposure",
+                  style: const TextStyle(color: Colors.white24, fontSize: 10)),
+            ],
+          )),
+        ]),
       );
     }).toList();
   }
@@ -1548,14 +1415,10 @@ class _GrowthEnginePageState
     if (_qualificationOutcome == 0) {
       return Container(
         padding: const EdgeInsets.all(24),
-        decoration: BoxDecoration(
-          color: _cardBg, // Solid cover
-          border: Border.all(color: Colors.white10),
-        ),
-        child: Text(
-          "Enter your asset data above to calculate your fuel loss exposure.",
-          style: GoogleFonts.poppins(color: Colors.white38, fontSize: 14),
-        ),
+        decoration: BoxDecoration(color: Colors.white.withValues(alpha: 0.02),
+            border: Border.all(color: Colors.white10)),
+        child: Text("Enter your asset data above to calculate your fuel loss exposure.",
+            style: GoogleFonts.poppins(color: Colors.white38, fontSize: 14)),
       );
     }
 
@@ -1563,40 +1426,29 @@ class _GrowthEnginePageState
       return Container(
         padding: EdgeInsets.all(isMobile ? 20 : 32),
         decoration: BoxDecoration(
-          color: const Color(0xFF1A170A), // Solid amber-tinted cover
+          color: _amber.withValues(alpha: 0.05),
           border: Border.all(color: _amber.withValues(alpha: 0.3)),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text("",
-                style: GoogleFonts.robotoMono(
-                    color: _amber, fontSize: 10,
+            Text("EXPOSURE DETECTED // BELOW PRIMARY THRESHOLD",
+                style: GoogleFonts.robotoMono(color: _amber, fontSize: 10,
                     fontWeight: FontWeight.bold, letterSpacing: 1.5)),
             const SizedBox(height: 12),
-            Text(
-              "Your exposure is ${_formatNaira(_totalAnnualLoss)} — even small losses compound over time.",
-              style: TextStyle(
-                  color: Colors.white,
-                  fontSize: isMobile ? 16 : 20,
-                  fontWeight: FontWeight.bold),
-            ),
+            Text("Your exposure is ${_formatNaira(_totalAnnualLoss)} — even small losses compound over time.",
+                style: TextStyle(color: Colors.white,
+                    fontSize: isMobile ? 16 : 20,
+                    fontWeight: FontWeight.bold)),
             const SizedBox(height: 8),
-            Text(
-              "Over three years at this rate, you lose ${_formatNaira(_totalAnnualLoss * 3)}. A Sentinel pilot costs nothing to find out if it's worse.",
-              style: GoogleFonts.poppins(
-                  color: Colors.white70,
-                  fontSize: isMobile ? 13 : 15,
-                  height: 1.5),
-            ),
+            Text("Over three years at this rate, you lose ${_formatNaira(_totalAnnualLoss * 3)}. A Sentinel pilot costs nothing to find out if it's worse.",
+                style: GoogleFonts.poppins(color: Colors.white70,
+                    fontSize: isMobile ? 13 : 15, height: 1.5)),
             const SizedBox(height: 24),
             ElevatedButton(
-              onPressed: () {
-                // TODO: wire to ConnectionForm / rd_page gateway
-              },
+              onPressed: () {},
               style: ElevatedButton.styleFrom(
-                backgroundColor: _amber,
-                foregroundColor: Colors.black,
+                backgroundColor: _amber, foregroundColor: Colors.black,
                 padding: EdgeInsets.symmetric(
                     horizontal: isMobile ? 20 : 32, vertical: 16),
                 shape: const RoundedRectangleBorder(
@@ -1613,41 +1465,32 @@ class _GrowthEnginePageState
       );
     }
 
-    // Qualified
     return Container(
       padding: EdgeInsets.all(isMobile ? 20 : 32),
       decoration: BoxDecoration(
-        color: _cardBg, // Solid background cover
+        color: _green.withValues(alpha: 0.05),
         border: Border.all(color: _green, width: 1.5),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            padding:
-            const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
             color: _green,
             child: Text("QUALIFIED — PRIORITY DEPLOYMENT ELIGIBLE",
-                style: GoogleFonts.robotoMono(
-                    color: Colors.black, fontSize: 10,
-                    fontWeight: FontWeight.bold, letterSpacing: 1.5)),
+                style: GoogleFonts.robotoMono(color: Colors.black,
+                    fontSize: 10, fontWeight: FontWeight.bold,
+                    letterSpacing: 1.5)),
           ),
           const SizedBox(height: 20),
-          Text(
-            "Your operation is losing ${_formatNaira(_totalAnnualLoss)} per year.",
-            style: TextStyle(
-                color: Colors.white,
-                fontSize: isMobile ? 20 : 28,
-                fontWeight: FontWeight.bold),
-          ),
+          Text("Your operation is losing ${_formatNaira(_totalAnnualLoss)} per year.",
+              style: TextStyle(color: Colors.white,
+                  fontSize: isMobile ? 20 : 28,
+                  fontWeight: FontWeight.bold)),
           const SizedBox(height: 8),
-          Text(
-            "That is a preventable loss. A Sentinel telemetry deployment pays for itself in the first month of recovery. Get your full report — then apply for your free pilot.",
-            style: GoogleFonts.poppins(
-                color: Colors.white70,
-                fontSize: isMobile ? 13 : 15,
-                height: 1.5),
-          ),
+          Text("That is a preventable loss. A Sentinel telemetry deployment pays for itself in the first month of recovery. Get your full report — then apply for your free pilot.",
+              style: GoogleFonts.poppins(color: Colors.white70,
+                  fontSize: isMobile ? 13 : 15, height: 1.5)),
           const SizedBox(height: 32),
           _buildReportCapture(isMobile),
         ],
@@ -1656,27 +1499,23 @@ class _GrowthEnginePageState
   }
 
   // =========================================================================
-  // REPORT CAPTURE — FIX: isolated FocusNodes on all three fields
+  // REPORT CAPTURE — FIX 3: all fields use _pageFocusNode.requestFocus()
   // =========================================================================
   Widget _buildReportCapture(bool isMobile) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text("SEND MY FUEL LOSS REPORT",
-            style: GoogleFonts.robotoMono(
-                color: Colors.white38, fontSize: 10,
+            style: GoogleFonts.robotoMono(color: Colors.white38, fontSize: 10,
                 fontWeight: FontWeight.bold, letterSpacing: 2.0)),
         const SizedBox(height: 16),
         isMobile
             ? Column(children: [
-          _buildCaptureField(
-              "ORGANISATION", _orgNameController, _orgFocus),
+          _buildCaptureField("ORGANISATION", _orgNameController, _orgFocus),
           const SizedBox(height: 12),
-          _buildCaptureField(
-              "EMAIL ADDRESS *", _emailController, _emailFocus),
+          _buildCaptureField("EMAIL ADDRESS *", _emailController, _emailFocus),
           const SizedBox(height: 12),
-          _buildCaptureField(
-              "LOCATION / STATE", _locationController, _locationFocus),
+          _buildCaptureField("LOCATION / STATE", _locationController, _locationFocus),
         ])
             : Row(children: [
           Expanded(child: _buildCaptureField(
@@ -1703,58 +1542,49 @@ class _GrowthEnginePageState
               elevation: 0,
             ),
             child: _isExportingPdf
-                ? Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const SizedBox(
-                      width: 16, height: 16,
-                      child: CircularProgressIndicator(
-                          color: Colors.black, strokeWidth: 2)),
-                  const SizedBox(width: 12),
-                  Text("GENERATING YOUR REPORT...",
-                      style: GoogleFonts.robotoMono(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 12, letterSpacing: 1.5)),
-                ])
+                ? Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+              const SizedBox(width: 16, height: 16,
+                  child: CircularProgressIndicator(
+                      color: Colors.black, strokeWidth: 2)),
+              const SizedBox(width: 12),
+              Text("GENERATING YOUR REPORT...",
+                  style: GoogleFonts.robotoMono(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 12, letterSpacing: 1.5)),
+            ])
                 : Text("EXPORT MY FUEL LOSS REPORT (PDF)",
                 style: GoogleFonts.robotoMono(
                     fontWeight: FontWeight.w900,
-                    fontSize: isMobile ? 12 : 14,
-                    letterSpacing: 1.5)),
+                    fontSize: isMobile ? 12 : 14, letterSpacing: 1.5)),
           ),
         ),
         const SizedBox(height: 12),
-        Text(
-          "Report is emailed to you. Includes sector breakdown, 3-year projection, and a direct link to request your free Sentinel pilot.",
-          style: GoogleFonts.poppins(
-              color: Colors.white24, fontSize: 11, height: 1.5),
-        ),
+        Text("Report is emailed to you. Includes sector breakdown, 3-year projection, and a direct link to request your free Sentinel pilot.",
+            style: GoogleFonts.poppins(color: Colors.white24,
+                fontSize: 11, height: 1.5)),
       ],
     );
   }
 
-  // FIX: now takes a FocusNode parameter
-  // onTapOutside releases focus back to the scroll engine safely
+  // FIX 3: capture field takes FocusNode, redirects to _pageFocusNode
   Widget _buildCaptureField(
-      String label,
-      TextEditingController controller,
-      FocusNode focusNode) {
+      String label, TextEditingController controller, FocusNode focusNode) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label,
-            style: GoogleFonts.robotoMono(
-                color: Colors.white38, fontSize: 9, letterSpacing: 2)),
+        Text(label, style: GoogleFonts.robotoMono(
+            color: Colors.white38, fontSize: 9, letterSpacing: 2)),
         const SizedBox(height: 6),
         TextField(
           controller: controller,
           focusNode: focusNode,
           style: GoogleFonts.poppins(color: Colors.white, fontSize: 13),
-          onTapOutside: (_) => focusNode.unfocus(),
-          onSubmitted: (_) => focusNode.unfocus(),
+          // FIX 3: redirect to page node — the neutral focus owner
+          onTapOutside: (_) => _pageFocusNode.requestFocus(),
+          onSubmitted: (_) => _pageFocusNode.requestFocus(),
           decoration: InputDecoration(
             filled: true,
-            fillColor: _pageBg, // Solid background cover
+            fillColor: Colors.white.withValues(alpha: 0.03),
             enabledBorder: const OutlineInputBorder(
                 borderSide: BorderSide(color: Colors.white10),
                 borderRadius: BorderRadius.zero),

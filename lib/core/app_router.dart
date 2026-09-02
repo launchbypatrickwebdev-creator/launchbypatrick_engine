@@ -14,7 +14,7 @@ import '../pages/contact_page.dart';
 import '../pages/sentinel_page.dart';
 import '../pages/sentinel/growth_engine_page.dart' as sentinel_growth;
 import '../pages/sentinel/rd_page.dart';
-import 'package:launchbypatrick_engine/pages/sentinel/connect_page.dart';
+import '../pages/sentinel/connect_page.dart' as sentinel_contact;
 import '../../widgets/connection_form.dart';
 
 import '../data/products_data.dart';
@@ -143,7 +143,7 @@ final GoRouter appRouter = GoRouter(
         GoRoute(
           path: 'growth-engine',
           name: 'sentinel-growth-engine',
-          builder: (context, state) => const sentinel_growth.GrowthEnginePage(),
+          builder: (context, state) => const sentinel_growth.SentinelGrowthEnginePage()
         ),
         GoRoute(
           path: 'rd',
@@ -153,7 +153,7 @@ final GoRouter appRouter = GoRouter(
         GoRoute(
           path: 'connect',
           name: 'sentinel-connect',
-          builder: (context, state) => const ConnectPage(),
+          builder: (context, state) => const sentinel_contact.ConnectPage(),
         ),
       ],
     ),

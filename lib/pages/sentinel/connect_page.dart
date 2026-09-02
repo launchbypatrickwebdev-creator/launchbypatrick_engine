@@ -52,7 +52,7 @@ class _ConnectPageState extends State<ConnectPage> {
   String _searchQuery = '';
 
   // Deploy zone — dropdown state
-  bool _deployFormExpanded = false;
+  bool _deployFormExpanded = true;
 
   // Build zone — dropdown state
   bool _buildFormExpanded = false;
