@@ -201,12 +201,6 @@ class _SentinelGrowthEnginePageState
   List<FuelSector>? _cachedPrimarySectors;
   String?           _cachedAudience;
 
-  // =========================================================================
-  // FIX 2: isolated focus factory
-  // Intercepts horizontal arrows + space ONLY.
-  // Does NOT intercept arrowUp / arrowDown — those scroll the page.
-  // Matches growth_intakeform_page.dart _createIsolatedFocusNode() exactly.
-  // =========================================================================
   FocusNode _makeIsolatedFocus() {
     return FocusNode(
       onKeyEvent: (node, event) {
@@ -705,10 +699,6 @@ class _SentinelGrowthEnginePageState
               assetPath: 'assets/videos/growth-engine.mp4',
             ),
           ),
-          // FIX 1: pageFocusNode passed to LaunchTactileEngine
-          // This is the neutral owner that the scroll engine needs.
-          // Without it, every TextField unfocus leaves the engine
-          // as sole focus consumer, stealing all keyboard events.
           LaunchTactileEngine(
             focusNode: _pageFocusNode,
             onRefresh: () async =>
@@ -750,7 +740,7 @@ class _SentinelGrowthEnginePageState
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
               color: _green.withValues(alpha: 0.15),
-              child: Text("SENTINEL // FUEL LOSS DIAGNOSTIC ENGINE",
+              child: Text("",
                   style: GoogleFonts.robotoMono(color: _green,
                       fontSize: isMobile ? 8 : 10,
                       fontWeight: FontWeight.bold, letterSpacing: 2.0)),
@@ -797,7 +787,7 @@ class _SentinelGrowthEnginePageState
       'YOUR OPERATION', 'PRIMARY SECTORS', 'ADD MORE', 'YOUR EXPOSURE'
     ];
     return Container(
-      color: Colors.black.withValues(alpha: 0.4),
+      color: _pageBg,
       padding: EdgeInsets.symmetric(
           horizontal: isMobile ? 16 : 60, vertical: 20),
       child: Row(
@@ -850,7 +840,7 @@ class _SentinelGrowthEnginePageState
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const SizedBox(height: 20),
-          Text("STEP 01 // IDENTIFY YOUR OPERATION",
+          Text("STEP 01: IDENTIFY YOUR OPERATION",
               style: GoogleFonts.robotoMono(color: _green, fontSize: 11,
                   fontWeight: FontWeight.bold, letterSpacing: 2.0)),
           const SizedBox(height: 16),
@@ -917,9 +907,7 @@ class _SentinelGrowthEnginePageState
         duration: const Duration(milliseconds: 200),
         padding: EdgeInsets.all(isMobile ? 20 : 28),
         decoration: BoxDecoration(
-          color: isSelected
-              ? _green.withValues(alpha: 0.1)
-              : _cardBg.withValues(alpha: 0.3),
+          color: isSelected ? const Color(0xFF0E2318) : _cardBg, // Solid background cover
           border: Border.all(
               color: isSelected ? _green : Colors.white10,
               width: isSelected ? 1.5 : 1),
@@ -929,20 +917,25 @@ class _SentinelGrowthEnginePageState
           children: [
             Text(icon, style: const TextStyle(fontSize: 32)),
             const SizedBox(height: 16),
-            Text(title, style: TextStyle(
-                color: isSelected ? Colors.white : Colors.white70,
-                fontSize: isMobile ? 16 : 18,
-                fontWeight: FontWeight.bold, height: 1.3)),
+            Text(title,
+                style: TextStyle(
+                    color: isSelected ? Colors.white : Colors.white70,
+                    fontSize: isMobile ? 16 : 18,
+                    fontWeight: FontWeight.bold,
+                    height: 1.3)),
             const SizedBox(height: 8),
-            Text(subtitle, style: GoogleFonts.poppins(
-                color: Colors.white38, fontSize: 12, height: 1.4)),
+            Text(subtitle,
+                style: GoogleFonts.poppins(
+                    color: Colors.white38, fontSize: 12, height: 1.4)),
             if (isSelected) ...[
               const SizedBox(height: 16),
               Row(children: [
                 Container(width: 8, height: 8, color: _green),
                 const SizedBox(width: 8),
-                Text("SELECTED", style: GoogleFonts.robotoMono(
-                    color: _green, fontSize: 10, fontWeight: FontWeight.bold)),
+                Text("SELECTED",
+                    style: GoogleFonts.robotoMono(
+                        color: _green, fontSize: 10,
+                        fontWeight: FontWeight.bold)),
               ]),
             ],
           ],
@@ -960,7 +953,7 @@ class _SentinelGrowthEnginePageState
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const SizedBox(height: 40),
-          Text("STEP 02 // PRIMARY LOSS SECTORS",
+          Text("STEP 02: PRIMARY LOSS SECTORS",
               style: GoogleFonts.robotoMono(color: _green, fontSize: 11,
                   fontWeight: FontWeight.bold, letterSpacing: 2.0)),
           const SizedBox(height: 12),
@@ -968,7 +961,7 @@ class _SentinelGrowthEnginePageState
               style: TextStyle(color: Colors.white,
                   fontSize: isMobile ? 22 : 30, fontWeight: FontWeight.bold)),
           const SizedBox(height: 8),
-          Text("Move the slider or type a number directly. Be conservative — most operations underestimate their losses.",
+          Text("Move the slider or type a number directly. Be conservative, most operations underestimate their losses.",
               style: GoogleFonts.poppins(color: Colors.white54,
                   fontSize: isMobile ? 12 : 14, height: 1.5)),
           const SizedBox(height: 32),
@@ -990,17 +983,22 @@ class _SentinelGrowthEnginePageState
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const SizedBox(height: 20),
-          Text("STEP 03 // ADD MORE SECTORS (OPTIONAL)",
-              style: GoogleFonts.robotoMono(color: _amber, fontSize: 11,
+          Text("STEP 03: ADD MORE SECTORS (OPTIONAL)",
+              style: GoogleFonts.robotoMono(
+                  color: _amber, fontSize: 11,
                   fontWeight: FontWeight.bold, letterSpacing: 2.0)),
           const SizedBox(height: 12),
           Text("Include More Loss Sources",
-              style: TextStyle(color: Colors.white,
-                  fontSize: isMobile ? 20 : 28, fontWeight: FontWeight.bold)),
+              style: TextStyle(
+                  color: Colors.white,
+                  fontSize: isMobile ? 20 : 28,
+                  fontWeight: FontWeight.bold)),
           const SizedBox(height: 8),
           Text("Expand any sector that applies. Each adds to your total exposure figure.",
-              style: GoogleFonts.poppins(color: Colors.white54,
-                  fontSize: isMobile ? 12 : 14, height: 1.5)),
+              style: GoogleFonts.poppins(
+                  color: Colors.white54,
+                  fontSize: isMobile ? 12 : 14,
+                  height: 1.5)),
           const SizedBox(height: 24),
           ..._secondarySectors.map((sector) {
             final bool isExpanded =
@@ -1009,67 +1007,80 @@ class _SentinelGrowthEnginePageState
             isExpanded ? _calculateSectorLoss(sector) : 0;
             return Padding(
               padding: const EdgeInsets.only(bottom: 12),
-              child: Column(children: [
-                GestureDetector(
-                  onTap: () => setState(() => isExpanded
-                      ? _expandedSecondarySectors.remove(sector.id)
-                      : _expandedSecondarySectors.add(sector.id)),
-                  child: Container(
-                    padding: EdgeInsets.all(isMobile ? 16 : 20),
-                    decoration: BoxDecoration(
-                      color: isExpanded
-                          ? sector.accentColor.withValues(alpha: 0.08)
-                          : _cardBg.withValues(alpha: 0.2),
-                      border: Border.all(
-                          color: isExpanded
-                              ? sector.accentColor.withValues(alpha: 0.4)
-                              : Colors.white10),
-                    ),
-                    child: Row(children: [
-                      Text(sector.icon,
-                          style: const TextStyle(fontSize: 20)),
-                      const SizedBox(width: 16),
-                      Expanded(child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+              child: Column(
+                children: [
+                  GestureDetector(
+                    onTap: () => setState(() => isExpanded
+                        ? _expandedSecondarySectors.remove(sector.id)
+                        : _expandedSecondarySectors.add(sector.id)),
+                    child: Container(
+                      padding: EdgeInsets.all(isMobile ? 16 : 20),
+                      decoration: BoxDecoration(
+                        color: isExpanded ? const Color(0xFF121E16) : _cardBg, // Solid background cover
+                        border: Border.all(
+                            color: isExpanded
+                                ? sector.accentColor.withValues(alpha: 0.4)
+                                : Colors.white10),
+                      ),
+                      child: Row(
                         children: [
-                          Text(sector.name, style: TextStyle(
-                              color: Colors.white,
-                              fontSize: isMobile ? 14 : 16,
-                              fontWeight: FontWeight.bold)),
-                          Text(sector.description, style: GoogleFonts.poppins(
-                              color: Colors.white38, fontSize: 11, height: 1.4)),
+                          Text(sector.icon,
+                              style: const TextStyle(fontSize: 20)),
+                          const SizedBox(width: 16),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(sector.name,
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: isMobile ? 14 : 16,
+                                        fontWeight: FontWeight.bold)),
+                                Text(sector.description,
+                                    style: GoogleFonts.poppins(
+                                        color: Colors.white38,
+                                        fontSize: 11,
+                                        height: 1.4)),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(width: 16),
+                          if (isExpanded && sectorLoss > 0)
+                            Text(_formatNaira(sectorLoss),
+                                style: GoogleFonts.robotoMono(
+                                    color: sector.accentColor,
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.bold)),
+                          const SizedBox(width: 12),
+                          Icon(
+                              isExpanded
+                                  ? Icons.expand_less
+                                  : Icons.expand_more,
+                              color: isExpanded
+                                  ? sector.accentColor
+                                  : Colors.white38),
                         ],
-                      )),
-                      const SizedBox(width: 16),
-                      if (isExpanded && sectorLoss > 0)
-                        Text(_formatNaira(sectorLoss),
-                            style: GoogleFonts.robotoMono(
-                                color: sector.accentColor, fontSize: 14,
-                                fontWeight: FontWeight.bold)),
-                      const SizedBox(width: 12),
-                      Icon(isExpanded ? Icons.expand_less : Icons.expand_more,
-                          color: isExpanded
-                              ? sector.accentColor : Colors.white38),
-                    ]),
-                  ),
-                ),
-                if (isExpanded)
-                  Container(
-                    padding: EdgeInsets.all(isMobile ? 16 : 24),
-                    decoration: BoxDecoration(
-                      color: sector.accentColor.withValues(alpha: 0.03),
-                      border: Border(
-                        left: BorderSide(
-                            color: sector.accentColor.withValues(alpha: 0.3)),
-                        right: BorderSide(
-                            color: sector.accentColor.withValues(alpha: 0.1)),
-                        bottom: BorderSide(
-                            color: sector.accentColor.withValues(alpha: 0.1)),
                       ),
                     ),
-                    child: _buildMetricsForSector(sector, isMobile),
                   ),
-              ]),
+                  if (isExpanded)
+                    Container(
+                      padding: EdgeInsets.all(isMobile ? 16 : 24),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF0B140D), // Solid cover for expanded content
+                        border: Border(
+                          left: BorderSide(
+                              color: sector.accentColor.withValues(alpha: 0.3)),
+                          right: BorderSide(
+                              color: sector.accentColor.withValues(alpha: 0.1)),
+                          bottom: BorderSide(
+                              color: sector.accentColor.withValues(alpha: 0.1)),
+                        ),
+                      ),
+                      child: _buildMetricsForSector(sector, isMobile),
+                    ),
+                ],
+              ),
             );
           }),
           const SizedBox(height: 20),
