@@ -166,17 +166,18 @@ class _GrowthEnginePageState
       'https://zljdfgkvlipwbvmlizyx.supabase.co/functions/v1/generate-sentinel-pdf';
   static const double _qualificationThreshold = 2000000;
 
+  final FocusNode _pageFocusNode = FocusNode();
+
   // ── Step / audience state ──────────────────────────────────────────────────
   int     _currentStep     = 0;
   String? _selectedAudience;
   final Set<String> _expandedSecondarySectors = {};
 
-  // ── Typed metric values (slider + field sync) ─────────────────────────────
-  final Map<MetricKey, double>               _metricValues      = {};
-  // Controller for each metric's editable text field
+  // ── Typed metric values ──────────────────────────────────────────────────
+  final Map<MetricKey, double>                _metricValues      = {};
   final Map<MetricKey, TextEditingController> _metricControllers = {};
-  // FIX: isolated FocusNode per metric field — prevents scroll engine hijack
-  final Map<MetricKey, FocusNode>            _metricFocusNodes  = {};
+  // FIX 2: metric focus nodes use the corrected factory (horizontal only)
+  final Map<MetricKey, FocusNode>             _metricFocusNodes  = {};
 
   // ── Results ───────────────────────────────────────────────────────────────
   bool   _isCalculating   = false;
@@ -207,14 +208,12 @@ class _GrowthEnginePageState
   FocusNode _makeIsolatedFocus() {
     return FocusNode(
       onKeyEvent: (node, event) {
-        final bool isArrow =
-            event.logicalKey == LogicalKeyboardKey.arrowLeft  ||
-                event.logicalKey == LogicalKeyboardKey.arrowRight ||
-                event.logicalKey == LogicalKeyboardKey.arrowUp    ||
-                event.logicalKey == LogicalKeyboardKey.arrowDown;
+        final bool isHorizontal =
+            event.logicalKey == LogicalKeyboardKey.arrowLeft ||
+                event.logicalKey == LogicalKeyboardKey.arrowRight;
         final bool isSpace =
             event.logicalKey == LogicalKeyboardKey.space;
-        if (isArrow || isSpace) {
+        if (isHorizontal || isSpace) {
           return KeyEventResult.skipRemainingHandlers;
         }
         return KeyEventResult.ignored;
@@ -343,7 +342,7 @@ class _GrowthEnginePageState
     ),
     FuelSector(
       id: 'emergency', name: 'Emergency Procurement Premium', icon: '🚨',
-      description: 'The premium cost of buying fuel urgently at above-market rates.',
+      description: 'The premium cost of buying fuel urgently at above market rates.',
       targetAudience: 'Any site that has run dry unexpectedly',
       accentColor: const Color(0xFFFF9500),
       metrics: const [
@@ -453,11 +452,7 @@ class _GrowthEnginePageState
     final FuelSectorMetric? metric = sector?.metrics
         .cast<FuelSectorMetric?>()
         .firstWhere((m) => m?.id == metricId, orElse: () => null);
-
-    // Update slider value
     setState(() => _metricValues[key] = value);
-
-    // Sync text field without triggering its own onChange
     final TextEditingController ctrl =
     _controllerFor(sectorId, metricId, metric?.defaultValue ?? 0);
     final String formatted = _rawMetricString(value, metric);
@@ -469,21 +464,16 @@ class _GrowthEnginePageState
     }
   }
 
-  // Parses typed text → raw double, clamps to min/max, updates slider
   void _setMetricFromField(
       String sectorId, String metricId, String text, FuelSectorMetric metric) {
     final String cleaned =
     text.replaceAll(',', '').replaceAll('₦', '').replaceAll('%', '').trim();
     final double? parsed = double.tryParse(cleaned);
     if (parsed == null) return;
-
     final double clamped = parsed.clamp(metric.min, metric.max);
     setState(() => _metricValues[MetricKey(sectorId, metricId)] = clamped);
-    // Do NOT update the controller text here — let the user keep typing
   }
 
-  // Returns a raw numeric string suitable for the text field
-  // (no currency symbol, no commas — user needs to type raw digits)
   String _rawMetricString(double value, FuelSectorMetric? metric) {
     if (metric == null) return value.toStringAsFixed(0);
     if (metric.step < 1) return value.toStringAsFixed(1);

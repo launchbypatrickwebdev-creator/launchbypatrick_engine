@@ -31,7 +31,7 @@ class _SentinelPageState extends State<SentinelPage> {
   static const Color _pageBg    = Color(0xFF07080C); // page background
 
   // ── route to intake form — update when your form route is confirmed ──────
-  static const String _pilotRoute = '/connection_form';
+  static const String _pilotRoute = '/sentinel-connect';
 
   @override
   void initState() {
