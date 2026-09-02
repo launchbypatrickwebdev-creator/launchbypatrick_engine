@@ -11,12 +11,6 @@ class ConnectionForm extends StatefulWidget {
   final String initialProtocol;
   final String? lockedProtocol;
   final VoidCallback? onLockedTabTap;
-
-  // ADD: pageFocusNode received from parent page
-  // Every field's onTapOutside and onSubmitted
-  // calls pageFocusNode.requestFocus() — returns
-  // focus to the neutral page-level node so
-  // LaunchTactileEngine never loses its focus owner
   final FocusNode pageFocusNode;
 
   const ConnectionForm({
@@ -50,7 +44,7 @@ class _ConnectionFormState extends State<ConnectionForm> {
   String _classification  = "Industrial Architect";
   String _investmentScale = "₦ 2M – ₦ 10M";
   String _readiness       = "Pilot Program";
-  String _entityStructure = "LLC";
+  String _entityStructure = "LTD";
   bool   _isAuthorized    = false;
   bool   _isHardware      = false;
   String _seniorityLevel  = "L2";
@@ -76,10 +70,6 @@ class _ConnectionFormState extends State<ConnectionForm> {
   final TextEditingController _customStackController        = TextEditingController();
   final TextEditingController _customAvailabilityController = TextEditingController();
 
-  // ── FIX: isolated FocusNodes — only intercept horizontal arrows + space.
-  // Do NOT intercept arrowUp/arrowDown — those belong to the scroll engine
-  // for vertical page scrolling. This matches exactly what
-  // growth_intakeform_page.dart does.
   late final FocusNode _nameFocus         = _makeIsolatedFocus();
   late final FocusNode _emailFocus        = _makeIsolatedFocus();
   late final FocusNode _locationFocus     = _makeIsolatedFocus();
@@ -92,10 +82,6 @@ class _ConnectionFormState extends State<ConnectionForm> {
   late final FocusNode _customEntityFocus = _makeIsolatedFocus();
   late final FocusNode _customStackFocus  = _makeIsolatedFocus();
   late final FocusNode _customAvailFocus  = _makeIsolatedFocus();
-
-  // ── FIX: multiline fields use plain FocusNode — no key interceptor.
-  // Multiline TextFields handle their own vertical cursor movement and
-  // don't conflict with the scroll engine the way single-line fields do.
   late final FocusNode _visionFocus    = FocusNode();
   late final FocusNode _darkCloudFocus = FocusNode();
 
@@ -520,8 +506,8 @@ class _ConnectionFormState extends State<ConnectionForm> {
       _buildSectionLabel("LEGAL & COMPLIANCE"),
       const SizedBox(height: 15),
       _buildSimpleDropdown(
-        ["LLC", "Corporation", "Sole Proprietorship",
-          "Government / NGO", "OTHER..."],
+        ["LTD", "Corporation / Conglomerate", "Sole Proprietorship",
+          "Government / NGO", "Investor / Sponsor", "OTHER..."],
         _entityStructure,
             (val) => setState(() => _entityStructure = val!),
       ),
@@ -600,7 +586,7 @@ class _ConnectionFormState extends State<ConnectionForm> {
       ),
       const SizedBox(height: 20),
       _buildTextField("TIME ZONE",
-          "Current offset (e.g. UTC+1)",
+          "Current offset (e.g. GMT+1)",
           _timezoneController, _timezoneFocus),
       const SizedBox(height: 25),
       _buildAvailabilityDropdown(),
@@ -727,9 +713,6 @@ class _ConnectionFormState extends State<ConnectionForm> {
     );
   }
 
-  // FIX: every TextField calls widget.pageFocusNode.requestFocus()
-  // on both onTapOutside and onSubmitted — same pattern as
-  // growth_intakeform_page.dart which uses _pageFocusNode.requestFocus()
   Widget _buildTextField(
       String label,
       String hint,

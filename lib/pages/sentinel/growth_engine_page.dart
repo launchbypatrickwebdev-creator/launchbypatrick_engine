@@ -168,10 +168,6 @@ class _SentinelGrowthEnginePageState
   static const double _qualificationThreshold = 2000000;
 
   static const String _pilotRoute = '/sentinel/connect';
-
-  // FIX 1: page-level focus node — the neutral owner that LaunchTactileEngine
-  // needs. Without this, unfocusing any TextField leaves the scroll engine
-  // as the only focus consumer, causing it to steal all key events.
   final FocusNode _pageFocusNode = FocusNode();
 
   // ── Step / audience state ────────────────────────────────────────────────
@@ -182,7 +178,6 @@ class _SentinelGrowthEnginePageState
   // ── Typed metric values ──────────────────────────────────────────────────
   final Map<MetricKey, double>                _metricValues      = {};
   final Map<MetricKey, TextEditingController> _metricControllers = {};
-  // FIX 2: metric focus nodes use the corrected factory (horizontal only)
   final Map<MetricKey, FocusNode>             _metricFocusNodes  = {};
 
   // ── Results ──────────────────────────────────────────────────────────────
@@ -1162,8 +1157,6 @@ class _SentinelGrowthEnginePageState
 
   // =========================================================================
   // METRICS — slider + editable text field, bidirectional sync
-  // FIX 3: onTapOutside and onSubmitted redirect to _pageFocusNode
-  // instead of calling focusNode.unfocus() into the void
   // =========================================================================
   Widget _buildMetricsForSector(FuelSector sector, bool isMobile) {
     return Column(
@@ -1464,7 +1457,7 @@ class _SentinelGrowthEnginePageState
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text("EXPOSURE DETECTED // BELOW PRIMARY THRESHOLD",
+            Text("",
                 style: GoogleFonts.robotoMono(color: _amber, fontSize: 10,
                     fontWeight: FontWeight.bold, letterSpacing: 1.5)),
             const SizedBox(height: 12),

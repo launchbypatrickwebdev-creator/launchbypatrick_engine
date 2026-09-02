@@ -210,13 +210,8 @@ class _RDPageState extends State<RDPage> {
 
   // =========================================================================
   // MISSION, VISION, VALUES
-  // UPDATED: mission reflects full sovereign vision, not just industrial
-  // UPDATED: vision has two clear horizons — 2035 and 2040
+  // UPDATED: Solid dark background (hides background video) + 6 Core Values
   // =========================================================================
-  // =========================================================================
-// MISSION, VISION, VALUES
-// UPDATED: Solid dark background (hides background video) + 6 Core Values
-// =========================================================================
   Widget _buildMVV(bool isMobile) {
     return Container(
       width: double.infinity,
@@ -363,7 +358,7 @@ class _RDPageState extends State<RDPage> {
     );
   }
 
-// MISSION BLOCK
+  // MISSION BLOCK
   Widget _buildMissionBlock(bool isMobile) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -1070,7 +1065,7 @@ class _RDPageState extends State<RDPage> {
         child: Container(
           padding: EdgeInsets.all(isMobile ? 28 : 48),
           decoration: BoxDecoration(
-            color: Colors.amber.withValues(alpha: 0.05),
+            color: _amber,
             border: Border.all(color: Colors.amber.withValues(alpha: 0.25)),
           ),
           child: Column(
