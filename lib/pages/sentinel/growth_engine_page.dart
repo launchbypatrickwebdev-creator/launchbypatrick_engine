@@ -702,7 +702,7 @@ class _SentinelGrowthEnginePageState
         children: [
           const Positioned.fill(
             child: OpsBackgroundEngine(
-              assetPath: 'assets/videos/sentinel_matrix_loop.mp4',
+              assetPath: 'assets/videos/growth-engine.mp4',
             ),
           ),
           // FIX 1: pageFocusNode passed to LaunchTactileEngine

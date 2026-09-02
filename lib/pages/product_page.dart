@@ -37,7 +37,7 @@ class _ProductPageState extends State<ProductPage> {
           // 🛰️ LAYER 01: Your Dedicated Background Video Loop
           const Positioned.fill(
             child: OpsBackgroundEngine(
-              assetPath: 'assets/videos/industrial_core_loop.mp4',
+              assetPath: 'assets/videos/product.mp4',
             ),
           ),
 
