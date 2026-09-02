@@ -1065,7 +1065,7 @@ class _RDPageState extends State<RDPage> {
         child: Container(
           padding: EdgeInsets.all(isMobile ? 28 : 48),
           decoration: BoxDecoration(
-            color: _amber,
+            color: _amber.withValues(alpha: 0.02),
             border: Border.all(color: Colors.amber.withValues(alpha: 0.25)),
           ),
           child: Column(
@@ -1091,7 +1091,7 @@ class _RDPageState extends State<RDPage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text("STATUS: AUDIT_IN_PROGRESS",
+                  Text("STATUS: AUDIT IN PROGRESS",
                       style: GoogleFonts.robotoMono(
                           color: Colors.amber.withValues(alpha: 0.5),
                           fontSize: 9)),
