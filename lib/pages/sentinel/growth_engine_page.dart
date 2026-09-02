@@ -3,6 +3,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import '../../shared/ops_background_engine.dart';
@@ -165,6 +166,8 @@ class _SentinelGrowthEnginePageState
   static const String _pdfEndpoint =
       'https://zljdfgkvlipwbvmlizyx.supabase.co/functions/v1/generate-sentinel-pdf';
   static const double _qualificationThreshold = 2000000;
+
+  static const String _pilotRoute = '/sentinel/connect';
 
   // FIX 1: page-level focus node — the neutral owner that LaunchTactileEngine
   // needs. Without this, unfocusing any TextField leaves the scroll engine
@@ -1096,43 +1099,57 @@ class _SentinelGrowthEnginePageState
     final double sectorLoss = _calculateSectorLoss(sector);
     return Container(
       decoration: BoxDecoration(
-        color: _cardBg.withValues(alpha: 0.3),
-        border: Border.all(color: sector.accentColor.withValues(alpha: 0.25)),
+        color: _cardBg, // Solid cover
+        border:
+        Border.all(color: sector.accentColor.withValues(alpha: 0.25)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
             padding: EdgeInsets.all(isMobile ? 16 : 24),
-            decoration: BoxDecoration(border: Border(
-                bottom: BorderSide(
-                    color: sector.accentColor.withValues(alpha: 0.15)))),
-            child: Row(children: [
-              Text(sector.icon, style: const TextStyle(fontSize: 24)),
-              const SizedBox(width: 16),
-              Expanded(child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(sector.name, style: TextStyle(color: Colors.white,
-                      fontSize: isMobile ? 16 : 20,
-                      fontWeight: FontWeight.bold)),
-                  Text(sector.targetAudience, style: GoogleFonts.poppins(
-                      color: Colors.white38, fontSize: 11, height: 1.4)),
-                ],
-              )),
-              if (sectorLoss > 0)
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    Text(_formatNaira(sectorLoss), style: GoogleFonts.robotoMono(
-                        color: _red,
-                        fontSize: isMobile ? 18 : 22,
-                        fontWeight: FontWeight.bold)),
-                    Text("/ year", style: GoogleFonts.robotoMono(
-                        color: Colors.white38, fontSize: 10)),
-                  ],
+            decoration: BoxDecoration(
+              border: Border(
+                  bottom: BorderSide(
+                      color: sector.accentColor.withValues(alpha: 0.15))),
+            ),
+            child: Row(
+              children: [
+                Text(sector.icon, style: const TextStyle(fontSize: 24)),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(sector.name,
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: isMobile ? 16 : 20,
+                              fontWeight: FontWeight.bold)),
+                      Text(sector.targetAudience,
+                          style: GoogleFonts.poppins(
+                              color: Colors.white38,
+                              fontSize: 11,
+                              height: 1.4)),
+                    ],
+                  ),
                 ),
-            ]),
+                if (sectorLoss > 0)
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Text(_formatNaira(sectorLoss),
+                          style: GoogleFonts.robotoMono(
+                              color: _red,
+                              fontSize: isMobile ? 18 : 22,
+                              fontWeight: FontWeight.bold)),
+                      Text("/ year",
+                          style: GoogleFonts.robotoMono(
+                              color: Colors.white38, fontSize: 10)),
+                    ],
+                  ),
+              ],
+            ),
           ),
           Padding(
             padding: EdgeInsets.all(isMobile ? 16 : 24),
@@ -1326,7 +1343,7 @@ class _SentinelGrowthEnginePageState
             width: double.infinity,
             padding: EdgeInsets.all(isMobile ? 24 : 40),
             decoration: BoxDecoration(
-              color: _red.withValues(alpha: 0.06),
+              color: const Color(0xFF140808),
               border: Border.all(color: _red.withValues(alpha: 0.3)),
             ),
             child: Column(
@@ -1426,10 +1443,14 @@ class _SentinelGrowthEnginePageState
     if (_qualificationOutcome == 0) {
       return Container(
         padding: const EdgeInsets.all(24),
-        decoration: BoxDecoration(color: Colors.white.withValues(alpha: 0.02),
-            border: Border.all(color: Colors.white10)),
-        child: Text("Enter your asset data above to calculate your fuel loss exposure.",
-            style: GoogleFonts.poppins(color: Colors.white38, fontSize: 14)),
+        decoration: BoxDecoration(
+          color: _cardBg, // Solid cover
+          border: Border.all(color: Colors.white10),
+        ),
+        child: Text(
+          "Enter your asset data above to calculate your fuel loss exposure.",
+          style: GoogleFonts.poppins(color: Colors.white38, fontSize: 14),
+        ),
       );
     }
 
@@ -1437,7 +1458,7 @@ class _SentinelGrowthEnginePageState
       return Container(
         padding: EdgeInsets.all(isMobile ? 20 : 32),
         decoration: BoxDecoration(
-          color: _amber.withValues(alpha: 0.05),
+          color: const Color(0xFF1A170A),
           border: Border.all(color: _amber.withValues(alpha: 0.3)),
         ),
         child: Column(
@@ -1457,7 +1478,7 @@ class _SentinelGrowthEnginePageState
                     fontSize: isMobile ? 13 : 15, height: 1.5)),
             const SizedBox(height: 24),
             ElevatedButton(
-              onPressed: () {},
+              onPressed: () => context.go(_pilotRoute),
               style: ElevatedButton.styleFrom(
                 backgroundColor: _amber, foregroundColor: Colors.black,
                 padding: EdgeInsets.symmetric(
@@ -1479,7 +1500,7 @@ class _SentinelGrowthEnginePageState
     return Container(
       padding: EdgeInsets.all(isMobile ? 20 : 32),
       decoration: BoxDecoration(
-        color: _green.withValues(alpha: 0.05),
+        color: _cardBg, // Solid background cover
         border: Border.all(color: _green, width: 1.5),
       ),
       child: Column(
@@ -1595,7 +1616,7 @@ class _SentinelGrowthEnginePageState
           onSubmitted: (_) => _pageFocusNode.requestFocus(),
           decoration: InputDecoration(
             filled: true,
-            fillColor: Colors.white.withValues(alpha: 0.03),
+            fillColor: _pageBg,
             enabledBorder: const OutlineInputBorder(
                 borderSide: BorderSide(color: Colors.white10),
                 borderRadius: BorderRadius.zero),
