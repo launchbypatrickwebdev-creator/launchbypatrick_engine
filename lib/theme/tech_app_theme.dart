@@ -11,7 +11,7 @@ class TechAppTheme {
 
   // The 10% Dynamic Kinetic Accents
   static const Color architectureAccent = Color(0xFF6366F1); // Layer 1: Indigo Blue
-  static const Color iotAccent = Color(0xFF10B981);          // Layer 2: Emerald Green
+  static const Color iotAccent = Color(0xFF00C853);          // Layer 2: Emerald Green
 
   /// Inspects the current route state and returns the target branding color
   static Color getActiveAccent(String? currentPath) {
