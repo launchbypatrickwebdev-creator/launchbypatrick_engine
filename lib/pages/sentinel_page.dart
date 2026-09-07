@@ -6,6 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../shared/ops_background_engine.dart';
 import '../shared/launch_tactile_engine.dart';
 import '../shared/launch_section_container.dart';
+import '../theme/ai_theme_profiles.dart';
 import '../widgets/email_popup_catcher.dart';
 import '../widgets/sentinel_nav_bar.dart';
 import '../widgets/shared_site_footer.dart';
@@ -94,7 +95,9 @@ class _SentinelPageState extends State<SentinelPage> {
               ],
             ),
           ),
-          const FloatingAIBuddy(),
+          FloatingAIBuddy(
+            config: AIBuddyProfiles.getProfile('/sentinel'),
+          ),
         ],
       ),
     );

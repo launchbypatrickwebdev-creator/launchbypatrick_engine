@@ -114,10 +114,10 @@ class MistralAIService {
       return "GPIO configuration starts with mapping your pin roles: INPUT, OUTPUT, or INPUT_PULLUP. On the ESP32, pins 34–39 are input-only. Use digitalWrite() for outputs and digitalRead() for inputs. Always check your specific board's pinout diagram — the NodeMCU-32S and WROOM-32 differ in physical layout.";
     }
     if (lower.contains('wifi') || lower.contains('ble') || lower.contains('bluetooth') || lower.contains('connectivity')) {
-      return "The ESP32 supports dual-mode WiFi (802.11 b/g/n) and Bluetooth 4.2 BLE simultaneously. For WiFi: use WiFi.begin(ssid, password) and poll WiFi.status() until WL_CONNECTED. For BLE: use the BLEDevice library. Running both simultaneously increases power draw — consider sleep cycles if on battery.";
+      return "The device supports dual mode WiFi (802.11 b/g/n) and Bluetooth 4.2 BLE simultaneously. For WiFi: use WiFi.begin(ssid, password) and poll WiFi.status() until WL_CONNECTED. For BLE: use the BLEDevice library. Running both simultaneously increases power draw. Consider sleep cycles if on battery.";
     }
     if (lower.contains('power') || lower.contains('battery') || lower.contains('deep sleep') || lower.contains('low power')) {
-      return "ESP32 power management is critical for battery deployments. Deep sleep can reduce current from ~240mA active to ~10µA. Use esp_deep_sleep_start() and configure wake sources (timer, GPIO, touchpad). Typical battery life goes from hours to months with proper sleep cycles implemented.";
+      return "Power management is critical for battery deployments. Deep sleep can reduce current from ~240mA active to ~10µA. Use esp_deep_sleep_start() and configure wake sources (timer, GPIO, touchpad). Typical battery life goes from hours to months with proper sleep cycles implemented.";
     }
     if (lower.contains('firmware flashing') || lower.contains('flash') || lower.contains('upload') || lower.contains('esptool')) {
       return "Firmware flashing via esptool.py: ensure you have the correct COM port, set baud rate to 115200 or 921600 for speed, and hold the BOOT button during upload if auto-reset fails. For OTA flashing, ArduinoOTA or the ESP-IDF OTA partition scheme handles wireless updates without physical access.";

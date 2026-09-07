@@ -34,7 +34,7 @@ class SuggestionProfiles {
       title: 'SEO',
       mainAction: 'How can I improve my website SEO?',
       submenuOptions: [
-        'On-page SEO optimization',
+        'On page SEO optimization',
         'Technical SEO audit',
         'Content strategy for SEO',
         'Link building strategies',
@@ -47,7 +47,7 @@ class SuggestionProfiles {
       submenuOptions: [
         'Geo-fencing implementation',
         'Location services integration',
-        'Multi-region deployment',
+        'Multi region deployment',
         'Local business optimization',
       ],
       icon: '📍',
@@ -90,8 +90,8 @@ class SuggestionProfiles {
   /// Sentinel profile suggestions
   static const List<SuggestionPill> sentinelSuggestions = [
     SuggestionPill(
-      title: 'ESP32',
-      mainAction: 'Help me configure and optimize my ESP32 device',
+      title: 'MICROCONTROLLERS',
+      mainAction: 'Help me configure and optimize my device',
       submenuOptions: [
         'GPIO configuration',
         'WiFi/BLE connectivity',
@@ -148,7 +148,7 @@ class SuggestionProfiles {
       title: 'Sync',
       mainAction: 'Schedule a hardware synchronization meeting via Zoom',
       submenuOptions: [
-        'Technical deep-dive consultation',
+        'Technical deep dive consultation',
         'System architecture review',
         'Deployment planning',
         'Performance optimization session',

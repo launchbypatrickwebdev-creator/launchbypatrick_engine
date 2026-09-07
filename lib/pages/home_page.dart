@@ -8,6 +8,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../shared/ops_background_engine.dart';
 import '../shared/launch_tactile_engine.dart';
 import '../shared/launch_section_container.dart';
+import '../theme/ai_theme_profiles.dart';
 import '../widgets/email_popup_catcher.dart';
 import '../widgets/live_telemetry_matrix.dart';
 import '../widgets/top_nav_bar.dart';
@@ -86,7 +87,9 @@ class _HomePageState extends State<HomePage> {
               ],
             ),
           ),
-          const FloatingAIBuddy(),
+          FloatingAIBuddy(
+            config: AIBuddyProfiles.getProfile('/'),
+          ),
         ],
       ),
     );

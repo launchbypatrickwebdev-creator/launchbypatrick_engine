@@ -7,7 +7,8 @@ import 'chat_modal_sheet.dart';
 import 'desktop_chat_panel.dart';
 
 class FloatingAIBuddy extends StatefulWidget {
-  const FloatingAIBuddy({super.key});
+  final AIBuddyConfig? config;
+  const FloatingAIBuddy({super.key, this.config});
 
   @override
   State<FloatingAIBuddy> createState() => _FloatingAIBuddyState();

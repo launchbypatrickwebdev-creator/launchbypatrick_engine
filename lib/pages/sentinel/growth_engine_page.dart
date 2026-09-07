@@ -163,10 +163,12 @@ class _SentinelGrowthEnginePageState
   static const Color _pageBg = Color(0xFF07080C);
   static const Color _cardBg = Color(0xFF0A1A0F);
 
+  // ── Supabase PDF Edge Function Config ──────────────────────────────────
   static const String _pdfEndpoint =
-      'https://zljdfgkvlipwbvmlizyx.supabase.co/functions/v1/generate-sentinel-pdf';
-  static const double _qualificationThreshold = 2000000;
+      'https://jjlmgoxcnvedwbqzrero.supabase.co/functions/v1/generate-sentinel-pdf';
+  static const String _supabaseAnonKey = 'YOUR_SUPABASE_ANON_KEY';
 
+  static const double _qualificationThreshold = 2000000;
   static const String _pilotRoute = '/sentinel/connect';
   final FocusNode _pageFocusNode = FocusNode();
 
@@ -182,15 +184,17 @@ class _SentinelGrowthEnginePageState
 
   // ── Results ──────────────────────────────────────────────────────────────
   bool   _isCalculating   = false;
-  bool   _isExportingPdf  = false;
   double _totalAnnualLoss = 0;
+
+  // ── Export State ─────────────────────────────────────────────────────────
+  bool _isPdfExporting = false;
+  String? _pdfErrorMessage;
 
   // ── Capture fields ────────────────────────────────────────────────────────
   final TextEditingController _orgNameController  = TextEditingController();
   final TextEditingController _emailController    = TextEditingController();
   final TextEditingController _locationController = TextEditingController();
 
-  // FIX 2: capture field focus nodes — horizontal arrows + space only
   late final FocusNode _orgFocus      = _makeIsolatedFocus();
   late final FocusNode _emailFocus    = _makeIsolatedFocus();
   late final FocusNode _locationFocus = _makeIsolatedFocus();
@@ -235,6 +239,10 @@ class _SentinelGrowthEnginePageState
       _metricFocusNodes[key] = _makeIsolatedFocus();
     }
     return _metricFocusNodes[key]!;
+  }
+
+  double _getMetricValue(String sectorId, String metricId) {
+    return metricValue(sectorId, metricId);
   }
 
   // =========================================================================
@@ -524,28 +532,6 @@ class _SentinelGrowthEnginePageState
     return 2;
   }
 
-  String? _validateBeforeExport() {
-    if (_emailController.text.trim().isEmpty) {
-      return "EMAIL REQUIRED TO RECEIVE YOUR REPORT";
-    }
-    bool hasRealInput = false;
-    for (final sector in _primarySectorsForAudience) {
-      for (final metric in sector.metrics) {
-        final MetricKey key = MetricKey(sector.id, metric.id);
-        if (_metricValues.containsKey(key) &&
-            _metricValues[key] != metric.defaultValue) {
-          hasRealInput = true;
-          break;
-        }
-      }
-      if (hasRealInput) break;
-    }
-    if (!hasRealInput) {
-      return "ADJUST AT LEAST ONE METRIC TO REFLECT YOUR REAL NUMBERS";
-    }
-    return null;
-  }
-
   // =========================================================================
   // CALCULATE
   // =========================================================================
@@ -566,104 +552,106 @@ class _SentinelGrowthEnginePageState
   }
 
   // =========================================================================
-  // PDF EXPORT — with one retry
-  // =========================================================================
+// PDF EXPORT METHOD — emails report, no dart:html needed
+// =========================================================================
 
-  Future<void> _exportPdf() async {
-    final String? error = _validateBeforeExport();
-    if (error != null) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        backgroundColor: Colors.redAccent,
-        content: Text(error,
-            style: GoogleFonts.robotoMono(
-                color: Colors.white, fontWeight: FontWeight.bold)),
-      ));
+  Future<void> _exportFuelLossReport() async {
+    if (_emailController.text.trim().isEmpty) {
+      setState(() {
+        _pdfErrorMessage = 'Please provide an email address to receive your report.';
+      });
       return;
     }
-    setState(() => _isExportingPdf = true);
 
-    final List<Map<String, dynamic>> breakdown = [];
-    for (final sector in _primarySectorsForAudience) {
-      final double loss = _calculateSectorLoss(sector);
-      if (loss > 0) {
-        breakdown.add({
-        'sector': sector.name, 'annual_loss': loss,
-        'formatted': _formatNaira(loss),
-        'percentage': _totalAnnualLoss > 0
-            ? ((loss / _totalAnnualLoss) * 100).toStringAsFixed(0) : '0',
-      });
-      }
-    }
-    for (final sector in _secondarySectors) {
-      if (_expandedSecondarySectors.contains(sector.id)) {
-        final double loss = _calculateSectorLoss(sector);
-        if (loss > 0) {
-          breakdown.add({
-          'sector': sector.name, 'annual_loss': loss,
-          'formatted': _formatNaira(loss),
-          'percentage': _totalAnnualLoss > 0
-              ? ((loss / _totalAnnualLoss) * 100).toStringAsFixed(0) : '0',
-        });
-        }
-      }
-    }
-    breakdown.sort((a, b) =>
-        (b['annual_loss'] as double).compareTo(a['annual_loss'] as double));
-
-    final Map<String, dynamic> payload = {
-      'report_type':         'sentinel_fuel_loss',
-      'organisation':        _orgNameController.text.trim(),
-      'email':               _emailController.text.trim(),
-      'location':            _locationController.text.trim(),
-      'audience':            _selectedAudience,
-      'total_annual_loss':   _totalAnnualLoss,
-      'formatted_loss':      _formatNaira(_totalAnnualLoss),
-      'three_year_loss':     _formatNaira(_totalAnnualLoss * 3),
-      'sector_breakdown':    breakdown,
-      'primary_risk_sector': breakdown.isNotEmpty
-          ? breakdown.first['sector'] : 'N/A',
-      'generated_at':        DateTime.now().toIso8601String(),
-    };
+    setState(() {
+      _isPdfExporting  = true;
+      _pdfErrorMessage = null;
+    });
 
     bool success = false;
+
+    // One retry with 2s delay before surfacing error
     for (int attempt = 1; attempt <= 2; attempt++) {
       try {
         final response = await http.post(
           Uri.parse(_pdfEndpoint),
-          headers: {'Content-Type': 'application/json'},
-          body: json.encode(payload),
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer $_supabaseAnonKey',
+            'apikey': _supabaseAnonKey,
+          },
+          body: jsonEncode({
+            'audience':              _selectedAudience,
+            'organization':          _orgNameController.text.trim(),
+            'email':                 _emailController.text.trim(),
+            'location':              _locationController.text.trim(),
+            'gen_count':             _getMetricValue('generator', 'count'),
+            'gen_budget':            _getMetricValue('generator', 'monthly_budget'),
+            'gen_loss_pct':          _getMetricValue('generator', 'loss_percent'),
+            'fleet_count':           _getMetricValue('fleet', 'count'),
+            'fleet_spend':           _getMetricValue('fleet', 'monthly_spend'),
+            'fleet_unaccounted_pct': _getMetricValue('fleet', 'unaccounted'),
+            'downtime_hrs':          _getMetricValue('downtime', 'downtime_hrs'),
+            'downtime_val':          _getMetricValue('downtime', 'value_per_hr'),
+            'logging_hrs':           _getMetricValue('logging', 'staff_hrs'),
+            'logging_cost_hr':       _getMetricValue('logging', 'cost_per_hr'),
+            'logging_sites':         _getMetricValue('logging', 'sites'),
+            'emergency_buys':        _getMetricValue('emergency', 'emergency_buys'),
+            'emergency_premium_pct': _getMetricValue('emergency', 'premium_pct'),
+            'emergency_vol':         _getMetricValue('emergency', 'purchase_volume'),
+            'adulter_litres':        _getMetricValue('adulteration', 'monthly_litres'),
+            'adulter_pct':           _getMetricValue('adulteration', 'adulter_pct'),
+            'cost_per_litre':        _getMetricValue('adulteration', 'cost_per_litre'),
+            'multisite_count':       _getMetricValue('multisite', 'sites'),
+            'multisite_loss':        _getMetricValue('multisite', 'monthly_loss'),
+            'compliance_audits':     _getMetricValue('compliance', 'audits'),
+            'compliance_cost':       _getMetricValue('compliance', 'finding_cost'),
+            'compliance_prob':       _getMetricValue('compliance', 'probability'),
+          }),
         );
-        if (response.statusCode == 200) { success = true; break; }
-        debugPrint('⚠️ PDF attempt $attempt: ${response.statusCode}');
+
+        if (response.statusCode == 200) {
+          success = true;
+          break;
+        } else {
+          debugPrint('⚠️ PDF attempt $attempt: ${response.statusCode}');
+        }
       } catch (e) {
         debugPrint('⚠️ PDF attempt $attempt error: $e');
       }
+
       if (attempt == 1) {
         await Future.delayed(const Duration(seconds: 2));
       }
     }
 
     if (!mounted) return;
-    setState(() => _isExportingPdf = false);
 
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      backgroundColor: success ? _green : Colors.redAccent,
-      duration: Duration(seconds: success ? 4 : 5),
-      content: Text(
-        success
-            ? "REPORT DISPATCHED → ${_emailController.text.trim()}"
-            : "PDF GENERATION FAILED — email us at launchbypatrick.webdev@gmail.com",
-        style: GoogleFonts.robotoMono(
-          color: success ? Colors.black : Colors.white,
-          fontWeight: FontWeight.bold, fontSize: 11,
+    setState(() {
+      _isPdfExporting = false;
+      if (!success) {
+        _pdfErrorMessage =
+        'PDF GENERATION FAILED — email us at launchbypatrick.webdev@gmail.com';
+      }
+    });
+
+    if (success) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        backgroundColor: const Color(0xFF00C853),
+        duration: const Duration(seconds: 4),
+        content: Text(
+          "REPORT DISPATCHED → ${_emailController.text.trim()}",
+          style: GoogleFonts.robotoMono(
+              color: Colors.black,
+              fontWeight: FontWeight.bold,
+              fontSize: 12),
         ),
-      ),
-    ));
+      ));
+    }
   }
 
   @override
   void dispose() {
-    // FIX 1: dispose page node
     _pageFocusNode.dispose();
     _orgNameController.dispose();
     _emailController.dispose();
@@ -905,7 +893,7 @@ class _SentinelGrowthEnginePageState
         duration: const Duration(milliseconds: 200),
         padding: EdgeInsets.all(isMobile ? 20 : 28),
         decoration: BoxDecoration(
-          color: isSelected ? const Color(0xFF0E2318) : _cardBg, // Solid background cover
+          color: isSelected ? const Color(0xFF0E2318) : _cardBg,
           border: Border.all(
               color: isSelected ? _green : Colors.white10,
               width: isSelected ? 1.5 : 1),
@@ -1014,7 +1002,7 @@ class _SentinelGrowthEnginePageState
                     child: Container(
                       padding: EdgeInsets.all(isMobile ? 16 : 20),
                       decoration: BoxDecoration(
-                        color: isExpanded ? const Color(0xFF121E16) : _cardBg, // Solid background cover
+                        color: isExpanded ? const Color(0xFF121E16) : _cardBg,
                         border: Border.all(
                             color: isExpanded
                                 ? sector.accentColor.withValues(alpha: 0.4)
@@ -1065,7 +1053,7 @@ class _SentinelGrowthEnginePageState
                     Container(
                       padding: EdgeInsets.all(isMobile ? 16 : 24),
                       decoration: BoxDecoration(
-                        color: const Color(0xFF0B140D), // Solid cover for expanded content
+                        color: const Color(0xFF0B140D),
                         border: Border(
                           left: BorderSide(
                               color: sector.accentColor.withValues(alpha: 0.3)),
@@ -1094,7 +1082,7 @@ class _SentinelGrowthEnginePageState
     final double sectorLoss = _calculateSectorLoss(sector);
     return Container(
       decoration: BoxDecoration(
-        color: _cardBg, // Solid cover
+        color: _cardBg,
         border:
         Border.all(color: sector.accentColor.withValues(alpha: 0.25)),
       ),
@@ -1156,7 +1144,7 @@ class _SentinelGrowthEnginePageState
   }
 
   // =========================================================================
-  // METRICS — slider + editable text field, bidirectional sync
+  // METRICS
   // =========================================================================
   Widget _buildMetricsForSector(FuelSector sector, bool isMobile) {
     return Column(
@@ -1220,7 +1208,6 @@ class _SentinelGrowthEnginePageState
                         metricValue(sector.id, metric.id)
                             .clamp(metric.min, metric.max);
                         _setMetricFromSlider(sector.id, metric.id, clamped);
-                        // FIX 3: redirect to page node, not into void
                         _pageFocusNode.requestFocus();
                       },
                       onTapOutside: (_) {
@@ -1228,7 +1215,6 @@ class _SentinelGrowthEnginePageState
                         metricValue(sector.id, metric.id)
                             .clamp(metric.min, metric.max);
                         _setMetricFromSlider(sector.id, metric.id, clamped);
-                        // FIX 3: redirect to page node, not into void
                         _pageFocusNode.requestFocus();
                       },
                     ),
@@ -1437,7 +1423,7 @@ class _SentinelGrowthEnginePageState
       return Container(
         padding: const EdgeInsets.all(24),
         decoration: BoxDecoration(
-          color: _cardBg, // Solid cover
+          color: _cardBg,
           border: Border.all(color: Colors.white10),
         ),
         child: Text(
@@ -1493,7 +1479,7 @@ class _SentinelGrowthEnginePageState
     return Container(
       padding: EdgeInsets.all(isMobile ? 20 : 32),
       decoration: BoxDecoration(
-        color: _cardBg, // Solid background cover
+        color: _cardBg,
         border: Border.all(color: _green, width: 1.5),
       ),
       child: Column(
@@ -1524,7 +1510,7 @@ class _SentinelGrowthEnginePageState
   }
 
   // =========================================================================
-  // REPORT CAPTURE — FIX 3: all fields use _pageFocusNode.requestFocus()
+  // REPORT CAPTURE
   // =========================================================================
   Widget _buildReportCapture(bool isMobile) {
     return Column(
@@ -1553,35 +1539,67 @@ class _SentinelGrowthEnginePageState
               "LOCATION / STATE", _locationController, _locationFocus)),
         ]),
         const SizedBox(height: 20),
-        SizedBox(
-          width: double.infinity,
-          child: ElevatedButton(
-            onPressed: _isExportingPdf ? null : _exportPdf,
-            style: ElevatedButton.styleFrom(
-              backgroundColor: _green,
-              disabledBackgroundColor: _green.withValues(alpha: 0.4),
-              foregroundColor: Colors.black,
-              padding: const EdgeInsets.symmetric(vertical: 20),
-              shape: const RoundedRectangleBorder(
-                  borderRadius: BorderRadius.zero),
-              elevation: 0,
-            ),
-            child: _isExportingPdf
-                ? Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-              const SizedBox(width: 16, height: 16,
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            // Export Button
+            SizedBox(
+              height: 52,
+              child: ElevatedButton(
+                onPressed: _isPdfExporting ? null : _exportFuelLossReport,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF00E676),
+                  foregroundColor: Colors.black,
+                  shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.zero,
+                  ),
+                ),
+                child: _isPdfExporting
+                    ? const SizedBox(
+                  width: 20,
+                  height: 20,
                   child: CircularProgressIndicator(
-                      color: Colors.black, strokeWidth: 2)),
-              const SizedBox(width: 12),
-              Text("GENERATING YOUR REPORT...",
-                  style: GoogleFonts.robotoMono(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 12, letterSpacing: 1.5)),
-            ])
-                : Text("EXPORT MY FUEL LOSS REPORT (PDF)",
-                style: GoogleFonts.robotoMono(
-                    fontWeight: FontWeight.w900,
-                    fontSize: isMobile ? 12 : 14, letterSpacing: 1.5)),
-          ),
+                    color: Colors.black,
+                    strokeWidth: 2,
+                  ),
+                )
+                    : const Text(
+                  'EXPORT MY FUEL LOSS REPORT (PDF)',
+                  style: TextStyle(
+                    fontFamily: 'RobotoMono',
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: 1.1,
+                  ),
+                ),
+              ),
+            ),
+
+            // Dynamic Red Error Banner
+            if (_pdfErrorMessage != null) ...[
+              const SizedBox(height: 12),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                color: const Color(0xFFFF3333),
+                child: Row(
+                  children: [
+                    const Icon(Icons.error_outline, color: Colors.white, size: 18),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        _pdfErrorMessage!,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 12,
+                          fontFamily: 'RobotoMono',
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ],
         ),
         const SizedBox(height: 12),
         Text("Report is emailed to you. Includes sector breakdown, 3-year projection, and a direct link to request your free Sentinel pilot.",
@@ -1591,7 +1609,6 @@ class _SentinelGrowthEnginePageState
     );
   }
 
-  // FIX 3: capture field takes FocusNode, redirects to _pageFocusNode
   Widget _buildCaptureField(
       String label, TextEditingController controller, FocusNode focusNode) {
     return Column(
@@ -1604,7 +1621,6 @@ class _SentinelGrowthEnginePageState
           controller: controller,
           focusNode: focusNode,
           style: GoogleFonts.poppins(color: Colors.white, fontSize: 13),
-          // FIX 3: redirect to page node — the neutral focus owner
           onTapOutside: (_) => _pageFocusNode.requestFocus(),
           onSubmitted: (_) => _pageFocusNode.requestFocus(),
           decoration: InputDecoration(

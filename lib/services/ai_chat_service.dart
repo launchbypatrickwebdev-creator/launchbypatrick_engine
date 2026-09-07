@@ -20,7 +20,7 @@ class AIChatService {
 
   AIChatService({required this.config}) {
     _mistralService = MistralAIService(config: config);
-    _storageService = ConversationStorageService();
+    _storageService = ConversationStorageService(storageKey: config.storageKey);
   }
 
   /// Stream of current conversation updates
