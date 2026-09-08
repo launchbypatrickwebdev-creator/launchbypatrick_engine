@@ -83,4 +83,4 @@ company and brand built on top of Launch by Patrick's infrastructure.
 Email: launchbypatrick.webdev@gmail.com
 Location: Lagos, Nigeria / Ibadan, Nigeria / London, UK / Remote
 Book a call: https://calendly.com/grok6457/30min
-Intake form: https://launchbypatrick.com/growth_intakeform
+Intake form: https://launchbypatrick.vercel.app/growth_intakeform

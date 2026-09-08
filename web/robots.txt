@@ -60,5 +60,8 @@ Allow: /
 User-agent: PhindBot
 Allow: /
 
-Sitemap: https://launchbypatrick.com/sitemap.xml
-Link: <https://launchbypatrick.com/llms.txt>; rel="llms-txt"
+Sitemap: https://launchbypatrick.vercel.app/sitemap.xml
+Link: <https://launchbypatrick.vercel.app/llms.txt>; rel="llms-txt"
+
+Sitemap: https://echolevel.vercel.app/sentinel/sitemap.xml
+Link: <https://echolevel.vercel.app/sentinel/llms.txt>; rel="llms-txt"
