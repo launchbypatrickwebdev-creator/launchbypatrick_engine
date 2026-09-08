@@ -1,6 +1,6 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { PDFDocument, rgb, StandardFonts } from "https://cdn.skypack.dev/pdf-lib@^1.11.1?dts";
-import QRCode from "https://esm.sh/qrcode@1.5.3";
+import { qrcode } from "https://deno.land/x/qrcode@v1.5.0/mod.ts";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -218,7 +218,7 @@ serve(async (req) => {
     // Dynamic QR Code Generation
     y -= 130;
     const connectUrl = "https://echolevel.vercel.app/sentinel/connect";
-    const qrDataUrl = await QRCode.toDataURL(connectUrl, { margin: 1, width: 100 });
+    const qrDataUrl = (await qrcode(connectUrl)) as string;
     const qrImageBytes = Uint8Array.from(atob(qrDataUrl.split(',')[1]), c => c.charCodeAt(0));
     const qrImage = await pdfDoc.embedPng(qrImageBytes);
 
