@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
+import 'package:pdfx/pdfx.dart';
 import '../../shared/ops_background_engine.dart';
 import '../../shared/launch_tactile_engine.dart';
 import '../../shared/launch_section_container.dart';
@@ -166,7 +167,8 @@ class _SentinelGrowthEnginePageState
   // ── Supabase PDF Edge Function Config ──────────────────────────────────
   static const String _pdfEndpoint =
       'https://jjlmgoxcnvedwbqzrero.supabase.co/functions/v1/generate-sentinel-pdf';
-  static const String _supabaseAnonKey = 'YOUR_SUPABASE_ANON_KEY';
+  static const String _supabaseAnonKey =
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpqbG1nb3hjbnZlZHdicXpyZXJvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg2MjQ5NzEsImV4cCI6MjEwNDIwMDk3MX0.Oi0198XyetkfANmd37dAKsOenUBtrnEKCE6JjX9fogs';
 
   static const double _qualificationThreshold = 2000000;
   static const String _pilotRoute = '/sentinel/connect';
@@ -186,9 +188,11 @@ class _SentinelGrowthEnginePageState
   bool   _isCalculating   = false;
   double _totalAnnualLoss = 0;
 
-  // ── Export State ─────────────────────────────────────────────────────────
+  // ── Export & Preview State ───────────────────────────────────────────────
   bool _isPdfExporting = false;
   String? _pdfErrorMessage;
+  String? _previewBase64;
+  String? _dispatchedEmail;
 
   // ── Capture fields ────────────────────────────────────────────────────────
   final TextEditingController _orgNameController  = TextEditingController();
@@ -552,8 +556,8 @@ class _SentinelGrowthEnginePageState
   }
 
   // =========================================================================
-// PDF EXPORT METHOD — emails report, no dart:html needed
-// =========================================================================
+  // PDF EXPORT METHOD — dispatches report and captures base64 preview
+  // =========================================================================
 
   Future<void> _exportFuelLossReport() async {
     if (_emailController.text.trim().isEmpty) {
@@ -611,6 +615,11 @@ class _SentinelGrowthEnginePageState
         );
 
         if (response.statusCode == 200) {
+          final data = jsonDecode(response.body);
+          setState(() {
+            _previewBase64   = data['previewBase64'] as String?;
+            _dispatchedEmail = (data['email'] as String?) ?? _emailController.text.trim();
+          });
           success = true;
           break;
         } else {
@@ -1510,9 +1519,16 @@ class _SentinelGrowthEnginePageState
   }
 
   // =========================================================================
-  // REPORT CAPTURE
+  // REPORT CAPTURE / CANVAS EMBED
   // =========================================================================
   Widget _buildReportCapture(bool isMobile) {
+    if (_previewBase64 != null && _dispatchedEmail != null) {
+      return AuditPreviewCard(
+        base64Pdf: _previewBase64!,
+        email: _dispatchedEmail!,
+      );
+    }
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -1637,6 +1653,92 @@ class _SentinelGrowthEnginePageState
           ),
         ),
       ],
+    );
+  }
+}
+
+// =============================================================================
+// AUDIT PREVIEW CARD (VIEW-ONLY CANVAS EMBED)
+// =============================================================================
+
+class AuditPreviewCard extends StatefulWidget {
+  final String base64Pdf;
+  final String email;
+
+  const AuditPreviewCard({super.key, required this.base64Pdf, required this.email});
+
+  @override
+  State<AuditPreviewCard> createState() => _AuditPreviewCardState();
+}
+
+class _AuditPreviewCardState extends State<AuditPreviewCard> {
+  PdfControllerPinch? _pdfController;
+
+  @override
+  void initState() {
+    super.initState();
+    _pdfController = PdfControllerPinch(
+      document: PdfDocument.openData(base64Decode(widget.base64Pdf)),
+    );
+  }
+
+  @override
+  void dispose() {
+    _pdfController?.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: const Color(0xFF121318),
+        borderRadius: BorderRadius.circular(4),
+        border: Border.all(color: const Color(0xFF2A2D35), width: 1),
+      ),
+      padding: const EdgeInsets.all(20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Banner Callout Notification
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+            decoration: BoxDecoration(
+              color: const Color(0xFF00C853).withValues(alpha: 0.12),
+              border: Border.all(color: const Color(0xFF00C853), width: 1),
+              borderRadius: BorderRadius.circular(4),
+            ),
+            child: Row(
+              children: [
+                const Icon(Icons.mark_email_read_outlined, color: Color(0xFF00C853), size: 18),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Text(
+                    "FULL HIGH-RES REPORT DISPATCHED TO ${widget.email.toUpperCase()}",
+                    style: GoogleFonts.robotoMono(
+                      color: const Color(0xFF00C853),
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 16),
+          // View-Only Canvas Embed (No Toolbar / Download Options)
+          SizedBox(
+            height: 520,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(2),
+              child: PdfViewPinch(
+                controller: _pdfController!,
+                scrollDirection: Axis.vertical,
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

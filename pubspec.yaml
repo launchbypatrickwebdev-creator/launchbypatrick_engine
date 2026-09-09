@@ -44,6 +44,7 @@ dependencies:
 
   # UUID for unique message IDs
   uuid: ^4.0.0
+  pdfx: ^2.6.0
 
 dev_dependencies:
   flutter_test:
