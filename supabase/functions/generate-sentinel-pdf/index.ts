@@ -1,6 +1,6 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { PDFDocument, rgb, StandardFonts } from "npm:pdf-lib";
-import { qrcode } from "https://esm.sh/qrcode@1.5.3";
+import qrcode from "https://esm.sh/qrcode@1.5.3";   // ← fixed import
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -415,7 +415,7 @@ serve(async (req) => {
     // QR Code + CTA
     y -= 130;
     const connectUrl = "https://echolevel.vercel.app/sentinel/connect";
-    const qrDataUrl = (await qrcode(connectUrl)) as string;
+    const qrDataUrl = await qrcode(connectUrl) as string;
     const qrImageBytes = Uint8Array.from(
       atob(qrDataUrl.split(",")[1]),
       (c) => c.charCodeAt(0),
