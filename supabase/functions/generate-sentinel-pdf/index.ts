@@ -534,7 +534,7 @@ serve(async (req) => {
         },
         body: JSON.stringify({
           from: "Sentinel Audits <onboarding@resend.dev>", // ← change to your verified domain
-          to: [email],
+          to: ["launchbypatrick.webdev@gmail.com"],
           subject: `Sentinel Audit Report – ${organization} (${auditId})`,
           html: `
             <p>Hello,</p>
