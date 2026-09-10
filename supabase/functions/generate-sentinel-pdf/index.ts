@@ -145,12 +145,11 @@ serve(async (req) => {
         const logoImage = await pdfDoc.embedPng(logoBytes);
         page.drawImage(logoImage, {
           x: 40,
-          y: 770,          // adjust vertical position
-          width: 70,       // smaller width keeps the shape clean
-          height: 70,      // keep square aspect ratio
+          y: 770,
+          width: 70,
+          height: 70,
         });
       } else {
-        // Fallback text if logo fails
         page.drawText("ECHOLEVEL SENTINEL LTD", {
           x: 40,
           y: 805,
@@ -468,7 +467,6 @@ serve(async (req) => {
       color: emeraldGreen,
     });
 
-    // Create clickable annotation
     const linkAnnotation = pdfDoc.context.obj({
       Type: "Annot",
       Subtype: "Link",
@@ -530,30 +528,40 @@ serve(async (req) => {
 
     const pdfBytes = await pdfDoc.save();
 
-    // Safe conversion
+    // Safe base64 conversion
     let binary = "";
     for (let i = 0; i < pdfBytes.length; i++) {
       binary += String.fromCharCode(pdfBytes[i]);
     }
     const base64Pdf = btoa(binary);
 
-    //const base64Pdf = btoa(String.fromCharCode(...pdfBytes));
+    // ──────────────────────────────
+    // Send via Brevo
+    // ──────────────────────────────
+    const BREVO_API_KEY = Deno.env.get("BREVO_API_KEY");
 
-    // Send via Resend
-    const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
-    if (RESEND_API_KEY) {
+    if (BREVO_API_KEY) {
       try {
-        const resendRes = await fetch("https://api.resend.com/emails", {
+        const brevoRes = await fetch("https://api.brevo.com/v3/smtp/email", {
           method: "POST",
           headers: {
-            Authorization: `Bearer ${RESEND_API_KEY}`,
+            "api-key": BREVO_API_KEY,
             "Content-Type": "application/json",
+            "Accept": "application/json",
           },
           body: JSON.stringify({
-            from: "Sentinel Audits <onboarding@resend.dev>",
-            to: [email],
+            sender: {
+              name: "EchoLevel Sentinel",
+              email: "launchbypatrick.webdev@gmail.com",
+            },
+            to: [
+              {
+                email: email,
+                name: organization || "Valued Client",
+              },
+            ],
             subject: `Sentinel Audit Report – ${organization} (${auditId})`,
-            html: `
+            htmlContent: `
               <p>Hello,</p>
               <p>Your official high-resolution <strong>Fuel Loss Exposure Audit</strong> is attached.</p>
               <p>
@@ -564,22 +572,26 @@ serve(async (req) => {
               <p>This is the full report. The in-app preview is intentionally limited.</p>
               <p>Best regards,<br>EchoLevel Sentinel Team</p>
             `,
-            attachments: [
+            attachment: [
               {
-                filename: `Sentinel_Audit_Report_${auditId}.pdf`,
+                name: `Sentinel_Audit_Report_${auditId}.pdf`,
                 content: base64Pdf,
               },
             ],
           }),
         });
 
-        if (!resendRes.ok) {
-          const errData = await resendRes.json();
-          console.error("Resend API Error:", errData);
+        if (!brevoRes.ok) {
+          const errData = await brevoRes.json();
+          console.error("Brevo API Error:", errData);
+        } else {
+          console.log("Email sent successfully via Brevo");
         }
       } catch (err) {
-        console.error("Resend request failed:", err);
+        console.error("Brevo request failed:", err);
       }
+    } else {
+      console.warn("BREVO_API_KEY not set – skipping email");
     }
 
     return new Response(
