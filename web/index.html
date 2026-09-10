@@ -67,14 +67,12 @@
 
   <!-- =====================================================================
        AI & BOT DISCOVERY HINTS
-       Points crawlers to your llms.txt and robots.txt
   ====================================================================== -->
   <link rel="llms-txt" href="/llms.txt">
   <link rel="robots" href="/robots.txt">
 
   <!-- =====================================================================
        INSTANT DARK BACKGROUND
-       Prevents white flash before Flutter canvas mounts
   ====================================================================== -->
   <style>
     body {
@@ -89,9 +87,15 @@
   </style>
 
   <!-- =====================================================================
+       PDF.js for pdfx package (required for PDF preview on web)
+  ====================================================================== -->
+  <script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js" type="text/javascript"></script>
+  <script type="text/javascript">
+    pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.worker.min.js";
+  </script>
+
+  <!-- =====================================================================
        STRUCTURED DATA — JSON-LD
-       Organization + WebSite + FAQPage + SoftwareApplication
-       Read by Google, Bing, ChatGPT, Claude, Perplexity, Gemini
   ====================================================================== -->
   <script type="application/ld+json">
     {

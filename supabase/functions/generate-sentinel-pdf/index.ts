@@ -145,9 +145,9 @@ serve(async (req) => {
         const logoImage = await pdfDoc.embedPng(logoBytes);
         page.drawImage(logoImage, {
           x: 40,
-          y: 775,
-          width: 110,
-          height: 36,
+          y: 770,          // adjust vertical position
+          width: 70,       // smaller width keeps the shape clean
+          height: 70,      // keep square aspect ratio
         });
       } else {
         // Fallback text if logo fails
