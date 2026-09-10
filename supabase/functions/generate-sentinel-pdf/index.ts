@@ -529,7 +529,15 @@ serve(async (req) => {
     });
 
     const pdfBytes = await pdfDoc.save();
-    const base64Pdf = btoa(String.fromCharCode(...pdfBytes));
+
+    // Safe conversion
+    let binary = "";
+    for (let i = 0; i < pdfBytes.length; i++) {
+      binary += String.fromCharCode(pdfBytes[i]);
+    }
+    const base64Pdf = btoa(binary);
+
+    //const base64Pdf = btoa(String.fromCharCode(...pdfBytes));
 
     // Send via Resend
     const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
