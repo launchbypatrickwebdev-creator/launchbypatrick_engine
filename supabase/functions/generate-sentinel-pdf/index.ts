@@ -7,7 +7,7 @@ const corsHeaders = {
 };
 
 function formatNaira(amount: number): string {
-  return "₦" + Math.round(amount).toLocaleString("en-NG");
+  return "NGN " + Math.round(amount).toLocaleString("en-NG");
 }
 
 function generateAuditId(): string {
