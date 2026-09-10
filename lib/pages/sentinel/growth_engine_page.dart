@@ -1673,13 +1673,31 @@ class AuditPreviewCard extends StatefulWidget {
 
 class _AuditPreviewCardState extends State<AuditPreviewCard> {
   PdfControllerPinch? _pdfController;
+  String? _error;
 
   @override
   void initState() {
     super.initState();
-    _pdfController = PdfControllerPinch(
-      document: PdfDocument.openData(base64Decode(widget.base64Pdf)),
-    );
+    _loadPdf();
+  }
+
+  Future<void> _loadPdf() async {
+    try {
+      final bytes = base64Decode(widget.base64Pdf);
+      final document = await PdfDocument.openData(bytes);
+      if (mounted) {
+        setState(() {
+          _pdfController = PdfControllerPinch(document: Future.value(document));
+        });
+      }
+    } catch (e) {
+      debugPrint("PDF Preview Error: $e");
+      if (mounted) {
+        setState(() {
+          _error = e.toString();
+        });
+      }
+    }
   }
 
   @override
@@ -1700,7 +1718,7 @@ class _AuditPreviewCardState extends State<AuditPreviewCard> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Banner Callout Notification
+          // Success Banner
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
             decoration: BoxDecoration(
@@ -1726,10 +1744,24 @@ class _AuditPreviewCardState extends State<AuditPreviewCard> {
             ),
           ),
           const SizedBox(height: 16),
-          // View-Only Canvas Embed (No Toolbar / Download Options)
+
+          // Preview Area
           SizedBox(
             height: 520,
-            child: ClipRRect(
+            child: _error != null
+                ? Center(
+              child: Padding(
+                padding: const EdgeInsets.all(20),
+                child: Text(
+                  "Preview unavailable\n$_error",
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(color: Colors.white54, fontSize: 13),
+                ),
+              ),
+            )
+                : _pdfController == null
+                ? const Center(child: CircularProgressIndicator(color: Color(0xFF00C853)))
+                : ClipRRect(
               borderRadius: BorderRadius.circular(2),
               child: PdfViewPinch(
                 controller: _pdfController!,

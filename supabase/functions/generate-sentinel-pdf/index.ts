@@ -1,5 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { PDFDocument, rgb, StandardFonts } from "npm:pdf-lib";
+import { PDFDocument, rgb, StandardFonts, PDFName, PDFString, PDFArray } from "npm:pdf-lib";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -28,9 +28,7 @@ serve(async (req) => {
     const payload = await req.json();
 
     const email: string = payload.email;
-    if (!email) {
-      throw new Error("Target email address is required");
-    }
+    if (!email) throw new Error("Target email address is required");
 
     const audience: "generator" | "fleet" | "both" = payload.audience || "both";
     const organization: string = payload.organization || "Unspecified Organisation";
@@ -137,18 +135,45 @@ serve(async (req) => {
       color: emeraldGreen,
     });
 
-    // Simple text branding (logo temporarily disabled)
-    page.drawText("ECHOLEVEL SENTINEL LTD", {
-      x: 40,
-      y: 805,
-      size: 18,
-      font: fontBold,
-      color: emeraldGreen,
-    });
+    // === LOGO FROM SUPABASE STORAGE ===
+    try {
+      const logoResponse = await fetch(
+        "https://jjlmgoxcnvedwbqzrero.supabase.co/storage/v1/object/public/sentinel%20pdf%20logo/logo%20(1).png"
+      );
+      if (logoResponse.ok) {
+        const logoBytes = new Uint8Array(await logoResponse.arrayBuffer());
+        const logoImage = await pdfDoc.embedPng(logoBytes);
+        page.drawImage(logoImage, {
+          x: 40,
+          y: 775,
+          width: 110,
+          height: 36,
+        });
+      } else {
+        // Fallback text if logo fails
+        page.drawText("ECHOLEVEL SENTINEL LTD", {
+          x: 40,
+          y: 805,
+          size: 16,
+          font: fontBold,
+          color: emeraldGreen,
+        });
+      }
+    } catch (e) {
+      console.error("Logo fetch failed:", e);
+      page.drawText("ECHOLEVEL SENTINEL LTD", {
+        x: 40,
+        y: 805,
+        size: 16,
+        font: fontBold,
+        color: emeraldGreen,
+      });
+    }
+
     page.drawText("ENTERPRISE FUEL LOSS EXPOSURE AUDIT", {
       x: 40,
-      y: 785,
-      size: 9,
+      y: 765,
+      size: 8,
       font: fontBold,
       color: textMuted,
     });
@@ -389,7 +414,7 @@ serve(async (req) => {
       },
     );
 
-    // CTA Box (without QR code)
+    // CTA Box
     y -= 130;
     page.drawRectangle({
       x: 40,
@@ -432,6 +457,9 @@ serve(async (req) => {
         color: textMuted,
       },
     );
+
+    // === CLICKABLE LINK ===
+    const linkUrl = "https://echolevel.vercel.app/sentinel/connect";
     page.drawText("URL: echolevel.vercel.app/sentinel/connect", {
       x: 60,
       y: y + 20,
@@ -439,6 +467,27 @@ serve(async (req) => {
       font: fontBold,
       color: emeraldGreen,
     });
+
+    // Create clickable annotation
+    const linkAnnotation = pdfDoc.context.obj({
+      Type: "Annot",
+      Subtype: "Link",
+      Rect: [60, y + 12, 360, y + 32],
+      Border: [0, 0, 0],
+      A: {
+        Type: "Action",
+        S: "URI",
+        URI: PDFString.of(linkUrl),
+      },
+    });
+
+    const annotsKey = PDFName.of("Annots");
+    let annots = page.node.lookup(annotsKey, PDFArray);
+    if (!annots) {
+      annots = pdfDoc.context.obj([]) as PDFArray;
+      page.node.set(annotsKey, annots);
+    }
+    annots.push(linkAnnotation);
 
     // Footer
     page.drawLine({
@@ -482,9 +531,7 @@ serve(async (req) => {
     const pdfBytes = await pdfDoc.save();
     const base64Pdf = btoa(String.fromCharCode(...pdfBytes));
 
-    // ──────────────────────────────
     // Send via Resend
-    // ──────────────────────────────
     const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
     if (RESEND_API_KEY) {
       try {
@@ -525,11 +572,8 @@ serve(async (req) => {
       } catch (err) {
         console.error("Resend request failed:", err);
       }
-    } else {
-      console.warn("RESEND_API_KEY not set – skipping email");
     }
 
-    // Always return success + PDF if we reached here
     return new Response(
       JSON.stringify({
         success: true,
