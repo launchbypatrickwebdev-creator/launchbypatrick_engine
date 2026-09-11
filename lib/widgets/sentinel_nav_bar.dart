@@ -29,7 +29,7 @@ class SentinelNavBar extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        "SENTINEL OS MATRIX",
+                        "OS MATRIX",
                         style: GoogleFonts.robotoMono(
                           color: TechAppTheme.iotAccent,
                           fontSize: 12,
@@ -56,7 +56,7 @@ class SentinelNavBar extends StatelessWidget {
                       const SizedBox(height: 20),
                       const Divider(color: Colors.white10),
                       const SizedBox(height: 20),
-                      _mobileItem(context, "← BACK TO LAUNCHBYPATRICK", "/"),
+                      _mobileItem(context, "← BACK", "/sentinel"),
                     ],
                   ),
                 ),
@@ -101,7 +101,7 @@ class SentinelNavBar extends StatelessWidget {
           ),
           const Spacer(),
           if (!isMobile) ...[
-            _desktopItem(context, "GROWTH ENGINE", "/sentinel/growth-engine"),
+            _desktopItem(context, "LEAKAGE DIAGNOSTIC", "/sentinel/growth-engine"),
             _desktopItem(context, "R&D LABS", "/sentinel/rd"),
             _desktopItem(context, "CONNECT", "/sentinel/connect"),
             const SizedBox(width: 20),

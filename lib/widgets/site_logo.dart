@@ -17,8 +17,8 @@ class SiteLogo extends StatelessWidget {
   Widget build(BuildContext context) {
     if (isSentinel) {
       // ========== SWITCH SENTINEL VERSION HERE ==========
-      return EchoLevelSentinelLogoV1(height: height); // ← Currently active
-      // return EchoLevelSentinelLogoV2(height: height);
+      //return EchoLevelSentinelLogoV1(height: height); // ← Currently active
+       return EchoLevelSentinelLogoV2(height: height);
       // return EchoLevelSentinelLogoV3(height: height);
     } else {
       return LaunchByPatrickLogo(height: height);
@@ -213,7 +213,7 @@ class _LPLogoPainter extends CustomPainter {
 // ============================================================
 // ECHOLEVEL SENTINEL - VERSION 1 (Clean Technical Cross)
 // ============================================================
-class EchoLevelSentinelLogoV1 extends StatelessWidget {
+/*class EchoLevelSentinelLogoV1 extends StatelessWidget {
   final double height;
 
   const EchoLevelSentinelLogoV1({super.key, this.height = 70});
@@ -314,12 +314,13 @@ class _SentinelCrossPainterV1 extends CustomPainter {
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
+*/
 
 // ============================================================
 // ECHOLEVEL SENTINEL - VERSION 2 (Soft Industrial Cross)
 // Currently commented out – uncomment to use
 // ============================================================
-/*
+
 class EchoLevelSentinelLogoV2 extends StatelessWidget {
   final double height;
 
@@ -419,7 +420,7 @@ class _SentinelCrossPainterV2 extends CustomPainter {
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
-*/
+
 
 // ============================================================
 // ECHOLEVEL SENTINEL - VERSION 3 (Shield Cross Hybrid)
