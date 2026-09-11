@@ -96,7 +96,7 @@ class MistralAIService {
     final lower = userMessage.toLowerCase();
 
     // ── SENTINEL PROFILE ─────────────────────────────────────────────────────
-    if (config.assistantName == "SENTINEL_CORE_AI") {
+    if (config.assistantName == "CORTEX_AI") {
       return _getSentinelMockResponse(lower);
     }
 
