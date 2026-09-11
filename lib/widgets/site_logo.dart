@@ -1,5 +1,34 @@
 import 'package:flutter/material.dart';
 
+// ============================================================
+// SMART LOGO SWITCHER
+// ============================================================
+class SiteLogo extends StatelessWidget {
+  final double height;
+  final bool isSentinel;
+
+  const SiteLogo({
+    super.key,
+    this.height = 70,
+    this.isSentinel = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    if (isSentinel) {
+      // ========== SWITCH SENTINEL VERSION HERE ==========
+      return EchoLevelSentinelLogoV1(height: height); // ← Currently active
+      // return EchoLevelSentinelLogoV2(height: height);
+      // return EchoLevelSentinelLogoV3(height: height);
+    } else {
+      return LaunchByPatrickLogo(height: height);
+    }
+  }
+}
+
+// ============================================================
+// LAUNCH BY PATRICK LOGO
+// ============================================================
 class LaunchByPatrickLogo extends StatelessWidget {
   final double height;
 
@@ -8,23 +37,18 @@ class LaunchByPatrickLogo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final double iconSize = height * 0.9;
-
-    // Compressed text sizes so they float within the pillar height
     final double titleFontSize = height * 0.26;
-    final double byFontSize = height * 0.14; // Specifically smaller for 'BY'
+    final double byFontSize = height * 0.14;
     final double subtitleFontSize = height * 0.11;
     final double letterSpacing = height * 0.04;
 
     return Container(
-      // 1. Stripped padding so it sits perfectly flush in top-left corners
       padding: EdgeInsets.zero,
-      // 2. Set to transparent so it seamlessly adopts your web header's background color
       color: Colors.transparent,
       child: Row(
         mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.center, // Centers text block relative to LP logo
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          // The Monogram Vector Engine (Perfected Geometry)
           SizedBox(
             width: iconSize * 1.15,
             height: iconSize,
@@ -32,18 +56,12 @@ class LaunchByPatrickLogo extends StatelessWidget {
               painter: _LPLogoPainter(),
             ),
           ),
-
-          // 3. Closed the gap between the LP pillar and the typography
-          SizedBox(width: height * 0.12), // Reduced from 0.25 to 0.12
-
-          // The Clean Typography Engine
-          IntrinsicWidth( // Forces children to match the width of the widest element
+          SizedBox(width: height * 0.12),
+          IntrinsicWidth(
             child: Column(
               mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.stretch, // Stretches the divider line
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-
-                // LAUNCH BY PATRICK (Centered horizontally in the block)
                 Center(
                   child: RichText(
                     text: TextSpan(
@@ -58,8 +76,6 @@ class LaunchByPatrickLogo extends StatelessWidget {
                             color: Colors.white,
                           ),
                         ),
-
-                        // Floating 'BY' vertically centered
                         WidgetSpan(
                           alignment: PlaceholderAlignment.middle,
                           child: Padding(
@@ -76,7 +92,6 @@ class LaunchByPatrickLogo extends StatelessWidget {
                             ),
                           ),
                         ),
-
                         TextSpan(
                           text: 'PATRICK',
                           style: TextStyle(
@@ -91,18 +106,12 @@ class LaunchByPatrickLogo extends StatelessWidget {
                     ),
                   ),
                 ),
-
                 SizedBox(height: height * 0.05),
-
-                // Clean Divider Line (Stretches perfectly to the edge of the text above)
                 Container(
                   height: 1.2,
                   color: Colors.white.withValues(alpha: 0.7),
                 ),
-
                 SizedBox(height: height * 0.06),
-
-                // THE WEB ARCHITECT (Centered horizontally)
                 Center(
                   child: Text(
                     'THE WEB ARCHITECT',
@@ -132,46 +141,45 @@ class _LPLogoPainter extends CustomPainter {
       ..style = PaintingStyle.fill;
 
     final Paint bluePaint = Paint()
-      ..color = const Color(0xFF005CE6) // True vivid corporate blueprint blue
+      ..color = const Color(0xFF005CE6)
       ..style = PaintingStyle.fill;
 
     final double w = size.width;
     final double h = size.height;
 
-    // --- 1. ARCHITECTURAL CAPITALS (Left side only, flush with gap) ---
     // Top Step
     canvas.drawRect(Rect.fromLTWH(w * 0.06, h * 0.08, w * 0.17, h * 0.05), whitePaint);
     // Lower Step
     canvas.drawRect(Rect.fromLTWH(w * 0.09, h * 0.15, w * 0.14, h * 0.04), whitePaint);
 
-    // --- 2. LEFT OUTER PILLAR (With 45-degree angled bottom cut) ---
+    // Left Outer Pillar
     final Path leftOuterPillar = Path()
       ..moveTo(w * 0.12, h * 0.21)
       ..lineTo(w * 0.23, h * 0.21)
       ..lineTo(w * 0.23, h * 0.82)
-      ..lineTo(w * 0.12, h * 0.93) // Diagonal slope \
+      ..lineTo(w * 0.12, h * 0.93)
       ..close();
     canvas.drawPath(leftOuterPillar, whitePaint);
 
-    // --- 3. BOTTOM OUTER PILLAR (With parallel 45-degree angled left cut) ---
+    // Bottom Outer Pillar
     final Path bottomOuterPillar = Path()
       ..moveTo(w * 0.27, h * 0.86)
       ..lineTo(w * 0.48, h * 0.86)
       ..lineTo(w * 0.48, h * 0.97)
-      ..lineTo(w * 0.16, h * 0.97) // Parallel diagonal slope \
+      ..lineTo(w * 0.16, h * 0.97)
       ..close();
     canvas.drawPath(bottomOuterPillar, whitePaint);
 
-    // --- 4. INNER CORE (The main stem of the L and P) ---
+    // Inner Core
     final Path innerCore = Path()
-      ..moveTo(w * 0.27, h * 0.15) // Aligns exactly with the top of the lower capital
+      ..moveTo(w * 0.27, h * 0.15)
       ..lineTo(w * 0.48, h * 0.15)
-      ..lineTo(w * 0.48, h * 0.82) // Aligns with bottom diagonal gap intersection
+      ..lineTo(w * 0.48, h * 0.82)
       ..lineTo(w * 0.27, h * 0.82)
       ..close();
     canvas.drawPath(innerCore, whitePaint);
 
-    // --- 5. THE 'P' LOOP (Mathematically uniform 0.11 thickness) ---
+    // P Loop
     final Path pOuter = Path()
       ..moveTo(w * 0.48, h * 0.15)
       ..lineTo(w * 0.72, h * 0.15)
@@ -186,21 +194,354 @@ class _LPLogoPainter extends CustomPainter {
       ..lineTo(w * 0.48, h * 0.53)
       ..close();
 
-    // Use PathOperation.difference to cleanly punch the inner hole out of the P
     final Path pLoop = Path.combine(PathOperation.difference, pOuter, pInner);
     canvas.drawPath(pLoop, whitePaint);
 
-    // --- 6. BLUE GEOMETRIC SHADOW (Right Isosceles Triangle) ---
-    // Nestled exactly between the bottom of the P loop and the top of the bottom pillar
+    // Blue Triangle
     final Path blueTriangle = Path()
-      ..moveTo(w * 0.48, h * 0.75) // Top-Left corner
-      ..lineTo(w * 0.70, h * 0.75) // Top-Right corner
-      ..lineTo(w * 0.48, h * 0.97) // Bottom-Left corner (Creates the / diagonal)
+      ..moveTo(w * 0.48, h * 0.75)
+      ..lineTo(w * 0.70, h * 0.75)
+      ..lineTo(w * 0.48, h * 0.97)
       ..close();
-
     canvas.drawPath(blueTriangle, bluePaint);
   }
 
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
+
+// ============================================================
+// ECHOLEVEL SENTINEL - VERSION 1 (Clean Technical Cross)
+// ============================================================
+class EchoLevelSentinelLogoV1 extends StatelessWidget {
+  final double height;
+
+  const EchoLevelSentinelLogoV1({super.key, this.height = 70});
+
+  @override
+  Widget build(BuildContext context) {
+    final double iconSize = height * 0.95;
+    final double titleSize = height * 0.28;
+    final double subtitleSize = height * 0.13;
+
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        SizedBox(
+          width: iconSize,
+          height: iconSize,
+          child: CustomPaint(
+            painter: _SentinelCrossPainterV1(),
+          ),
+        ),
+        SizedBox(width: height * 0.18),
+        Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              "ECHOLEVEL SENTINEL LTD",
+              style: TextStyle(
+                fontFamily: 'sans-serif',
+                fontSize: titleSize,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+                letterSpacing: 1.4,
+              ),
+            ),
+            SizedBox(height: height * 0.04),
+            Text(
+              "INDUSTRIAL IoT & ASSET MONITORING",
+              style: TextStyle(
+                fontFamily: 'sans-serif',
+                fontSize: subtitleSize,
+                fontWeight: FontWeight.w600,
+                color: const Color(0xFF00C853),
+                letterSpacing: 1.1,
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+}
+
+class _SentinelCrossPainterV1 extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    final double w = size.width;
+    final double h = size.height;
+    final double cx = w / 2;
+    final double cy = h / 2;
+
+    final Paint greenStroke = Paint()
+      ..color = const Color(0xFF00C853)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = w * 0.045
+      ..strokeJoin = StrokeJoin.round;
+
+    final Paint darkFill = Paint()
+      ..color = const Color(0xFF1A1A1A)
+      ..style = PaintingStyle.fill;
+
+    final Path cross = Path();
+    final double armW = w * 0.18;
+    final double armL = w * 0.42;
+
+    cross.moveTo(cx - armW / 2, cy - armL);
+    cross.lineTo(cx + armW / 2, cy - armL);
+    cross.lineTo(cx + armW / 2, cy - armW / 2);
+    cross.lineTo(cx + armL, cy - armW / 2);
+    cross.lineTo(cx + armL, cy + armW / 2);
+    cross.lineTo(cx + armW / 2, cy + armW / 2);
+    cross.lineTo(cx + armW / 2, cy + armL);
+    cross.lineTo(cx - armW / 2, cy + armL);
+    cross.lineTo(cx - armW / 2, cy + armW / 2);
+    cross.lineTo(cx - armL, cy + armW / 2);
+    cross.lineTo(cx - armL, cy - armW / 2);
+    cross.lineTo(cx - armW / 2, cy - armW / 2);
+    cross.close();
+
+    canvas.drawPath(cross, darkFill);
+    canvas.drawPath(cross, greenStroke);
+
+    canvas.drawCircle(Offset(cx, cy), w * 0.16, darkFill);
+    canvas.drawCircle(Offset(cx, cy), w * 0.16, greenStroke);
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+}
+
+// ============================================================
+// ECHOLEVEL SENTINEL - VERSION 2 (Soft Industrial Cross)
+// Currently commented out – uncomment to use
+// ============================================================
+/*
+class EchoLevelSentinelLogoV2 extends StatelessWidget {
+  final double height;
+
+  const EchoLevelSentinelLogoV2({super.key, this.height = 70});
+
+  @override
+  Widget build(BuildContext context) {
+    final double iconSize = height * 0.95;
+    final double titleSize = height * 0.28;
+    final double subtitleSize = height * 0.13;
+
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        SizedBox(
+          width: iconSize,
+          height: iconSize,
+          child: CustomPaint(
+            painter: _SentinelCrossPainterV2(),
+          ),
+        ),
+        SizedBox(width: height * 0.18),
+        Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              "ECHOLEVEL SENTINEL LTD",
+              style: TextStyle(
+                fontFamily: 'sans-serif',
+                fontSize: titleSize,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+                letterSpacing: 1.4,
+              ),
+            ),
+            SizedBox(height: height * 0.04),
+            Text(
+              "INDUSTRIAL IoT & ASSET MONITORING",
+              style: TextStyle(
+                fontFamily: 'sans-serif',
+                fontSize: subtitleSize,
+                fontWeight: FontWeight.w600,
+                color: const Color(0xFF00C853),
+                letterSpacing: 1.1,
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+}
+
+class _SentinelCrossPainterV2 extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    final double w = size.width;
+    final double h = size.height;
+    final double cx = w / 2;
+    final double cy = h / 2;
+
+    final Paint greenStroke = Paint()
+      ..color = const Color(0xFF00C853)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = w * 0.05
+      ..strokeJoin = StrokeJoin.round
+      ..strokeCap = StrokeCap.round;
+
+    final Paint darkFill = Paint()
+      ..color = const Color(0xFF1A1A1A)
+      ..style = PaintingStyle.fill;
+
+    final Path cross = Path();
+    final double armW = w * 0.22;
+    final double armL = w * 0.40;
+
+    cross.moveTo(cx - armW / 2, cy - armL);
+    cross.quadraticBezierTo(cx, cy - armL - armW * 0.15, cx + armW / 2, cy - armL);
+    cross.lineTo(cx + armW / 2, cy - armW / 2);
+    cross.quadraticBezierTo(cx + armL + armW * 0.1, cy, cx + armL, cy + armW / 2);
+    cross.lineTo(cx + armW / 2, cy + armW / 2);
+    cross.quadraticBezierTo(cx, cy + armL + armW * 0.15, cx - armW / 2, cy + armL);
+    cross.lineTo(cx - armW / 2, cy + armW / 2);
+    cross.quadraticBezierTo(cx - armL - armW * 0.1, cy, cx - armL, cy - armW / 2);
+    cross.lineTo(cx - armW / 2, cy - armW / 2);
+    cross.close();
+
+    canvas.drawPath(cross, darkFill);
+    canvas.drawPath(cross, greenStroke);
+
+    canvas.drawCircle(Offset(cx, cy), w * 0.15, darkFill);
+    canvas.drawCircle(Offset(cx, cy), w * 0.15, greenStroke);
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+}
+*/
+
+// ============================================================
+// ECHOLEVEL SENTINEL - VERSION 3 (Shield Cross Hybrid)
+// Currently commented out – uncomment to use
+// ============================================================
+/*
+class EchoLevelSentinelLogoV3 extends StatelessWidget {
+  final double height;
+
+  const EchoLevelSentinelLogoV3({super.key, this.height = 70});
+
+  @override
+  Widget build(BuildContext context) {
+    final double iconSize = height * 0.95;
+    final double titleSize = height * 0.28;
+    final double subtitleSize = height * 0.13;
+
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        SizedBox(
+          width: iconSize,
+          height: iconSize,
+          child: CustomPaint(
+            painter: _SentinelCrossPainterV3(),
+          ),
+        ),
+        SizedBox(width: height * 0.18),
+        Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              "ECHOLEVEL SENTINEL LTD",
+              style: TextStyle(
+                fontFamily: 'sans-serif',
+                fontSize: titleSize,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+                letterSpacing: 1.4,
+              ),
+            ),
+            SizedBox(height: height * 0.04),
+            Text(
+              "INDUSTRIAL IoT & ASSET MONITORING",
+              style: TextStyle(
+                fontFamily: 'sans-serif',
+                fontSize: subtitleSize,
+                fontWeight: FontWeight.w600,
+                color: const Color(0xFF00C853),
+                letterSpacing: 1.1,
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+}
+
+class _SentinelCrossPainterV3 extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    final double w = size.width;
+    final double h = size.height;
+    final double cx = w / 2;
+    final double cy = h / 2;
+
+    final Paint greenStroke = Paint()
+      ..color = const Color(0xFF00C853)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = w * 0.04
+      ..strokeJoin = StrokeJoin.round;
+
+    final Paint darkFill = Paint()
+      ..color = const Color(0xFF1A1A1A)
+      ..style = PaintingStyle.fill;
+
+    // Outer shield
+    final Path shield = Path();
+    final double s = w * 0.42;
+    shield.moveTo(cx, cy - s);
+    shield.lineTo(cx + s * 0.7, cy - s * 0.7);
+    shield.lineTo(cx + s, cy);
+    shield.lineTo(cx + s * 0.7, cy + s * 0.7);
+    shield.lineTo(cx, cy + s);
+    shield.lineTo(cx - s * 0.7, cy + s * 0.7);
+    shield.lineTo(cx - s, cy);
+    shield.lineTo(cx - s * 0.7, cy - s * 0.7);
+    shield.close();
+
+    canvas.drawPath(shield, darkFill);
+    canvas.drawPath(shield, greenStroke);
+
+    // Inner cross
+    final Path cross = Path();
+    final double armW = w * 0.14;
+    final double armL = w * 0.32;
+
+    cross.moveTo(cx - armW / 2, cy - armL);
+    cross.lineTo(cx + armW / 2, cy - armL);
+    cross.lineTo(cx + armW / 2, cy - armW / 2);
+    cross.lineTo(cx + armL, cy - armW / 2);
+    cross.lineTo(cx + armL, cy + armW / 2);
+    cross.lineTo(cx + armW / 2, cy + armW / 2);
+    cross.lineTo(cx + armW / 2, cy + armL);
+    cross.lineTo(cx - armW / 2, cy + armL);
+    cross.lineTo(cx - armW / 2, cy + armW / 2);
+    cross.lineTo(cx - armL, cy + armW / 2);
+    cross.lineTo(cx - armL, cy - armW / 2);
+    cross.lineTo(cx - armW / 2, cy - armW / 2);
+    cross.close();
+
+    canvas.drawPath(cross, darkFill);
+    canvas.drawPath(cross, greenStroke);
+
+    canvas.drawCircle(Offset(cx, cy), w * 0.13, darkFill);
+    canvas.drawCircle(Offset(cx, cy), w * 0.13, greenStroke);
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+}
+*/

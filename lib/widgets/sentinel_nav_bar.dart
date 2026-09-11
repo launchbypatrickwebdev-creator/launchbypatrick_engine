@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:launchbypatrick_engine/widgets/site_logo.dart';
 import '../theme/tech_app_theme.dart';
 
 class SentinelNavBar extends StatelessWidget {
@@ -92,35 +93,9 @@ class SentinelNavBar extends StatelessWidget {
             child: InkWell(
               onTap: () => context.go('/sentinel'),
               mouseCursor: SystemMouseCursors.click,
-              child: Row(
-                children: [
-                  const Icon(Icons.security_rounded, color: TechAppTheme.iotAccent, size: 32),
-                  const SizedBox(width: 12),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        "ECHOLEVEL SENTINEL",
-                        style: GoogleFonts.robotoMono(
-                          fontWeight: FontWeight.w900,
-                          fontSize: isMobile ? 14 : 16,
-                          letterSpacing: 1.5,
-                          color: Colors.white,
-                        ),
-                      ),
-                      Text(
-                        "INDUSTRIAL IOT & LOGISTICS",
-                        style: GoogleFonts.robotoMono(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 8,
-                          letterSpacing: 1.2,
-                          color: TechAppTheme.iotAccent.withValues(alpha: 0.6),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
+              child: SiteLogo(
+                height: isMobile ? 45 : 60,
+                isSentinel: true, // ← This makes it use the Sentinel logo
               ),
             ),
           ),
