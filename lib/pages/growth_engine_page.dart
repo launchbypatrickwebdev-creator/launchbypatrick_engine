@@ -734,7 +734,7 @@ class _DiagnosticExportModalState extends State<_DiagnosticExportModal> {
     try {
       // Handshake connection straight to your live Supabase Deno worker
       final response = await http.post(
-        Uri.parse('https://zljdfgkvlipwbvmlizyx.supabase.co/functions/v1/generate-pdf-report'),
+        Uri.parse('https://jjlmgoxcnvedwbqzrero.supabase.co/functions/v1/generate-pdf-report'),
         headers: {
           "Accept": "application/json",
           "Content-Type": "application/json"
