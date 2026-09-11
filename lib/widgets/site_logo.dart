@@ -18,8 +18,8 @@ class SiteLogo extends StatelessWidget {
     if (isSentinel) {
       // ========== SWITCH SENTINEL VERSION HERE ==========
       //return EchoLevelSentinelLogoV1(height: height); // ← Currently active
-       return EchoLevelSentinelLogoV2(height: height);
-      // return EchoLevelSentinelLogoV3(height: height);
+      // return EchoLevelSentinelLogoV2(height: height);
+       return EchoLevelSentinelLogoV3(height: height);
     } else {
       return LaunchByPatrickLogo(height: height);
     }
@@ -426,7 +426,7 @@ class _SentinelCrossPainterV2 extends CustomPainter {
 // ECHOLEVEL SENTINEL - VERSION 3 (Shield Cross Hybrid)
 // Currently commented out – uncomment to use
 // ============================================================
-/*
+///*
 class EchoLevelSentinelLogoV3 extends StatelessWidget {
   final double height;
 
@@ -545,4 +545,4 @@ class _SentinelCrossPainterV3 extends CustomPainter {
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
-*/
+//*/
