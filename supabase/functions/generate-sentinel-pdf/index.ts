@@ -135,47 +135,73 @@ serve(async (req) => {
       color: emeraldGreen,
     });
 
-    // === LOGO FROM SUPABASE STORAGE ===
+    // === LOGO + COMPANY NAME ===
     try {
       const logoResponse = await fetch(
-        "https://jjlmgoxcnvedwbqzrero.supabase.co/storage/v1/object/public/sentinel%20pdf%20logo/logo%20(1).png"
+        "https://jjlmgoxcnvedwbqzrero.supabase.co/storage/v1/object/public/sentinel%20pdf%20logo/d9JyZ.png"
       );
       if (logoResponse.ok) {
         const logoBytes = new Uint8Array(await logoResponse.arrayBuffer());
         const logoImage = await pdfDoc.embedPng(logoBytes);
         page.drawImage(logoImage, {
           x: 40,
-          y: 770,
-          width: 70,
-          height: 70,
+          y: 772,
+          width: 58,
+          height: 58,
+        });
+
+        // Company Name
+        page.drawText("ECHOLEVEL SENTINEL", {
+          x: 110,
+          y: 805,
+          size: 16,
+          font: fontBold,
+          color: rgb(1, 1, 1),
+        });
+
+        // Tagline
+        page.drawText("INDUSTRIAL IoT & ASSET MONITORING", {
+          x: 110,
+          y: 788,
+          size: 8,
+          font: fontBold,
+          color: emeraldGreen,
         });
       } else {
-        page.drawText("ECHOLEVEL SENTINEL LTD", {
+        // Fallback if logo fails
+        page.drawText("ECHOLEVEL SENTINEL", {
           x: 40,
           y: 805,
           size: 16,
           font: fontBold,
           color: emeraldGreen,
         });
+        page.drawText("INDUSTRIAL IoT & ASSET MONITORING", {
+          x: 40,
+          y: 788,
+          size: 8,
+          font: fontBold,
+          color: textMuted,
+        });
       }
     } catch (e) {
       console.error("Logo fetch failed:", e);
-      page.drawText("ECHOLEVEL SENTINEL LTD", {
+      page.drawText("ECHOLEVEL SENTINEL", {
         x: 40,
         y: 805,
         size: 16,
         font: fontBold,
         color: emeraldGreen,
       });
+      page.drawText("INDUSTRIAL IoT & ASSET MONITORING", {
+        x: 40,
+        y: 788,
+        size: 8,
+        font: fontBold,
+        color: textMuted,
+      });
     }
 
-    page.drawText("ENTERPRISE FUEL LOSS EXPOSURE AUDIT", {
-      x: 40,
-      y: 765,
-      size: 8,
-      font: fontBold,
-      color: textMuted,
-    });
     page.drawText("CONFIDENTIAL", {
       x: 480,
       y: 805,
