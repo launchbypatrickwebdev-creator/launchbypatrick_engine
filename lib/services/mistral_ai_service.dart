@@ -109,79 +109,63 @@ class MistralAIService {
   // ---------------------------------------------------------------------------
   String _getSentinelMockResponse(String lower) {
 
-    // ESP32 sub-questions
-    if (lower.contains('gpio') || lower.contains('pin configuration') || lower.contains('pin mapping')) {
-      return "GPIO configuration starts with mapping your pin roles: INPUT, OUTPUT, or INPUT_PULLUP. On the ESP32, pins 34–39 are input-only. Use digitalWrite() for outputs and digitalRead() for inputs. Always check your specific board's pinout diagram — the NodeMCU-32S and WROOM-32 differ in physical layout.";
-    }
-    if (lower.contains('wifi') || lower.contains('ble') || lower.contains('bluetooth') || lower.contains('connectivity')) {
-      return "The device supports dual mode WiFi (802.11 b/g/n) and Bluetooth 4.2 BLE simultaneously. For WiFi: use WiFi.begin(ssid, password) and poll WiFi.status() until WL_CONNECTED. For BLE: use the BLEDevice library. Running both simultaneously increases power draw. Consider sleep cycles if on battery.";
-    }
-    if (lower.contains('power') || lower.contains('battery') || lower.contains('deep sleep') || lower.contains('low power')) {
-      return "Power management is critical for battery deployments. Deep sleep can reduce current from ~240mA active to ~10µA. Use esp_deep_sleep_start() and configure wake sources (timer, GPIO, touchpad). Typical battery life goes from hours to months with proper sleep cycles implemented.";
-    }
-    if (lower.contains('firmware flashing') || lower.contains('flash') || lower.contains('upload') || lower.contains('esptool')) {
-      return "Firmware flashing via esptool.py: ensure you have the correct COM port, set baud rate to 115200 or 921600 for speed, and hold the BOOT button during upload if auto-reset fails. For OTA flashing, ArduinoOTA or the ESP-IDF OTA partition scheme handles wireless updates without physical access.";
+    // ── ESP32 / Microcontroller ────────────────────────────────────────────
+    if (lower.contains('esp') ||
+        lower.contains('esp32') ||
+        lower.contains('microcontroller') ||
+        lower.contains('gpio') ||
+        lower.contains('pin')) {
+      return "ESP32 configuration starts with mapping your pin roles: INPUT, OUTPUT, or INPUT_PULLUP. Pins 34–39 are input-only. Use digitalWrite() for outputs and digitalRead() for inputs. Always check your board's pinout. Would you like help with WiFi, BLE, power management, or firmware flashing?";
     }
 
-    // Firmware sub-questions
-    if (lower.contains('ota') || lower.contains('over-the-air')) {
-      return "OTA update flow: partition your flash into OTA_0 and OTA_1 slots. The running firmware validates and writes the new binary to the inactive slot, then sets it as boot target and resets. If the new firmware fails its health check, the bootloader rolls back to the previous slot automatically. Always validate checksums before committing.";
-    }
-    if (lower.contains('version') || lower.contains('compatibility') || lower.contains('rollback')) {
-      return "Version management: embed a semantic version string in your firmware binary and expose it via a /version endpoint or BLE characteristic. Before flashing, compare versions and block downgrades unless explicitly authorized. Keep the previous OTA slot intact as your rollback target for at least one update cycle.";
-    }
-    if (lower.contains('custom firmware') || lower.contains('build') || lower.contains('compile')) {
-      return "Custom firmware builds use either Arduino IDE (easier, slower) or ESP-IDF (full control, faster, recommended for production). ESP-IDF uses CMake-based builds — configure via menuconfig, then idf.py build. Partition tables, component dependencies, and linker scripts give you precise control over memory layout and feature inclusion.";
+    // ── Firmware ───────────────────────────────────────────────────────────
+    if (lower.contains('firmware') ||
+        lower.contains('ota') ||
+        lower.contains('flash') ||
+        lower.contains('update') ||
+        lower.contains('rollback')) {
+      return "Firmware management on the ESP32 uses OTA slots (OTA_0 and OTA_1). The running firmware validates the new binary, writes it to the inactive slot, then reboots. If the new firmware fails health checks, it automatically rolls back. Want the full OTA process or help with version control?";
     }
 
-    // Security sub-questions
-    if (lower.contains('encryption') || lower.contains('tls') || lower.contains('ssl') || lower.contains('mbedtls')) {
-      return "ESP32 hardware accelerates AES, SHA, RSA, and ECC via the cryptographic co-processor. For TLS connections use WiFiClientSecure with mbedTLS — embed your CA certificate as a PEM string. For local data, use AES-256-GCM for authenticated encryption. Never store raw keys in flash; use the NVS encrypted partition instead.";
-    }
-    if (lower.contains('secure boot') || lower.contains('signed')) {
-      return "Secure Boot V2 on ESP32 uses RSA-PSS signature verification — the bootloader checks each firmware stage before execution. Generate your signing key offline, burn the public key hash to eFuse (one-time write), and sign every binary before flashing. Once enabled, unsigned firmware is rejected at boot — there is no override without physical eFuse access.";
-    }
-    if (lower.contains('authentication') || lower.contains('auth') || lower.contains('token') || lower.contains('certificate')) {
-      return "IoT authentication layers: device-level (X.509 certificates or pre-shared keys), session-level (JWT tokens with short TTL), and transport-level (mutual TLS). For MQTT: use client certificates with your broker. For HTTP APIs: HMAC-signed requests prevent replay attacks. Rotate credentials on a schedule and revoke immediately on device compromise.";
-    }
-    if (lower.contains('network security') || lower.contains('hardening') || lower.contains('firewall')) {
-      return "Network hardening for IoT: isolate devices on a dedicated VLAN, disable unused services (Telnet, FTP, UPnP), enforce allowlists for outbound connections, and monitor traffic for anomalies. On the firmware side, validate all incoming payloads, enforce size limits to prevent buffer overflows, and log failed authentication attempts.";
+    // ── Security ───────────────────────────────────────────────────────────
+    if (lower.contains('security') ||
+        lower.contains('encrypt') ||
+        lower.contains('secure boot') ||
+        lower.contains('auth') ||
+        lower.contains('tls')) {
+      return "Security layers on Sentinel devices: AES hardware acceleration, Secure Boot V2 with RSA-PSS signatures, and mutual TLS for cloud communication. Keys are stored in the encrypted NVS partition. Would you like details on Secure Boot, encryption, or authentication?";
     }
 
-    // Diagnostics sub-questions
-    if (lower.contains('sensor health') || lower.contains('health check')) {
-      return "Sensor health checks: read each sensor at startup and log baseline values. During operation, flag readings outside ±3σ of historical mean as suspect. For critical sensors, implement dual-sensor cross-validation. Report health status via a heartbeat payload every 60 seconds — silence for >2 cycles triggers an alert.";
-    }
-    if (lower.contains('connection diagnostic') || lower.contains('ping') || lower.contains('latency') || lower.contains('packet')) {
-      return "Connection diagnostics: measure round-trip latency with ICMP ping or application-level echo packets. Track packet loss percentage over a rolling 100-packet window. Log RSSI for WiFi signal strength — below -70 dBm causes reliability issues. For MQTT, monitor reconnection frequency as a proxy for connection stability.";
-    }
-    if (lower.contains('performance metric') || lower.contains('throughput') || lower.contains('benchmark')) {
-      return "Performance metrics to track: heap free memory (alert if below 20KB), CPU load per core (use esp_cpu_get_core_id()), task stack high-water marks, and interrupt latency. Use FreeRTOS task stats (vTaskGetRunTimeStats()) to identify CPU hogs. Log to serial during development, push to your telemetry backend in production.";
-    }
-    if (lower.contains('error log') || lower.contains('crash') || lower.contains('coredump') || lower.contains('stack trace')) {
-      return "Error logging: use ESP-IDF's esp_log system with log levels (ESP_LOGE for errors, ESP_LOGW for warnings). Enable core dumps to flash or UART — on crash, the coredump captures register state and stack. Use idf.py coredump-info to decode. Store the last N error events in NVS so they survive resets for post-mortem analysis.";
+    // ── Sensors ────────────────────────────────────────────────────────────
+    if (lower.contains('sensor') ||
+        lower.contains('temperature') ||
+        lower.contains('fuel') ||
+        lower.contains('level') ||
+        lower.contains('calibration')) {
+      return "Sentinel uses non-invasive sensors for fuel level, temperature compensation, and adulteration detection (acoustic FFT). The system can operate fully offline and store data in the Black Box. Which sensor would you like to configure or calibrate?";
     }
 
-    // Sensor sub-questions
-    if (lower.contains('temperature') || lower.contains('dht') || lower.contains('ds18b20') || lower.contains('thermal')) {
-      return "Temperature sensors: DHT22 gives ±0.5°C accuracy over I2C/1-Wire, DS18B20 gives ±0.5°C on 1-Wire with multiple sensors per pin. For industrial accuracy, use a PT100 RTD with a MAX31865 amplifier (±0.1°C). Always read twice and discard if the delta exceeds your calibration tolerance — single-point reads miss transient spikes.";
-    }
-    if (lower.contains('humidity') || lower.contains('moisture') || lower.contains('hygrometer')) {
-      return "Humidity measurement: DHT22 and SHT31 are common choices — SHT31 is more accurate (±2% RH) and has better long-term stability. Calibrate against a saturated salt solution reference (75% RH for NaCl). Shield the sensor from direct airflow and condensation. Compensate readings with the Sonntag formula when temperature varies rapidly.";
-    }
-    if (lower.contains('distance') || lower.contains('proximity') || lower.contains('ultrasonic') || lower.contains('lidar') || lower.contains('hc-sr04')) {
-      return "Distance sensing options: HC-SR04 ultrasonic works 2cm–4m with ±3mm accuracy, suitable for most presence detection. For precision, TF-Luna LiDAR gives ±6cm up to 8m. VL53L1X ToF sensor handles 1mm–4m in a tiny I2C package. For liquid level, JSN-SR04T is waterproof. Average multiple readings to filter ultrasonic interference.";
-    }
-    if (lower.contains('data collection') || lower.contains('sampling') || lower.contains('frequency') || lower.contains('interval')) {
-      return "Data collection strategy: match your sampling rate to the physical phenomenon — temperature changes slowly (1/min is fine), vibration needs 1kHz+. Use circular buffers in RAM for high-frequency bursts, flush to NVS or transmit via MQTT periodically. Timestamp every reading with NTP-synchronized time. Delta encoding reduces transmission size by 60–80% for slowly-changing signals.";
+    // ── Diagnostics ────────────────────────────────────────────────────────
+    if (lower.contains('diagnostic') ||
+        lower.contains('troubleshoot') ||
+        lower.contains('error') ||
+        lower.contains('log') ||
+        lower.contains('health')) {
+      return "Diagnostics include sensor health checks, connection stability (RSSI + packet loss), heap monitoring, and crash log analysis via core dumps. I can walk you through any of these. What issue are you seeing?";
     }
 
-    // Schedule/Sync
-    if (lower.contains('zoom') || lower.contains('meeting') || lower.contains('sync') || lower.contains('schedule') || lower.contains('consultation') || lower.contains('deep-dive') || lower.contains('deployment')) {
-      return "Ready to coordinate. Click the Zoom button above to lock in a hardware synchronization session with the Sentinel team — we'll cover your specific firmware, sensor, or security requirements in depth.";
+    // ── Booking / Zoom ─────────────────────────────────────────────────────
+    if (lower.contains('zoom') ||
+        lower.contains('book') ||
+        lower.contains('meeting') ||
+        lower.contains('call') ||
+        lower.contains('sync') ||
+        lower.contains('consultation')) {
+      return "Ready to coordinate. Click the Zoom button above to lock in a hardware synchronization session with the Sentinel team. We'll cover your specific firmware, sensor, or security requirements in depth.";
     }
 
-    return "SENTINEL_CORE_OS operational. Specify your challenge: ESP32 configuration, firmware, security, sensors, or diagnostics. Or click Zoom to book a direct technical sync.";
+    // ── Default fallback (only when nothing matches) ───────────────────────
+    return "SENTINEL_CORE_OS operational. I can help with:\n\n• ESP32 / GPIO configuration\n• Firmware & OTA updates\n• Security & Secure Boot\n• Sensors & calibration\n• Diagnostics & troubleshooting\n\nOr click Zoom to book a direct technical sync. What do you need help with?";
   }
 
   // ---------------------------------------------------------------------------
