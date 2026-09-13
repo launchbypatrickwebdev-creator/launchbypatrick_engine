@@ -22,8 +22,6 @@ class MistralAIService {
         Uri.parse(_edgeFunctionUrl),
         headers: {
           'Content-Type': 'application/json',
-          // Optional: if you have anon key protection
-          // 'Authorization': 'Bearer YOUR_SUPABASE_ANON_KEY',
         },
         body: jsonEncode({
           'systemPrompt': config.systemPrompt,
@@ -33,21 +31,20 @@ class MistralAIService {
       )
           .timeout(const Duration(seconds: 35));
 
-      final data = jsonDecode(response.body) as Map<String, dynamic>;
+      final body = response.body;
+      print('EDGE FUNCTION STATUS: ${response.statusCode}');
+      print('EDGE FUNCTION BODY: $body');
+
+      final data = jsonDecode(body) as Map<String, dynamic>;
 
       if (response.statusCode == 200 && data['success'] == true) {
         return (data['reply'] as String).trim();
       }
 
-      // Handle rate limit cleanly
-      if (response.statusCode == 429) {
-        return "I'm receiving too many requests right now. Please wait a few seconds and try again.";
-      }
-
-      return data['error']?.toString() ??
-          "Sorry, I could not get a response from the AI service.";
+      // Show the real error coming from the Edge Function
+      return "AI Error (${response.statusCode}): ${data['error'] ?? body}";
     } catch (e) {
-      return "Connection error. Please check your internet and try again.\n\nDetails: $e";
+      return "Connection failed: $e";
     }
   }
 }
