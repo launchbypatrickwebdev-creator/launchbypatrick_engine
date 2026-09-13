@@ -853,7 +853,7 @@ class _ConnectPageState extends State<ConnectPage> {
           _buildContactBox(
               icon: Icons.alternate_email,
               label: "EMAIL",
-              value: "launchbypatrick.webdev@gmail.com",
+              value: "echolevelsentinel@outlook.com",
               onTap: _launchEmail),
           const SizedBox(height: 12),
           _buildContactBox(
@@ -887,7 +887,7 @@ class _ConnectPageState extends State<ConnectPage> {
                 _buildContactRow(
                     icon: Icons.alternate_email,
                     label: "EMAIL",
-                    value: "launchbypatrick.webdev@gmail.com",
+                    value: "echolevelsentinel@outlook.com",
                     onTap: _launchEmail),
                 const Divider(color: Colors.white10, height: 28),
                 _buildContactRow(
