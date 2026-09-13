@@ -45,7 +45,7 @@ serve(async (req) => {
         Authorization: `Bearer ${MISTRAL_API_KEY}`,
       },
       body: JSON.stringify({
-        model: "mistral-small-latest",
+        model: "open-mistral-7b",   // or "mistral-tiny"
         messages: mistralMessages,
         temperature: 0.7,
         max_tokens: 700,
