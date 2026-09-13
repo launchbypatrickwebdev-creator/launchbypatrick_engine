@@ -4,9 +4,13 @@ import 'dart:convert';
 import '../models/ai_buddy_config.dart';
 
 class MistralAIService {
-  // Change this to your actual Supabase project URL
+  // Your Supabase project URL
   static const String _edgeFunctionUrl =
       'https://jjlmgoxcnvedwbqzrero.supabase.co/functions/v1/ai-chat';
+
+  // Your Supabase Anon Key (public key - safe to use in frontend)
+  static const String _supabaseAnonKey =
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpqbG1nb3hjbnZlZHdicXpyZXJvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg2MjQ5NzEsImV4cCI6MjEwNDIwMDk3MX0.Oi0198XyetkfANmd37dAKsOenUBtrnEKCE6JjX9fogs'; // ← Put your real anon key here
 
   final AIBuddyConfig config;
 
@@ -22,6 +26,8 @@ class MistralAIService {
         Uri.parse(_edgeFunctionUrl),
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': 'Bearer $_supabaseAnonKey',
+          'apikey': _supabaseAnonKey,
         },
         body: jsonEncode({
           'systemPrompt': config.systemPrompt,
@@ -41,7 +47,7 @@ class MistralAIService {
         return (data['reply'] as String).trim();
       }
 
-      // Show the real error coming from the Edge Function
+      // Show real error
       return "AI Error (${response.statusCode}): ${data['error'] ?? body}";
     } catch (e) {
       return "Connection failed: $e";
