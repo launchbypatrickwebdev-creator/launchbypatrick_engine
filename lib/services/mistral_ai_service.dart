@@ -5,7 +5,7 @@ import '../models/ai_buddy_config.dart';
 
 /// Service to communicate with Mistral AI API
 class MistralAIService {
-  static const String _apiKey = 'wS8TJDsEmoytJy8F6u70yF64eITVlhug'; // ← Put your real key here
+  static const String _apiKey = '4AqIxvIQALKtUiowj9zi40d4Yqg7jscQ'; // ← Put your real key here
   static const String _apiBaseUrl = 'https://api.mistral.ai/v1/chat/completions';
 
   final AIBuddyConfig config;
