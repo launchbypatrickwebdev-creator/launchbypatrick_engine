@@ -429,9 +429,9 @@ class SharedSiteFooter extends StatelessWidget {
             children: [
               _footerLink(context, "Home", "/sentinel"),
               _footerLink(context, "How It Works", "/sentinel/how-it-works"),
-              _footerLink(context, "Pilot Program", "/sentinel/connect"),
-              _footerLink(context, "About Us", "/sentinel/rd"),
-              _footerLink(context, "Contact", "/sentinel/connect"),
+              _footerLink(context, "Pilot Program", "/sentinel/connectpage"),
+              _footerLink(context, "About Us", "/sentinel/rdpage"),
+              _footerLink(context, "Contact", "/sentinel/connectpage"),
             ],
           ),
 
