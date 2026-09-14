@@ -428,10 +428,10 @@ class SharedSiteFooter extends StatelessWidget {
             runSpacing: 8,
             children: [
               _footerLink(context, "Home", "/sentinel"),
-              _footerLink(context, "How It Works", "/sentinel/how-it-works"),
-              _footerLink(context, "Pilot Program", "/sentinel/connectpage"),
-              _footerLink(context, "About Us", "/sentinel/rdpage"),
-              _footerLink(context, "Contact", "/sentinel/connectpage"),
+              _footerLink(context, "How It Works", "/sentinel"), // already on home page
+              _footerLink(context, "Pilot Program", "/sentinel/connect"),
+              _footerLink(context, "R&D Labs", "/sentinel/rd"),
+              _footerLink(context, "Contact", "/sentinel/connect"),
             ],
           ),
 
