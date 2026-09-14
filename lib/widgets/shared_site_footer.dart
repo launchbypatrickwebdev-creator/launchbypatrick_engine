@@ -249,10 +249,10 @@ class SharedSiteFooter extends StatelessWidget {
                   ),
                   const SizedBox(height: 12),
                   _footerLink(context, "Home", "/sentinel"),
-                  _footerLink(context, "How It Works", "/sentinel/how-it-works"),
+                  _footerLink(context, "How It Works", "/sentinel"), // already on home page
                   _footerLink(context, "Pilot Program", "/sentinel/connect"),
-                  _footerLink(context, "About Us", "/sentinel/about"),
-                  _footerLink(context, "Contact", "/sentinel/contact"),
+                  _footerLink(context, "R&D Labs", "/sentinel/rd"),
+                  _footerLink(context, "Contact", "/sentinel/connect"),
                 ],
               ),
             ),
