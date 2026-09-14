@@ -191,7 +191,8 @@ class _LaunchTactileEngineState extends State<LaunchTactileEngine>
       onRefresh: widget.onRefresh,
 
       child: Focus(
-        autofocus: true,
+        autofocus: false,
+        canRequestFocus: true,
         focusNode: _focusNode,
         onKeyEvent: _handleKeyEvent,
 

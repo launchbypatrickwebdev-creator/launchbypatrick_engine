@@ -128,6 +128,11 @@ class _ChatInputWidgetState extends State<ChatInputWidget> {
               ),
               child: TextField(
                 controller: widget.textController,
+                autofocus: true, // ← Add this
+                enableInteractiveSelection: true,
+                keyboardType: TextInputType.multiline,
+                textInputAction: TextInputAction.send,
+                onSubmitted: (_) => _handleSendMessage(),
                 style: GoogleFonts.robotoMono(
                   color: Colors.white,
                   fontSize: 13,
